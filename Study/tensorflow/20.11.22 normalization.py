@@ -20,12 +20,11 @@ b=tf.Variable(tf.random_normal([1]), name='bias')
 
 hypothesis=tf.matmul((x,w)+b)
 cost=tf.reduce_mean(tf.square(hypothesis-y))
-optimizer=tf.train.GradientDescentOptimizer(learning_rate=1e-5)
-train=optimizer.minimize(cost)
+optimizer=tf.train.GradientDescentOptimizer(learning_rate=1e-5).minimize(cost)
 
 sess=tf.Session()
 sess.run(tf.global_variables_initializer())
 
 for step in range (101):
-    cost_val, hy_val = sess.run([cost, hypothesis, train], feed_dict={x:x_data, y:y_data})
+    cost_val, hy_val = sess.run([cost, hypothesis, optimizer], feed_dict={x:x_data, y:y_data})
     print(step, cost_val, hy_val)
