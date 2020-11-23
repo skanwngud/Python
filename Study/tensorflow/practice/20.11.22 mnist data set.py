@@ -42,5 +42,5 @@ with tf.Session() as sess:
     print('label:', sess.run(tf.argmax(mnist.test.labels[r:r+1], 1)))
     print('prediction:', sess.run(tf.argmax(hypothesis, 1), feed_dict={x:mnist.test.images[r:r+1]}))
 
-    plt.imshow(mnist.test.images[r:r+1].reshape(-1, 28, 28), camp='Greys', interpolation='nearest')
+    plt.imshow(mnist.test.images[r:r+1].reshape(-1, 28, 28), cmap='Greys', interpolation='nearest')
     plt.show()
