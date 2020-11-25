@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+from builtins import print
 
 x_data=np.array([[0,0],[0,1],[1,0],[1,1]], dtype=np.float32)
 y_data=np.array([[0],[1],[1],[0]], dtype=np.float32)
