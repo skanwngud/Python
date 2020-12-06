@@ -1,6 +1,6 @@
 package Study.java;
 
-public class Main2 {
+public class datatype {
     
     public static void main(String[] args) {
 
