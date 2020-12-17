@@ -1,10 +1,11 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import random
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
-from tensorflow.examples.tutorials.mnist import input_data
-
-mnist=input_data.read_data_sets("MNIST.data/", one_hot=True)
+from keras.datasets import mnist
+from keras import optimizers
 
 learning_rate=0.001
 training_epochs=15
@@ -28,12 +29,12 @@ l2=tf.nn.max_pool(l2, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
 l2=tf.reshape(l2, [-1, 7*7*64])
 
 #Fully connected layer
-w3=tf.get_variable('w2', shape=[7*7*64, 10], initializer=tf.contrib.layers.xavier_initializer())
+w3=tf.get_variable('w2', shape=[7*7*64, 10])
 b=tf.Variable(tf.random_normal([10]))
 hypothesis=tf.matmul(l2,w3)+b
 
 cost=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=hypothesis, labels=y))
-optimizer=tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+optimizer=tf.compat.v1.AdamOptimizer(learning_rate=learning_rate, name='Adam').minimize(cost)
 
 sess=tf.Session()
 sess.run(tf.global_variables_initializer())
