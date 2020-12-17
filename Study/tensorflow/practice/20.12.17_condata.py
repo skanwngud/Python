@@ -9,8 +9,8 @@ from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten
 from keras.optimizers import Adam
 from keras.callbacks import TensorBoard
 
-train_df=pd.read_csv('/Users/Yoo/Desktop/skanwngud/Study/tensorflow/practice/train.csv')
-test_df=pd.read_csv('/Users/Yoo/Desktop/skanwngud/Study/tensorflow/practice/test.csv')
+train_df=pd.read_csv('/Users/Yoo/Desktop/dataset/Fashion_MNIST/train.csv')
+test_df=pd.read_csv('/Users/Yoo/Desktop/dataset/Fashion_MNIST/test.csv')
 # print(train_df)
 train_data=np.array(train_df.iloc[:,1:], dtype='float32')
 test_data=np.array(test_df.iloc[:,1:], dtype='float32')
@@ -42,6 +42,6 @@ hystory = cnn_model.fit(
 
 y_pred = cnn_model.predict_classes(x_test)
 
-submission = pd.read_csv('/Users/Yoo/Desktop/skanwngud/Study/tensorflow/practice/sample_submission.csv', encoding='uft-8')
+submission = pd.read_csv('/Users/Yoo/Desktop/dataset/Fashion_MNIST/sample_submission.csv', encoding='uft-8')
 submission['label']=y_pred
 submission.to_csv('fashion_submission.csv', index= False)
