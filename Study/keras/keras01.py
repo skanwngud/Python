@@ -35,7 +35,8 @@ print('loss :', loss)
 # 트레인 데이터로 학습하고 트레인 데이터로 평가하여 신뢰도가 떨어짐 (테스트 데이터로 평가해야함)
 x_pred = np.array([4])
 result = model.predict(x_pred)
+# result = model.predict(x)
+# result = model.predict([4])
 
-#result = model.predict([4])
 print('result :', result)
 # 학습 된 모델을 통해 값을 예측함

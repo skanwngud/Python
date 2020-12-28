@@ -17,6 +17,7 @@ x_test=np.array([9,10,11])
 y_test=np.array([9,10,11])
 # 사실상 train, validation, test 를 분리 시켜놨지만 전부 하나의 데이터이다
 # 실제 데이터 준비 시 하나의 데이터를 잘 나눠서 배치
+# 총 4 종류의 데이터, train, test, validation, predict (predict 는 y의 값이 필요없다)
 
 ## 2. 모델 구성
 model=Sequential()

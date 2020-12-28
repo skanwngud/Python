@@ -29,6 +29,6 @@ def skanwngud(a,b,c,d):
 
     predict=model.predict(c)
 
-    return print(result, predict)
+    return print(result, '\n', predict)
 
 skanwngud(a,b,c,d)

@@ -32,7 +32,7 @@ model.add(Dense(50))
 model.add(Dense(50))
 model.add(Dense(1))
 
-#3. compille, training
+#3. compile, training
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 model.fit(x_train, y_train, epochs=100, batch_size=1, validation_data=(x_val, y_val))
 # validation 데이터를 위에서 줬으므로 validation_split 이 아닌 validation_data 로 씀

@@ -20,7 +20,7 @@ model.add(Dense(10, input_dim=1, activation='relu'))
 model.add(Dense(5))
 model.add(Dense(1))
 
-#3. compille, training
+#3. compile, training
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 model.fit(x_train, y_train, epochs=100, batch_size=1, validation_split=0.2)
 # validation_split=0.2 : model.fit 에 들어가는 변수들의 데이터를 20%를 분리해서 validation data 로 바꿔 훈련함

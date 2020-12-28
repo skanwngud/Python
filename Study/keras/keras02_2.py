@@ -20,6 +20,7 @@ model=Sequential()
 # model=models.Sequential()
 # model=keras.models.Sequential()
 model.add(Dense(110, input_dim=1, activation='relu'))
+# relu = linear 보다 조금 더 성능이 좋은 함수 (평가지표 85% 이상)
 model.add(Dense(1))
 
 ## 3. 컴파일, 훈련

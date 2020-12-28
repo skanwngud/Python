@@ -21,8 +21,9 @@ model.add(Dense(15))
 model.add(Dense(15))
 model.add(Dense(1))
 
-#3. compille, training
+#3. compile, training
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+# metrics 중 accuracy 는 분류모델일 경우에 사용해야 지표로써 사용할 수 있다
 model.fit(x_train, y_train, epochs=100, batch_size=1, validation_split=0.2)
 
 #4. evaluate, predict
