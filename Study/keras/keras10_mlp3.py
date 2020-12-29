@@ -31,7 +31,7 @@ model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 model.fit(x_train,y_train, epochs=100, batch_size=1, validation_split=0.2)
 
 loss, mae=model.evaluate(x_test, y_test)
-print('loss : ', loss)
+print('loss : ', loss) 
 print('mae : ', mae)
 
 y_predict=model.predict(x_test)
