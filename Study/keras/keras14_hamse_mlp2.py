@@ -1,4 +1,4 @@
-# 다 : 다
+# 다 : 다 함수형
 
 import numpy as np
 
@@ -15,19 +15,26 @@ print(x.shape) # (100, 3)
 print(y.shape) # (100, 3)
 
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Input
 
 x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, shuffle=True, random_state=66)
 
 print(x_train.shape) # (80, 3)
 print(y_train.shape) # (80, 3)
 
-model=Sequential()
-model.add(Dense(10, input_dim=3))
-model.add(Dense(5))
-model.add(Dense(5))
-model.add(Dense(3)) # y 가 (100, 3) 의 형태이기 때문에 output_dim 도 3 이 된다
+input1=Input(shape=(3,))
+aa=Dense(10)(input1)
+aa=Dense(10)(aa)
+aa=Dense(10)(aa)
+output=Dense(3)(aa)
+model=Model(inputs=input1, outputs=output)
+
+# model=Sequential()
+# model.add(Dense(10, input_dim=3))
+# model.add(Dense(5))
+# model.add(Dense(5))
+# model.add(Dense(3)) # y 가 (100, 3) 의 형태이기 때문에 output_dim 도 3 이 된다
 
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
 model.fit(x_train,y_train, epochs=100, batch_size=1, validation_split=0.2)

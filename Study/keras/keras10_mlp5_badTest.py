@@ -1,3 +1,5 @@
+# 다 : 다
+
 import numpy as np
 
 x=np.array([range(100), range(301, 401), range(1, 101), range(100), range(301, 401)])
