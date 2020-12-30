@@ -6,6 +6,7 @@ tf.disable_v2_behavior()
 
 from keras.datasets import mnist
 from keras import optimizers
+from keras.optimizers import Adam
 
 learning_rate=0.001
 training_epochs=15
@@ -34,7 +35,7 @@ b=tf.Variable(tf.random_normal([10]))
 hypothesis=tf.matmul(l2,w3)+b
 
 cost=tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=hypothesis, labels=y))
-optimizer=tf.compat.v1.AdamOptimizer(learning_rate=learning_rate, name='Adam').minimize(cost)
+optimizer=tf.AdamOptimizer(learning_rate=learning_rate, name='Adam').minimize(cost)
 
 sess=tf.Session()
 sess.run(tf.global_variables_initializer())

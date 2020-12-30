@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
     "python.pythonPath": "/Users/juhyeong_y/opt/anaconda3/envs/ml2/bin/python"
+=======
+    "python.pythonPath": "D:\\Anaconda\\envs\\ml\\python.exe"
+>>>>>>> 84b19668e784cd5f69b17e63a56b663f0a74a1b8
 }
