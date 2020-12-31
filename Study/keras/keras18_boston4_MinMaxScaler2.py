@@ -20,32 +20,19 @@ print(y[:10])
 print(np.max(x), np.min(x)) # 711.0 0.0
 print(dataset.feature_names) # column name
 
-# x=x/711. # -- > 각 컬럼의 최대 최소값이 다른데 전체 데이터셋의 최대값으로 나누기만 했음
-# 데이터의 형변환 때문에 (float 형)
-
 print(np.max(x[0])) # 396.9
-# x 의 첫 번째 컬럼(CRIM)의 최대값
-
-from sklearn.preprocessing import MinMaxScaler
-
-scaler=MinMaxScaler()
-scaler.fit(x)
-x=scaler.transform(x)
-
-'''
-scaler=MinMaxScaler()
-scaler.fit(x_train)
-x_train=scaler.transform(x_train)
-
-x_test, x_pred, x_val 전부 이미 위에서 w 값이 나왔기 때문에 transform 만 하면 된다
-
-오히려 범위를 벗어난 부분이 생기면 훈련을 더 잘 할 수 있게 된다 (과적합 방지)
-'''
 
 print(np.max(x), np.min(x)) # 711.0 0.0 -> 1.0 0.0
 print(np.max(x[0])) # 0.9999999999999999
 
 x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_state=66)
+
+from sklearn.preprocessing import MinMaxScaler
+
+scaler=MinMaxScaler()
+scaler.fit(x_train)
+x_train=scaler.transform(x_train)
+x_test=scaler.transform(x_test)
 
 # 모델 구성
 input1=Input(shape=13)
@@ -65,6 +52,7 @@ model.fit(x_train, y_train, epochs=130, batch_size=1, validation_split=0.2)
 # 평가, 예측
 loss=model.evaluate(x_test, y_test, batch_size=1)
 pred=model.predict(x_test)
+# x_test 는 위에서 이미 전처리를 했기 때문에 pred 전처리 안 해도 된다
 
 def RMSE(y_test, pred):
     return np.sqrt(mean_squared_error(y_test, pred))
@@ -86,7 +74,12 @@ print(r2)
 # 3.479137453964179
 # 0.855180999735316 - 노드 35개
 
-# 전처리 후 - MinMaxScaler
+# 전처리 후 - MinMaxScaler (x)
 # [8.861637115478516, 2.0854930877685547]
 # 2.9768507285717583
 # 0.8939778794202871
+
+# 전처리 후 - MinMaxScaler (x_train)
+# [16.556724548339844, 2.515528917312622]
+# 4.068996103714728
+# 0.8019125694719111

@@ -20,32 +20,21 @@ print(y[:10])
 print(np.max(x), np.min(x)) # 711.0 0.0
 print(dataset.feature_names) # column name
 
-# x=x/711. # -- > 각 컬럼의 최대 최소값이 다른데 전체 데이터셋의 최대값으로 나누기만 했음
-# 데이터의 형변환 때문에 (float 형)
-
 print(np.max(x[0])) # 396.9
-# x 의 첫 번째 컬럼(CRIM)의 최대값
-
-from sklearn.preprocessing import MinMaxScaler
-
-scaler=MinMaxScaler()
-scaler.fit(x)
-x=scaler.transform(x)
-
-'''
-scaler=MinMaxScaler()
-scaler.fit(x_train)
-x_train=scaler.transform(x_train)
-
-x_test, x_pred, x_val 전부 이미 위에서 w 값이 나왔기 때문에 transform 만 하면 된다
-
-오히려 범위를 벗어난 부분이 생기면 훈련을 더 잘 할 수 있게 된다 (과적합 방지)
-'''
 
 print(np.max(x), np.min(x)) # 711.0 0.0 -> 1.0 0.0
 print(np.max(x[0])) # 0.9999999999999999
 
 x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_state=66)
+x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.8, random_state=66)
+
+from sklearn.preprocessing import MinMaxScaler
+
+scaler=MinMaxScaler()
+scaler.fit(x_train)
+x_train=scaler.transform(x_train)
+x_test=scaler.transform(x_test)
+x_val=scaler.transform(x_val)
 
 # 모델 구성
 input1=Input(shape=13)
@@ -60,7 +49,7 @@ model=Model(inputs=input1, outputs=output1)
 
 # 컴파일, 훈련
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
-model.fit(x_train, y_train, epochs=130, batch_size=1, validation_split=0.2)
+model.fit(x_train, y_train, epochs=1000, batch_size=8, validation_data=(x_val, y_val))
 
 # 평가, 예측
 loss=model.evaluate(x_test, y_test, batch_size=1)
@@ -84,9 +73,27 @@ print(r2)
 # 전처리 후 - x=x/711.
 # [12.10439682006836, 2.588151454925537]
 # 3.479137453964179
-# 0.855180999735316 - 노드 35개
+# 0.855180999735316
 
-# 전처리 후 - MinMaxScaler
+# 전처리 후 - MinMaxScaler (x)
 # [8.861637115478516, 2.0854930877685547]
 # 2.9768507285717583
 # 0.8939778794202871
+
+# 전처리 후 - MinMaxScaler (x_train, validation_split)
+# [16.556724548339844, 2.515528917312622]
+# 4.068996103714728
+# 0.8019125694719111
+
+# 전처리 후 - MinMaxScaler (x_train, validation_data)
+# [5.61604118347168, 1.900649070739746]
+# 2.3698186392016685
+# 0.93280876980413
+
+# [6.636787414550781, 1.8860915899276733]
+# 2.5761964757264995
+# 0.9205963741714427 - epochs = 200
+
+# [7.60515832901001, 2.147317886352539]
+# 2.7577447488751563
+# 0.9090106624303158 - epochs = 1000, batch_size=8
