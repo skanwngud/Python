@@ -15,8 +15,6 @@ model.add(Dense(1))
 
 model.summary()
 
-Model.get_layer
-
 # Model: "sequential"
 # _________________________________________________________________
 # Layer (type)                 Output Shape              Param #

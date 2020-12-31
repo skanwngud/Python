@@ -1,3 +1,5 @@
+# metrics 가 다를 경우
+
 import numpy as np
 
 x1=np.array([range(100), range(301, 401), range(1, 101)])
@@ -16,9 +18,6 @@ from sklearn.model_selection import train_test_split
 x1_train, x1_test, y1_train, y1_test=train_test_split(x1, y1, shuffle=False, train_size=0.8)
 x2_train, x2_test, y2_train, y2_test=train_test_split(x2, y2, shuffle=False, train_size=0.8)
 
-# Sequential 은 앙상블에서 쓰기 힘들다 (순차적인 모델이기 때문에 상하관계가 되어버림)
-# Sequential1, Sequential2 를 작성하고 돌리게 되면 1의 가중치가 2에 영향을 끼침
-
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input
 
@@ -34,17 +33,11 @@ dense2=Dense(10, activation='relu')(input2)
 dense2=Dense(5, activation='relu')(dense2)
 dense2=Dense(5, activation='relu')(dense2)
 dense2=Dense(5, activation='relu')(dense2)
-# output2=Dense(3)(dense2)
-# output 은 위의 모델들이 아니라 모델끼리 엮인 다음 나와야한다
 
 ## 모델 병합 / concatenate
 from tensorflow.keras.layers import concatenate, Concatenate
-# from keras.layers.merge import concatenate
-# from keras.layers import concatenate
 
 merge1=concatenate([dense1, dense2])
-# 각 모델들의 끝 쪽에 있는 레이어들
-# merge1 = dense1, dense2 를 인풋으로 받는 레이어 모델
 middle1=Dense(30)(merge1)
 middle1=Dense(10)(middle1)
 middle1=Dense(10)(middle1)
@@ -65,25 +58,20 @@ model=Model(inputs=[input1, input2], outputs=[output1, output2])
 
 model.summary()
 
-model.compile(loss='mse', optimizer='adam', metrics=['mae'])
+model.compile(loss='mse', optimizer='adam', metrics=['mae', 'mse']) # metrics 2개 이상 사용 가능
+# ['loss', 'dense_11_loss', 'dense_15_loss', 'dense_11_mae', 'dense_11_mse', 'dense_15_mae', 'dense_15_mse']
 model.fit([x1_train, x2_train], [y1_train, y2_train], epochs=10, batch_size=1, validation_split=0.2, verbose=1)
 
 loss=model.evaluate([x1_test, x2_test], [y1_test, y2_test], batch_size=1)
 
 print('model.metrics_name : ', model.metrics_names)
-# model.metrics_name :  ['loss', 'dense_11_loss', 'dense_15_loss', 'dense_11_mae', 'dense_15_mae']
 
 print(loss)
-# [901.44287109375, 344.4125671386719, 557.0303955078125, 344.4125671386719, 557.0303955078125] - loss=mse, metrics=mse
-# 두 모델 loss 합, 첫 번째 모델 loss, 두 번째 모델 loss, 첫 번째 모델 metrics, 두 번째 모델 metrics
-# 둘의 로스값을 합하거나 평균을 내는 것을 결정하는 요소는 모델의 loss 에 따라 다르다.
-# 상대지표와 절대지표를 생각해야함
-# [2611.45751953125, 1208.328125, 1403.1292724609375, 29.186691284179688, 29.323776245117188] - loss=mse, metrics=mae
 
 y1_predict, y2_predict=model.predict([x1_test, x2_test])
 
-print('y1_pred : \n', y1_predict)
-print('y2_pred : \n', y2_predict)
+# print('y1_pred : \n', y1_predict)
+# print('y2_pred : \n', y2_predict)
 
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import r2_score
