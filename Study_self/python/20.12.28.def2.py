@@ -8,18 +8,26 @@
 # print(result)
 
 
-def sum_mul(choice, *args):
-    if choice=='sum':
-        result=0
-        for i in args:
-            result=+i
+# def a(choice, *args):
+#     if choice=='sum':
+#         result=0
+#         for i in args:
+#             result=+i
 
-    elif choice=='mul':
-        result=1
-        for i in args:
-            result=result*i
+#     elif choice=='mul':
+#         result=1
+#         for i in args:
+#             result=result*i
 
-    return result
+#     return result
 
-a=sum_mul(sum, 1,2,3,4)
-print(a)
+# b=a(sum, 1,2,3,4)
+# print(b)
+
+nick='stupid'
+
+def say_nick(nick):
+    if nick=='stupid':
+        return
+    print('나의 별명은 %s입니다.'% nick)
+
