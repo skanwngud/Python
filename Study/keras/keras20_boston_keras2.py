@@ -60,6 +60,14 @@ print('mae : ', mae)
 print('rmse : ', rmse)
 print('r2 : ', r2)
 
+# No EarlyStopping
+# results
+# mse :  11.866742134094238
+# mae :  2.380223035812378
+# rmse :  3.444813860678402
+# r2 :  0.8574460125795427
+
+# EarlyStopping
 # results
 # loss :  10.597819328308105
 # mae :  2.167438268661499
