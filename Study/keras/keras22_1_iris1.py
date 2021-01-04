@@ -68,9 +68,21 @@ model.fit(x_train, y_train, epochs=200, validation_data=(x_val, y_val))
 
 # 4. Evaluate
 loss=model.evaluate(x_test, y_test)
-y_pred=model.predict(x[-5:-1])
+y_pred=model.predict(x_test[-5:-1])
 
 print(loss)
 print(y_pred)
 print(y_test[-5:-1])
 print(np.argmax(y_pred, axis=-1))
+
+# results
+# [0.11219839006662369, 0.9666666388511658]
+# [[1.6016660e-10 6.5629654e-05 9.9993432e-01]
+#  [1.0000000e+00 6.0144376e-11 3.4863581e-26]
+#  [9.9662763e-01 3.3723419e-03 5.3760271e-11]
+#  [6.4497421e-05 2.8200355e-01 7.1793193e-01]]
+# [[0. 0. 1.]
+#  [1. 0. 0.]
+#  [1. 0. 0.]
+#  [0. 0. 1.]]
+# [2 0 0 2]

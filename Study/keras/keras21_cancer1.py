@@ -67,9 +67,16 @@ y_pred=model.predict(x_test[-5:-1])
 
 print(loss)
 print(y_pred)
-# print(y[-5:-1])
+print(y_test[-5:-1])
 
-print(np.argmax(y_pred, axis=-1))
+y_list=list()
+for i in y_pred:
+    if i >= 0.5:
+        y_list.append(1)
+    else :
+        y_list.append(0)
+
+print(y_list)
 
 # results
 # [0.5336576700210571, 0.9649122953414917]

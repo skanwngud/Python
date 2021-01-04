@@ -7,6 +7,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.callbacks import EarlyStopping
 
 dataset=load_iris()
 x=dataset.data
@@ -41,10 +42,17 @@ model.add(Dense(150, activation='relu'))
 model.add(Dense(150, activation='relu'))
 model.add(Dense(150, activation='relu'))
 model.add(Dense(150, activation='relu'))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(150, activation='relu'))
 model.add(Dense(3, activation='softmax'))
 
+early_stopping=EarlyStopping(monitor='loss', patience=50, mode='auto')
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
-model.fit(x_train, y_train, epochs=100, validation_data=(x_val, y_val))
+model.fit(x_train, y_train, epochs=1000, validation_data=(x_val, y_val), callbacks=early_stopping)
 
 loss=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_test[-5:-1])
