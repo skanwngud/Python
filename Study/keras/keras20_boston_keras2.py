@@ -42,9 +42,10 @@ dense1=Dense(150, activation='relu')(dense1)
 output1=Dense(1, activation='relu')(dense1)
 model=Model(inputs=input1, outputs=output1)
 
-callback=EarlyStopping(monitor='loss', patience=10, mode=min)
+callback=EarlyStopping(monitor='loss', patience=10, mode='min')
 model.compile(loss='mse', optimizer='adam', metrics=['mae'])
-model.fit(x_train, y_train, epochs=500, batch_size=12, validation_data=(x_val, y_val), callbacks=callback)
+model.fit(x_train, y_train, epochs=500, batch_size=12,
+            validation_data=(x_val, y_val), callbacks=callback)
 
 loss, mae=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_test)
