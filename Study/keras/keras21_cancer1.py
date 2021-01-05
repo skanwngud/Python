@@ -69,14 +69,15 @@ print(loss)
 print(y_pred)
 print(y_test[-5:-1])
 
-y_list=list()
-for i in y_pred:
-    if i >= 0.5:
-        y_list.append(1)
-    else:
-        y_list.append(0)
+print(np.where(y_pred<0.5, 0, 1))
 
-print(y_list)
+# y_list=list()
+# for i in y_pred:
+#     if i >= 0.5:
+#         y_list.append(1)
+#     else:
+#         y_list.append(0)
+# print(y_list)
 
 # results
 # [1.086754322052002, 0.9561403393745422]
