@@ -68,3 +68,6 @@ plt.xlabel('loss')
 plt.ylabel('epochs')
 plt.legend(['loss', 'val_loss'])
 plt.show()
+
+# results
+# [6076.140625, 59.628055572509766]
