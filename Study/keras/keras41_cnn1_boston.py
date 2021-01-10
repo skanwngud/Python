@@ -53,19 +53,21 @@ def RMSE(y_test, y_pred):
     return np.sqrt(mean_squared_error(y_test, y_pred))
 
 
-print(loss)
-print(RMSE(y_test, y_pred))
-print(r2_score(y_test, y_pred))
-print(y_pred[:5])
-print(y_test[:5])
+print('loss: ',loss)
+print('rmse : ',RMSE(y_test, y_pred))
+print('r2 : ',r2_score(y_test, y_pred))
+print('y_pred : \n',y_pred[:5])
+print('y_test : \n',y_test[:5])
 
 # results
-# 15.168837547302246
-# 3.8947193027813274
-# 0.817778265695519
-# [[ 8.215335]
-#  [18.168524]
-#  [20.885612]
-#  [35.168137]
-#  [24.139807]]
-# [ 7.2 18.8 19.  27.  22.2]
+# loss:  20.49721908569336
+# rmse :  4.527385617047365
+# r2 :  0.7537689464156387
+# y_pred :
+#  [[ 7.8853683]
+#  [18.027658 ]
+#  [21.23991  ]
+#  [30.298635 ]
+#  [23.09384  ]]
+# y_test :
+#  [ 7.2 18.8 19.  27.  22.2]
