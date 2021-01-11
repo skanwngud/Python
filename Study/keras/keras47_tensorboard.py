@@ -49,7 +49,7 @@ cp=ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, 
 tb=TensorBoard(log_dir='./skanwngud/Study/graph', histogram_freq=0, write_graph=True, write_images=True)
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics='acc')
-hist=model.fit(x_train, y_train, epochs=30, batch_size=64, validation_split=0.2, callbacks=[early, cp, tb])
+hist=model.fit(x_train, y_train, epochs=30, batch_size=64, validation_split=0.2, callbacks=[early, tb])
 
 loss=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_test)
