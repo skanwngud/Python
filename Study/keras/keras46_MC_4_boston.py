@@ -2,9 +2,10 @@ import numpy as np
 
 from tensorflow.keras.datasets import boston_housing
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
+from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
@@ -19,25 +20,37 @@ x_test=scaler.transform(x_test)
 x_val=scaler.transform(x_val)
 
 model=Sequential()
-model.add(Dense(128, activation='relu', input_shape=(x_train.shape[1],)))
-model.add(Dense(256, activation='relu'))
-model.add(Dense(512, activation='relu'))
-model.add(Dense(256, activation='relu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dense(64, activation='relu'))
-model.add(Dense(32, activation='relu'))
+model.add(Dense(100, activation='relu', input_shape=(x_train.shape[1],)))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(250, activation='relu'))
+model.add(Dense(300, activation='relu'))
+model.add(Dense(250, activation='relu'))
+model.add(Dense(200, activation='relu'))
+model.add(Dense(150, activation='relu'))
+model.add(Dense(100, activation='relu'))
+model.add(Dense(80, activation='relu'))
+model.add(Dense(60, activation='relu'))
+model.add(Dense(30, activation='relu'))
 model.add(Dense(1))
 
 cp=ModelCheckpoint(filepath='./skanwngud/Study/modelCheckpoint/k46_4_boston_{epoch:02d}-{val_loss:.4f}.hdf5',
                     monitor='val_loss', save_best_only=True, mode='auto')
-early=EarlyStopping(monitor='val_loss', patience=10, mode='auto')
+early=EarlyStopping(monitor='val_loss', patience=20, mode='auto')
 model.compile(loss='mse', optimizer='adam', metrics='mae')
-model.fit(x_train, y_train, epochs=100, batch_size=8, validation_data=(x_val, y_val), callbacks=[early, cp])
+model.fit(x_train, y_train, epochs=500, batch_size=4, validation_data=(x_val, y_val), callbacks=[early], verbose=2)
 
 loss=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_test)
 
+def RMSE(y_test, y_pred):
+    return np.sqrt(mean_squared_error(y_test, y_pred))
+
 print('loss : ', loss)
+print('RMSE : ', RMSE(y_test, y_pred))
+print('R2 : ', r2_score(y_test, y_pred))
 
 # results
-# loss :  [24.886898040771484, 3.3594584465026855]
+# loss :  [17.749242782592773, 2.731422185897827]
+# RMSE :  4.212985256605526
+# R2 :  0.7867801034192484
