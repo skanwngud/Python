@@ -65,12 +65,12 @@ y_pred=model.predict(x_test)
 print('가중치_loss : ', loss[0])
 print('가중치_acc : ', loss[1])
 
-model1=load_model('../data/h5/k52_1_model2.h5')
-loss2=model1.evaluate(x_test, y_test)
-y_pred2=model1.predict(x_test)
+# model1=load_model('../data/h5/k52_1_model2.h5')
+# loss2=model1.evaluate(x_test, y_test)
+# y_pred2=model1.predict(x_test)
 
-print('로드모델_loss : ', loss2[0])
-print('로드모델_acc : ', loss2[1])
+# print('로드모델_loss : ', loss2[0])
+# print('로드모델_acc : ', loss2[1])
 
 # results
 # 가중치_loss :  0.044517237693071365

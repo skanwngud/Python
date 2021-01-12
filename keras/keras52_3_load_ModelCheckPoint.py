@@ -18,52 +18,6 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 y_train=to_categorical(y_train)
 y_test=to_categorical(y_test)
 
-# model=Sequential()
-# model.add(Conv2D(filters=128, kernel_size=(3,3), padding='same', strides=1, input_shape=(28,28,1)))
-# model.add(MaxPooling2D(pool_size=2))
-# model.add(Dropout(0.25))
-# model.add(Conv2D(128, kernel_size=(3,3), padding='same'))
-# model.add(MaxPooling2D(pool_size=2))
-# model.add(Dropout(0.25))
-# model.add(Conv2D(128, 3, padding='same'))
-# model.add(MaxPooling2D(pool_size=2))
-# model.add(Dropout(0.25))
-# model.add(Flatten())
-# model.add(Dense(150, activation='relu'))
-# model.add(Dense(200, activation='relu'))
-# model.add(Dense(250, activation='relu'))
-# model.add(Dense(300, activation='relu'))
-# model.add(Dense(400, activation='relu'))
-# model.add(Dense(300, activation='relu'))
-# model.add(Dense(250, activation='relu'))
-# model.add(Dense(200, activation='relu'))
-# model.add(Dense(150, activation='relu'))
-# model.add(Dense(100, activation='relu'))
-# model.add(Dense(80, activation='relu'))
-# model.add(Dense(30, activation='relu'))
-# model.add(Dense(10, activation='softmax'))
-
-# model.save('../data/h5/k52_1_model1.h5')
-
-# modelpath='../data/modelcheckpoint/k52_1_MCK_{val_loss:.4f}.hdf5'
-# early=EarlyStopping(monitor='val_loss', patience=5, mode='auto')
-# cp=ModelCheckpoint(filepath=modelpath, monitor='val_loss', save_best_only=True, mode='auto')
-# model.compile(loss='categorical_crossentropy', optimizer='adam', metrics='acc')
-# hist=model.fit(x_train, y_train, epochs=30, batch_size=64, validation_split=0.2, callbacks=[early , cp])
-
-# model.save('../data/h5/k52_1_model2.h5')
-# model.save_weights('../data/h5/k52_1_weight.h5', )
-
-# loss=model1.evaluate(x_test, y_test)
-# y_pred=model1.predict(x_test)
-
-# model.load_weights('../data/h5/k52_1_weight.h5') # weight 값만 저장 되기 때문에 모델링은 해야한다
-# loss=model.evaluate(x_test, y_test)
-# y_pred=model.predict(x_test)
-
-# print('가중치_loss : ', loss[0])
-# print('가중치_acc : ', loss[1])
-
 model1=load_model('../data/modelcheckpoint/k52_1_mnist_checkpoint.hdf5')
 loss2=model1.evaluate(x_test, y_test)
 y_pred2=model1.predict(x_test)
