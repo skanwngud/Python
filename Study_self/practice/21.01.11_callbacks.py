@@ -42,9 +42,9 @@ output=Dense(10, activation='softmax')(dense1)
 model=Model(input, output)
 
 es=EarlyStopping(monitor='val_loss', patience=10, mode='auto')
-cp=ModelCheckpoint(filepath='./skanwngud/Study/modelCheckpoint/review_1_{epoch:02d}-{val_loss:.5f}.hdf5',
+cp=ModelCheckpoint(filepath='../data/modelcheckpoint/review_1_{epoch:02d}-{val_loss:.5f}.hdf5',
                     save_best_only=True, monitor='val_loss', mode='auto')
-tb=TensorBoard(log_dir='./skanwngud/Study/graph', write_graph=True, write_images=True, histogram_freq=0)
+tb=TensorBoard(log_dir='../data/graph', write_graph=True, write_images=True, histogram_freq=0)
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics='acc')
 model.fit(x_train, y_train, epochs=50, validation_data=(x_val, y_val), callbacks=[es, tb, cp])
