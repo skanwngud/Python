@@ -22,6 +22,8 @@ def split_x(seq, size):
 dataset=split_x(a, size)
 print('='*30)
 print(dataset)
+print(a.shape) # (10, )
+print(dataset.shape) # (6, 5)
 
 '''
 def split_x(seq, size):             seq, size 를 변수로 갖는 slpit_x 라는 함수를 선언
