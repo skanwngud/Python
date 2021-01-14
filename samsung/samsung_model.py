@@ -10,10 +10,18 @@ y_train=np.load('../data/npy/samsung_y_train.npy')
 y_test=np.load('../data/npy/samsung_y_test.npy')
 y_val=np.load('../data/npy/samsung_y_val.npy')
 
-model=load_model('../data/modelcheckpoint/samsung_93-10092972.0000.hdf5')
+model=load_model('../data/modelcheckpoint/samsung_600948.7500.hdf5')
 
 loss=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_pred)
 
 print('loss : ', loss)
 print('samsung_predict: ', y_pred)
+
+# results
+# loss :  1122932.875
+# samsung_predict:  [[[92979.8]]]
+
+# results - samsung_601974.1875
+# loss :  1277852.125
+# samsung_predict:  [[89809.67]]
