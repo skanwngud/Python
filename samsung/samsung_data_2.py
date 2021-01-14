@@ -80,14 +80,6 @@ x_pred=x_pred.reshape(x_pred.shape[0], 5, 5)
 x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_state=22)
 x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.8, random_state=22)
 
-# print(x_train.shape) # (421, 5, 5)
-# print(x_test.shape) # (132, 5, 5)
-# print(x_val.shape) # (106, 5, 5)
-# print(y_train.shape) # (412, 1)
-# print(y_test.shape) # (132, 1)
-# print(y_val.shape) # (106, 1)
-# print(x_pred.shape) # (1, 5, 5)
-
 np.savez('../data/npy/samsung_data_2.npz',
         x_train=x_train, x_test=x_test, x_val=x_val, x_pred=x_pred,
         y_train=y_train, y_test=y_test, y_val=y_val)
@@ -95,19 +87,29 @@ np.savez('../data/npy/samsung_data_2.npz',
 model=Sequential()
 model.add(LSTM(256, activation='relu', input_shape=(x_train.shape[1], x_train.shape[2])))
 model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(256, activation='relu'))
 model.add(Dense(512, activation='relu'))
 model.add(Dense(1024, activation='relu'))
 model.add(Dense(512, activation='relu'))
 model.add(Dense(256, activation='relu'))
 model.add(Dense(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(4, activation='relu'))
 model.add(Dense(1))
 
-cp=ModelCheckpoint(filepath='../data/modelcheckpoint/samsung_day2_{epoch:02d}-{val_loss:.4f}.hdf5',
+cp=ModelCheckpoint(filepath='../data/modelcheckpoint/samsung_day2_{val_loss:.4f}.hdf5',
                     monitor='val_loss', mode='auto', save_best_only=True)
-es=EarlyStopping(monitor='val_loss', mode='auto', patience=10)
+es=EarlyStopping(monitor='val_loss', mode='auto', patience=50)
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, epochs=100, validation_data=(x_val, y_val), callbacks=[es, cp])
+model.fit(x_train, y_train, epochs=1000, batch_size=32, validation_data=(x_val, y_val), callbacks=[es, cp], verbose=2)
 
 loss=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_test)
