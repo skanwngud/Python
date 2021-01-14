@@ -25,3 +25,7 @@ print('samsung_predict: ', y_pred)
 # results - samsung_601974.1875
 # loss :  1277852.125
 # samsung_predict:  [[89809.67]]
+
+# results - samsung_600948.7500
+# loss :  1232579.625
+# samsung_predict:  [[90150.57]]
