@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
-## 1. 데이터 준비a
+## 1. 데이터 준비
 x = np.array([1,2,3])
 y = np.array([1,2,3])
 # 데이터의 수치만을 보고 데이터의 정제됨을 판단하면 안 됨
