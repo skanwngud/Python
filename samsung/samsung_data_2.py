@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.layers import Dense, LSTM, Input, Dropout, Conv1D, MaxPooling1D, Flatten
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.optimizers import Adam
@@ -96,25 +96,42 @@ np.save('../data/npy/samsung_x_pred.npy', arr=x_pred)
 np.savez('../data/npy/samsung_day_2.npz',
         x_train=x_train, x_test=x_test, x_val=x_val, x_pred=x_pred,
         y_train=y_train, y_test=y_test, y_val=y_val)
-input=Input(shape=(x_train.shape[1], x_train.shape[2]))
-lstm1=LSTM(256, activation='relu')(input)
-dense1=Dense(256, activation='relu')(lstm1)
-dense1=Dense(256, activation='relu')(dense1)
-dense1=Dense(512, activation='relu')(dense1)
-dense1=Dense(512, activation='relu')(dense1)
-dense1=Dense(1024, activation='relu')(dense1)
-dense1=Dense(512, activation='relu')(dense1)
-dense1=Dense(512, activation='relu')(dense1)
-dense1=Dense(256, activation='relu')(dense1)
-dense1=Dense(256, activation='relu')(dense1)
-dense1=Dense(128, activation='relu')(dense1)
-dense1=Dense(128, activation='relu')(dense1)
-dense1=Dense(64, activation='relu')(dense1)
-output=Dense(1)(dense1)
-model=Model(input, output)
+
+# input=Input(shape=(x_train.shape[1], x_train.shape[2]))
+# lstm1=LSTM(256, activation='relu')(input)
+# dense1=Dense(512, activation='relu')(lstm1)
+# dense1=Dense(512, activation='relu')(dense1)
+# dense1=Dense(512, activation='relu')(dense1)
+# dense1=Dense(512, activation='relu')(dense1)
+# dense1=Dense(1024, activation='relu')(dense1)
+# dense1=Dense(1024, activation='relu')(dense1)
+# dense1=Dense(512, activation='relu')(dense1)
+# dense1=Dense(512, activation='relu')(dense1)
+# dense1=Dense(256, activation='relu')(dense1)
+# dense1=Dense(256, activation='relu')(dense1)
+# dense1=Dense(128, activation='relu')(dense1)
+# dense1=Dense(128, activation='relu')(dense1)
+# output=Dense(1)(dense1)
+# model=Model(input, output)
+
+model=Sequential()
+model.add(Conv1D(128, 2, padding='same', input_shape=(x_train.shape[1], x_train.shape[2])))
+model.add(Conv1D(256, 2, padding='same'))
+model.add(Conv1D(512, 2, padding='same'))
+# model.add(Dropout(0.2))
+model.add(Flatten())
+model.add(Dense(512, activation='relu'))
+model.add(Dense(1024, activation='relu'))
+model.add(Dense(2048, activation='relu'))
+model.add(Dense(1024, activation='relu'))
+model.add(Dense(512, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(1))
 
 es=EarlyStopping(monitor='val_loss', patience=30, mode='auto')
-cp=ModelCheckpoint(filepath='../data/modelcheckpoint/samsung_{val_loss:.4f}.hdf5', monitor='val_loss', mode='auto', save_best_only=True)
+cp=ModelCheckpoint(filepath='../data/modelcheckpoint/samsung_day_2_{val_loss:.4f}.hdf5', monitor='val_loss', mode='auto', save_best_only=True)
 model.compile(loss='mse', optimizer='adam')
 hist=model.fit(x_train, y_train, epochs=2000, batch_size=64, validation_data=(x_val, y_val), verbose=2, callbacks=[es, cp])
 
@@ -133,14 +150,3 @@ print('loss : ', loss)
 print('samsung_predict :', pred)
 print('rmse : ', rmse)
 print('r2 : ', r2)
-
-plt.plot(hist.history['loss'], marker='.', c='blue')
-plt.plot(hist.history['val_loss'], marker='.', c='red')
-plt.grid()
-
-plt.title('loss & val_loss')
-plt.xlabel('epoch')
-plt.ylabel('loss & val_loss')
-plt.legend(['loss', 'val_loss'])
-
-plt.show()
