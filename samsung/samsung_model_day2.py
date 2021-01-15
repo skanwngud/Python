@@ -4,7 +4,8 @@ from tensorflow.keras.models import load_model
 
 from sklearn.metrics import r2_score, mean_squared_error
 
-datasets=np.load('../data/npy/samsung_data_2.npz')
+# datasets=np.load('../data/npy/samsung_data_2.npz')
+datasets=np.load('../data/npy/samsung_data_2(whole_data).npz')
 
 x_train=datasets['x_train']
 x_test=datasets['x_test']
@@ -15,7 +16,7 @@ y_train=datasets['y_train']
 y_test=datasets['y_test']
 y_val=datasets['y_val']
 
-model=load_model('../data/modelcheckpoint/samsung_day2_750079.1250.hdf5')
+model=load_model('../data/modelcheckpoint/samsung_day2_21133234176.0000.hdf5')
 
 loss=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_test)

@@ -27,8 +27,17 @@ del df['종가']
 
 df.to_csv('../data/csv/samsung_df.csv', sep=',')
 
-
 df=df.to_numpy()
+
+# print(df) 
+# print(df.shape) # (662, 6)
+# print(df_1.shape) # (1735, 6)
+
+df_x=df[:, :-1]
+df_y=df[:, -1]
+
+df_y=df_y.reshape(-1, 1)
+
 
 def split_x(seq, size, col):
     aaa=[]
@@ -48,6 +57,7 @@ df=split_x(df, size, col)
 x=df[:-1, :, :-1] # 컬럼값 (657, 5, 5)
 y=df[1:, -1:, -1:] # 종가값 (657, 1, 1)
 x_pred=df[-1:, :, :-1] # 예측값 (1, 5, 5)
+
 print(x.shape)
 print(y.shape)
 print(x_pred.shape)
@@ -67,11 +77,7 @@ x_pred=x_pred.reshape(x_pred.shape[0],5, 5)
 x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_state=44)
 x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.8, random_state=44)
 
-# print(x_train)
-# print(y_train)
-# print(x_pred)
-# print(y[0])
-
+'''
 np.save('../data/npy/samsung_x_train.npy', arr=x_train)
 np.save('../data/npy/samsung_x_test.npy', arr=x_test)
 np.save('../data/npy/samsung_x_val.npy', arr=x_val)
@@ -79,8 +85,11 @@ np.save('../data/npy/samsung_y_train.npy', arr=y_train)
 np.save('../data/npy/samsung_y_test.npy', arr=y_test)
 np.save('../data/npy/samsung_y_val.npy', arr=y_val)
 np.save('../data/npy/samsung_x_pred.npy', arr=x_pred)
+'''
 
-
+np.savez('../data/npy/samsung_data_1.npz',
+        x_train=x_train, x_test=x_test, x_val=x_val, x_pred=x_pred,
+        y_train=y_train, y_test=y_test, y_val=y_val)
 input=Input(shape=(x_train.shape[1], x_train.shape[2]))
 lstm1=LSTM(256, activation='relu')(input)
 dense1=Dense(256, activation='relu')(lstm1)
@@ -101,7 +110,7 @@ model=Model(input, output)
 es=EarlyStopping(monitor='val_loss', patience=30, mode='auto')
 cp=ModelCheckpoint(filepath='../data/modelcheckpoint/samsung_{val_loss:.4f}.hdf5', monitor='val_loss', mode='auto', save_best_only=True)
 model.compile(loss='mse', optimizer='adam')
-hist=model.fit(x_train, y_train, epochs=2000,validation_data=(x_val, y_val), verbose=2, callbacks=[es, cp])
+hist=model.fit(x_train, y_train, epochs=2000, batch_size=64, validation_data=(x_val, y_val), verbose=2, callbacks=[es, cp])
 
 loss=model.evaluate(x_test, y_test)
 y_pred=model.predict(x_test)

@@ -11,29 +11,32 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import r2_score, mean_squared_error
 
-df=pd.read_csv('../data/csv/samsung_df.csv', header=0, index_col=0, thousands=',')
-df_2=pd.read_csv('../data/csv/samsung2.csv', encoding='cp949', header=0, index_col=0, thousands=',')
+df=pd.read_csv('../data/csv/samsung.csv', encoding='euc-kr',header=0, index_col=0, thousands=',')
+df_1=pd.read_csv('../data/csv/samsung.csv', encoding='euc-kr', header=0, index_col=0, thousands=',')
 
-df_2=df_2.sort_index(ascending=True)
-df_2=df_2.dropna(axis=0)
-df_2=df_2.iloc[:2, :6]
+df=df.sort_index(ascending=True)
+df=df.dropna(axis=0)
+df_1=df_1.sort_index(ascending=True)
+df_1=df.dropna(axis=0)
 
-df_2['target']=df_2.iloc[:, 3]
-del df_2['종가']
-
-df=pd.concat([df, df_2])
-
-df=df.drop([df.columns[6], df.columns[7]], axis=1)
-
-df=df.fillna(method='ffill')
+df=df.iloc[1735:, :6] # (663, 6)
+df_1=df_1.iloc[:1735,:6]
 
 # x = 5/4~1/12
 # y = 5/8~1/13
 # x_pred = 1/13
 
-df.to_csv('../data/csv/samsung_day_2.csv', sep=',')
+df['target']=df.iloc[:, 3]
+del df['종가']
+
+df_1['target']=df_1.iloc[:, 3]
+del df_1['종가']
+
+df.to_csv('../data/csv/samsung_df_whole_data.csv', sep=',')
+df_1.to_csv('../data/csv/samsung_df_1_whole_data.csv', sep=',')
 
 df=df.to_numpy()
+df_1=df_1.to_numpy()
 
 # print(df) 
 # print(df.shape) # (662, 6)
@@ -41,9 +44,26 @@ df=df.to_numpy()
 
 df_x=df[:, :-1]
 df_y=df[:, -1]
+df_1_x=df_1[:, :-1]
+df_1_y=df_1[:, -1]
+
+scaler_1=MinMaxScaler()
+scaler_1.fit(df_x)
+df_x=scaler_1.transform(df_x)
+df_1_x=scaler_1.transform(df_1_x)
 
 df_y=df_y.reshape(-1, 1)
+df_1_y=df_1_y.reshape(-1, 1)
 
+df_y=np.vstack([df_1_y, df_y])
+df_x=np.vstack([df_1_x, df_x])
+
+print(df_x.shape)
+print(df_y.shape)
+
+df=np.hstack([df_x, df_y])
+
+print(df.shape)
 
 def split_x(seq, size, col):
     aaa=[]
@@ -57,7 +77,11 @@ label=df
 size=5
 col=6
 
+data=df_1
+label=df_1
+
 df=split_x(df, size, col)
+df_1=split_x(df_1, size, col)
 # print(df.shape) # (658, 5, 6)
 # print(df)
 x=df[:-1, :, :-1] # 컬럼값 (657, 5, 5)
@@ -71,12 +95,12 @@ print(x_pred.shape)
 x=x.reshape(x.shape[0], x.shape[1]*x.shape[2])
 x_pred=x_pred.reshape(x_pred.shape[0], x_pred.shape[1]*x_pred.shape[2])
 y=y.reshape(y.shape[0], 1)
-
+'''
 scaler=MinMaxScaler()
 scaler.fit(x)
 x=scaler.transform(x)
 x_pred=scaler.transform(x_pred)
-
+'''
 x=x.reshape(x.shape[0], 5, 5)
 x_pred=x_pred.reshape(x_pred.shape[0],5, 5)
 
@@ -93,7 +117,7 @@ np.save('../data/npy/samsung_y_val.npy', arr=y_val)
 np.save('../data/npy/samsung_x_pred.npy', arr=x_pred)
 '''
 
-np.savez('../data/npy/samsung_day_2.npz',
+np.savez('../data/npy/samsung_data_1_whole_data.npz',
         x_train=x_train, x_test=x_test, x_val=x_val, x_pred=x_pred,
         y_train=y_train, y_test=y_test, y_val=y_val)
 input=Input(shape=(x_train.shape[1], x_train.shape[2]))
