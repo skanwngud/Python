@@ -144,28 +144,36 @@ np.savez('../data/npy/samsung_day_3.npz',
 
 ## 모델링
 input1=Input(shape=(x_train.shape[1], x_train.shape[2]))
-lstm1=LSTM(128, activation='relu')(input1)
-dense1=Dense(128, activation='relu')(lstm1)
-dense1=Dense(256, activation='relu')(dense1)
-dense1=Dense(512, activation='relu')(dense1)
+# lstm1=LSTM(32, activation='relu')(input1)
+# dense1=Dense(64, activation='relu')(lstm1)
+cnn1=Conv1D(32, 2, padding='same', activation='relu')(input1)
+flat1=Flatten()(cnn1)
+dense1=Dense(64, activation='relu')(cnn1)
+dense1=Dense(128, activation='relu')(dense1)
 dense1=Dense(256, activation='relu')(dense1)
 dense1=Dense(128, activation='relu')(dense1)
+dense1=Dense(64, activation='relu')(dense1)
+dense1=Dense(32, activation='relu')(dense1)
+dense1=Dense(32, activation='relu')(dense1)
 
 input2=Input(shape=(x_1_train.shape[1], x_1_train.shape[2]))
-lstm2=LSTM(128, activation='relu')(input2)
-dense2=Dense(256, activation='relu')(lstm2)
-dense2=Dense(512, activation='relu')(dense2)
+lstm2=LSTM(32, activation='relu')(input2)
+# lstm2=Dense(64, activation='relu')(input2)
+dense2=Dense(128, activation='relu')(lstm2)
 dense2=Dense(256, activation='relu')(dense2)
 dense2=Dense(128, activation='relu')(dense2)
+dense2=Dense(64, activation='relu')(dense2)
+dense2=Dense(32, activation='relu')(dense2)
+dense2=Dense(32, activation='relu')(dense2)
 
 merge=concatenate([dense1, dense2])
-mid1=Dense(128, activation='relu')(merge)
-mid1=Dense(256, activation='relu')(mid1)
-mid1=Dense(512, activation='relu')(mid1)
+mid1=Dense(64, activation='relu')(merge)
+mid1=Dense(128, activation='relu')(mid1)
 mid1=Dense(256, activation='relu')(mid1)
 mid1=Dense(128, activation='relu')(mid1)
 mid1=Dense(64, activation='relu')(mid1)
 mid1=Dense(32, activation='relu')(mid1)
+mid1=Dense(16, activation='relu')(mid1)
 mid1=Dense(16, activation='relu')(mid1)
 
 output=Dense(1)(mid1)
@@ -179,7 +187,7 @@ cp=ModelCheckpoint(filepath='../data/modelcheckpoint/Samsung_day_3_{val_loss:.4f
                     monitor='val_loss', mode='auto', save_best_only=True)
 model.compile(loss='mse', optimizer='adam')
 model.fit([x_train, x_1_train], y_train, validation_data=([x_val, x_1_val], y_val),
-            epochs=1000, batch_size=64, callbacks=[cp, es], verbose=2)
+            epochs=1500, batch_size=16, callbacks=[cp, es], verbose=2)
 
 
 ## 평가, 예측
@@ -187,7 +195,6 @@ loss=model.evaluate([x_test, x_1_test], y_test)
 y_pred=model.predict([x_test, x_1_test])
 
 pred=model.predict([x_pred, x_1_pred])
-
 
 
 ## 출력
