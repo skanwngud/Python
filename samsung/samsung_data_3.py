@@ -139,45 +139,47 @@ x_1_pred=x_1_pred.reshape(x_1_pred.shape[0], 5, 6)
 ## npy 파일 저장
 np.savez('../data/npy/samsung_day_3.npz',
         x_train=x_train, x_test=x_test, x_val=x_val, x_pred=x_pred,
-        y_train=y_train, y_test=y_test, y_val=y_val,
+        y_train=y_train, y_test=y_test, y_val=y_val)
+np.savez('../data/npy/kodex_day_3.npz',
         x_1_train=x_1_train, x_1_test=x_1_test, x_1_val=x_1_val, x_1_pred=x_1_pred)
-
 
 ## 모델링
 input1=Input(shape=(x_train.shape[1], x_train.shape[2]))
 # lstm1=LSTM(32, activation='relu')(input1)
 # dense1=Dense(64, activation='relu')(lstm1)
-cnn1=Conv1D(256, 2, padding='same', activation='relu')(input1)
+cnn1=Conv1D(128, 3, padding='same', activation='relu')(input1)
 max1=MaxPooling1D(2)(cnn1)
 drop1=Dropout(0.2)(max1)
-cnn1=Conv1D(256, 2, padding='same', activation='relu')(drop1)
+cnn1=Conv1D(256, 3, padding='same', activation='relu')(drop1)
 max1=MaxPooling1D(2)(cnn1)
 drop1=Dropout(0.2)(max1)
 flat1=Flatten()(drop1)
-dense1=Dense(128, activation='relu')(flat1)
+dense1=Dense(512, activation='relu')(flat1)
+dense1=Dense(1024, activation='relu')(dense1)
+dense1=Dense(512, activation='relu')(dense1)
 dense1=Dense(256, activation='relu')(dense1)
 dense1=Dense(128, activation='relu')(dense1)
 dense1=Dense(64, activation='relu')(dense1)
-dense1=Dense(32, activation='relu')(dense1)
 
 input2=Input(shape=(x_1_train.shape[1], x_1_train.shape[2]))
 lstm2=LSTM(256, activation='relu')(input2)
 drop2=Dropout(0.2)(lstm2)
 # lstm2=Dense(64, activation='relu')(input2)
-dense2=Dense(128, activation='relu')(drop2)
-dense2=Dense(256, activation='relu')(dense2)
+dense2=Dense(512, activation='relu')(drop2)
+dense2=Dense(1024, activation='relu')(dense2)
 dense2=Dense(512, activation='relu')(dense2)
 dense2=Dense(256, activation='relu')(dense2)
 dense2=Dense(128, activation='relu')(dense2)
 dense2=Dense(64, activation='relu')(dense2)
+dense2=Dense(64, activation='relu')(dense2)
+dense2=Dense(64, activation='relu')(dense2)
 
 merge=concatenate([dense1, dense2])
 mid1=Dense(64, activation='relu')(merge)
-mid1=Dense(128, activation='relu')(mid1)
-mid1=Dense(64, activation='relu')(mid1)
 mid1=Dense(32, activation='relu')(mid1)
 mid1=Dense(16, activation='relu')(mid1)
 mid1=Dense(8, activation='relu')(mid1)
+mid1=Dense(4, activation='relu')(mid1)
 
 output=Dense(1)(mid1)
 
@@ -190,7 +192,7 @@ cp=ModelCheckpoint(filepath='../data/modelcheckpoint/Samsung_day_3_{val_loss:.4f
                     monitor='val_loss', mode='auto', save_best_only=True)
 model.compile(loss='mse', optimizer='adam')
 model.fit([x_train, x_1_train], y_train, validation_data=([x_val, x_1_val], y_val),
-            epochs=1500, batch_size=16, callbacks=[cp, es], verbose=2)
+            epochs=1500, batch_size=32, callbacks=[cp, es], verbose=2)
 
 
 ## 평가, 예측
