@@ -27,6 +27,7 @@ df_3=pd.read_csv('../data/csv/KODEX 코스닥150 선물인버스.csv', encoding=
 # plt.show()
 # 시, 고, 저, 종, 프로그램, 개인, 기관
 
+
 ## 컬럼분리
 df=df.iloc[:, [0,1,2,3,8,9,12]]
 df_1=df_1.iloc[:1, [0,1,2,3,10,11,14]]
@@ -146,11 +147,13 @@ np.savez('../data/npy/samsung_day_3.npz',
 input1=Input(shape=(x_train.shape[1], x_train.shape[2]))
 # lstm1=LSTM(32, activation='relu')(input1)
 # dense1=Dense(64, activation='relu')(lstm1)
-cnn1=Conv1D(128, 2, padding='same', activation='relu')(input1)
+cnn1=Conv1D(256, 2, padding='same', activation='relu')(input1)
 max1=MaxPooling1D(2)(cnn1)
-cnn1=Conv1D(128, 2, padding='same', activation='relu')(max1)
+drop1=Dropout(0.2)(max1)
+cnn1=Conv1D(256, 2, padding='same', activation='relu')(drop1)
 max1=MaxPooling1D(2)(cnn1)
-flat1=Flatten()(max1)
+drop1=Dropout(0.2)(max1)
+flat1=Flatten()(drop1)
 dense1=Dense(128, activation='relu')(flat1)
 dense1=Dense(256, activation='relu')(dense1)
 dense1=Dense(128, activation='relu')(dense1)
@@ -158,9 +161,12 @@ dense1=Dense(64, activation='relu')(dense1)
 dense1=Dense(32, activation='relu')(dense1)
 
 input2=Input(shape=(x_1_train.shape[1], x_1_train.shape[2]))
-lstm2=LSTM(128, activation='relu')(input2)
+lstm2=LSTM(256, activation='relu')(input2)
+drop2=Dropout(0.2)(lstm2)
 # lstm2=Dense(64, activation='relu')(input2)
-dense2=Dense(128, activation='relu')(lstm2)
+dense2=Dense(128, activation='relu')(drop2)
+dense2=Dense(256, activation='relu')(dense2)
+dense2=Dense(512, activation='relu')(dense2)
 dense2=Dense(256, activation='relu')(dense2)
 dense2=Dense(128, activation='relu')(dense2)
 dense2=Dense(64, activation='relu')(dense2)
