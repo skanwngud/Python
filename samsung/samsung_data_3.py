@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, LSTM, concatenate, Dropout, Conv1D, MaxPooling1D, Flatten, Input
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import r2_score, mean_squared_error
@@ -155,8 +155,6 @@ max1=MaxPooling1D(2)(cnn1)
 drop1=Dropout(0.2)(max1)
 flat1=Flatten()(drop1)
 dense1=Dense(512, activation='relu')(flat1)
-dense1=Dense(1024, activation='relu')(dense1)
-dense1=Dense(512, activation='relu')(dense1)
 dense1=Dense(256, activation='relu')(dense1)
 dense1=Dense(128, activation='relu')(dense1)
 dense1=Dense(64, activation='relu')(dense1)
@@ -165,10 +163,7 @@ input2=Input(shape=(x_1_train.shape[1], x_1_train.shape[2]))
 lstm2=LSTM(256, activation='relu')(input2)
 drop2=Dropout(0.2)(lstm2)
 # lstm2=Dense(64, activation='relu')(input2)
-dense2=Dense(512, activation='relu')(drop2)
-dense2=Dense(1024, activation='relu')(dense2)
-dense2=Dense(512, activation='relu')(dense2)
-dense2=Dense(256, activation='relu')(dense2)
+dense2=Dense(256, activation='relu')(drop2)
 dense2=Dense(128, activation='relu')(dense2)
 dense2=Dense(64, activation='relu')(dense2)
 dense2=Dense(64, activation='relu')(dense2)
@@ -190,9 +185,11 @@ model=Model([input1, input2], output)
 es=EarlyStopping(monitor='val_loss', mode='auto', patience=50)
 cp=ModelCheckpoint(filepath='../data/modelcheckpoint/Samsung_day_3_{val_loss:.4f}.hdf5',
                     monitor='val_loss', mode='auto', save_best_only=True)
+reduce_lr=ReduceLROnPlateau(monitor='val_loss', patience=25, factor=0.5)
+
 model.compile(loss='mse', optimizer='adam')
 model.fit([x_train, x_1_train], y_train, validation_data=([x_val, x_1_val], y_val),
-            epochs=1500, batch_size=32, callbacks=[cp, es], verbose=2)
+            epochs=500, batch_size=32, callbacks=[cp, es], verbose=2)
 
 
 ## 평가, 예측
@@ -206,3 +203,13 @@ pred=model.predict([x_pred, x_1_pred])
 print(loss)
 print(pred)
 print(r2_score(y_test, y_pred))
+
+# results
+# 2778569.5
+# [[98117.64]]
+# 0.9716965880254569
+
+# results - reduce_lr
+# 2569889.5
+# [[95180.3]]
+# 0.9738222688320644
