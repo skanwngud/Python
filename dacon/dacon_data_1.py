@@ -11,21 +11,14 @@ from sklearn.model_selection import train_test_split
 x_train=pd.read_csv('./dacon/train/train.csv', header=0, index_col=0)
 sub=pd.read_csv('./dacon/sample_submission.csv', header=0, index_col=0)
 
-
-def preprocess_data(data):
-        temp = data.copy()
-        return temp.iloc[-48:,:]
-
 df_test = []
 
 for i in range(81):
     file_path = './dacon/test/' + str(i) + '.csv'
     temp=pd.read_csv(file_path)
-    temp=preprocess_data(temp)
     df_test.append(temp)
 
 x_test = pd.concat(df_test)
-x_test = x_test.append(x_test[-96:])
 
 print(x_train.info())
 print(x_test.info())
@@ -34,6 +27,8 @@ df_train=x_train.iloc[:, 2:]
 df_test=x_test.iloc[:, 3:]
 
 print(df_train.info())
+
+df_test.to_csv('./dacon/dacon_test.csv', sep=',')
 
 df_train=df_train.to_numpy()
 df_test=df_test.to_numpy()
@@ -75,7 +70,7 @@ x_train=mms.transform(x_train)
 x_testt=mms.transform(x_test)
 x_val=mms.transform(x_val)
 
-x_train=x_train.reshape(x_train.shape[0], 7, 48, 6)
+x_train=x_train.reshape(x_train.shape[0], 7, 48 ,6)
 x_test=x_test.reshape(x_test.shape[0], 7, 48, 6)
 x_val=x_val.reshape(x_val.shape[0], 7, 48, 6)
 
@@ -86,3 +81,19 @@ print(x_val.shape) # (174, 7, 48, 6)
 print(y_train.shape) # (659, 2, 48, 6)
 print(y_test.shape) # (218, 2, 48, 6)
 print(y_val.shape) # (174, 2, 48, 6)
+
+model=Sequential()
+model.add(Conv2D(64, (2,2), padding='same', activation='relu', input_shape=(7, 48, 6)))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(6))
+
+model.summary()
+
+model.compile(loss='mse', optimizer='adam')
+model.fit(x_train, y_train, epochs=10, validation_data=(x_val, y_val))
+
+loss=model.evaluate(x_test, y_test)
+y_pred=model.predict(x_test)
+
+print(loss)
+print(y_pred)

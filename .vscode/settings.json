@@ -5,20 +5,24 @@
 //     "python.pythonPath": "D:\\Anaconda\\envs\\ml\\python.exe"
 // >>>>>>> 84b19668e784cd5f69b17e63a56b663f0a74a1b8
 // }
+    //    {
+    //        " name " : " Python : 치료 파일 " ,
+    //         " type " : " python " ,
+    //         " request " : " launch " ,
+    //         " program " : " $ {file} " ,
+    //         " console " : " integratedTerminal " ,
+    //         " pythonPath ": " e :/tools/re/python-3.8.3-embed-amd64/python.exe ",
+    //         "python.pythonPath": "D:\\Anaconda\\envs\\ml\\python.exe"
+    //    }
 
-{
-    //  IntelliSense 를 사용  하여 가능한 특성 에 대해 알아 봅니다 . // 마우스 오버 하는 볼 설명 의 기존 특성을. // 들어 더 정보, 방문 : https://go.microsoft.com/fwlink/?linkid= 830387 " 버전 " : " 0.2.0 " ,
-    " 구성 " [     
-          
-       
-    
-       {
-           " name " : " Python : 치료 파일 " ,
-            " type " : " python " ,
-            " request " : " launch " ,
-            " program " : " $ {file} " ,
-            " console " : " integratedTerminal " ,
-            " pythonPath " : " e :/tools/re/python-3.8.3-embed-amd64/python.exe "
-       },
-   ]
-}
+    {
+        "folders": [
+              {
+                  "path": "/Users/me/Documents/Projects/djangoproject"
+              }
+          ],
+          "settings": {
+              "python.pythonPath": "/Users/me/virtualenvs/djangovenv/bin/python3"
+        },
+        "python.pythonPath": "D:\\Anaconda\\envs\\ml\\python.exe"
+    }
