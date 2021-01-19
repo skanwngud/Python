@@ -4,7 +4,7 @@
 // =======
 //     "python.pythonPath": "D:\\Anaconda\\envs\\ml\\python.exe"
 // >>>>>>> 84b19668e784cd5f69b17e63a56b663f0a74a1b8
-// }
+// // }
     //    {
     //        " name " : " Python : 치료 파일 " ,
     //         " type " : " python " ,
@@ -24,5 +24,5 @@
           "settings": {
               "python.pythonPath": "/Users/me/virtualenvs/djangovenv/bin/python3"
         },
-        "python.pythonPath": "D:\\Anaconda\\envs\\ml\\python.exe"
+        "python.pythonPath": "C:\\Users\\ai\\Anaconda3\\python.exe"
     }
