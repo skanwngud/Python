@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 
 df_train=pd.read_csv('./dacon/train/train_1.csv', header=0, index_col=0)
 df_test=pd.read_csv('./dacon/test/test_1.csv', header=0, index_col=0)
-
+sub=pd.read_csv('./dacon/sample_submission.csv')
 # print(df_train.info())
 # print(df_test.info())
 
@@ -53,19 +53,41 @@ print(x_train.shape) # (869, 7, 48, 6)
 print(y_train.shape) # (869, 2, 48, 2)
 
 model=Sequential()
-model.add(Conv2D(128, 2, padding='same', input_shape=(7,48,6)))
+model.add(Conv2D(128, 2, padding='same', activation='relu', input_shape=(7,48,6)))
 model.add(MaxPooling2D(2))
 model.add(Dropout(0.2))
+model.add(Conv2D(128, 2, padding='same', activation='relu'))
 model.add(Dense(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
-model.add(Dense(6))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(2*48*2, activation='relu'))
+model.add(Reshape((2, 48, 2)))
+model.add(Dense(2))
 
+es=EarlyStopping(monitor='val_loss', mode='auto', patience=30)
+rl=ReduceLROnPlateau(monitor='val_loss', mode='auto', patience=2, factor=0.5)
+cp=ModelCheckpoint(monitor='val_loss', mode='auto', save_best_only=True,
+                    filepath='../data/modelcheckpoint/dacon_day_2_2_{epoch:02d}-{val_loss:.4f}.hdf5')
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, validation_split=0.2,
-            epochs=100, batch_size=16)
+hist=model.fit(x_train, y_train, validation_split=0.2,
+            epochs=500, batch_size=32, callbacks=[es, cp, rl])
 
 loss=model.evaluate(x_test, y_test)
-y_pred=model.predict(df_test)
+pred=model.predict(df_test)
 
-print(loss)
-print(y_pred.shape)
+print(pred.shape) # (81, 2, 48, 2)
+
+day_7=pred[:, :, :, 0]
+day_8=pred[:, :, :, 1]
+
+day_7=day_7.reshape(81*2*48)
+day_8=day_8.reshape(81*2*48)
+
+day_7=pd.DataFrame(day_7)
+day_8=pd.DataFrame(day_8)
+
+day_7.to_csv('./dacon/submission_day(7).csv')
+day_8.to_csv('./dacon/submission_day(8).csv')
+
