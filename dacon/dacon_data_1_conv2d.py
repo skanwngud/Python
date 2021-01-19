@@ -40,9 +40,6 @@ df_test=df_test.to_numpy()
 df_train=df_train.reshape(-1, 48, 6)
 df_test=df_test.reshape(-1, 7, 48, 6)
 
-print(df_test[0])
-print(df_test[0].shape)
-
 def split_x(data, time_steps, y_col):
     x,y=list(), list()
     for i in range(len(data)):
@@ -73,6 +70,9 @@ x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, shuffle=F
 # print(y_test.shape) # (218, 2, 48, 6)
 # print(y_val.shape) # (174, 2, 48, 6)
 
+x_train=x_train.reshape(-1, 7, 48, 6)
+x_test=x_test.reshape(-1, 7, 48, 6)
+
 y_train=y_train.reshape(y_train.shape[0], 2, 48, 6)
 y_test=y_test.reshape(-1, 2, 48,6)
 # y_val=y_val.reshape(-1, 2, 48,6)
@@ -81,7 +81,7 @@ model=Sequential()
 model.add(Conv2D(64, (2,2), padding='same', activation='relu',input_shape=(7, 48, 6)))
 model.add(MaxPooling2D(2))
 model.add(Dropout(0.2))
-model.add(Conv2D(64, 2, activation='relu', padding='same'))
+model.add(Conv2D(64, 2, padding='same', activation='relu'))
 model.add(MaxPooling2D(2))
 model.add(Dropout(0.2))
 model.add(Flatten())
@@ -89,8 +89,17 @@ model.add(Dense(64, activation='relu'))
 model.add(Dense(128, activation='relu'))
 model.add(Dense(256, activation='relu'))
 model.add(Dense(128, activation='relu'))
-model.add(Dense(2*48*6))
+model.add(Dense(2*48*6, activation='relu'))
 model.add(Reshape((2, 48, 6)))
+
+# model=Sequential()
+# model.add(LSTM(64, activation='relu', input_shape=(7*48, 6)))
+# model.add(Dropout(0.5))
+# model.add(Flatten())
+# model.add(Dense(128, activation='relu'))
+# model.add(Dense(64, activation='relu'))
+# model.add(Dense(2*48*6))
+# model.add(Reshape((96, 6)))
 
 # model.summary()
 
@@ -99,10 +108,10 @@ cp=ModelCheckpoint(filepath='../data/modelcheckpoint/dacon_day_2_{epoch:02d}-{va
                     monitor='val_loss', save_best_only=True, mode='auto')
 rl=ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10)
 
-optimzer=Adam(lr=0.0001)
+optimzer=Adam(lr=0.001)
 model.compile(loss='mse', optimizer=optimzer)
 hist=model.fit(x_train, y_train, validation_split=0.2,
-            epochs=1000, batch_size=32, callbacks=[es, cp, rl], verbose=2)
+            epochs=1000, batch_size=64, callbacks=[es, cp, rl], verbose=1)
 
 loss=model.evaluate(x_test, y_test)
 pred=model.predict(df_test)
