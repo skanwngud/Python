@@ -52,51 +52,63 @@ x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_st
 
 x_train=x_train.reshape(-1, 7*48*6)
 x_test=x_test.reshape(-1, 7*48*6)
+df_test=df_test.reshape(-1, 7*48*6)
 
 mms=MinMaxScaler()
 mms.fit(x_train)
 x_train=mms.transform(x_train)
 x_test=mms.transform(x_test)
+df_test=mms.transform(df_test)
 
 x_train=x_train.reshape(-1, 7, 48, 6)
 x_test=x_test.reshape(-1, 7, 48, 6)
+df_test=df_test.reshape(-1, 7, 48, 6)
 
 qunatile_list=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
-def quantile_loss(q, y, pred):
-    err=(y-pred)
-    return mean(maximum(q*err, (q-1)*err), axis=-1)
+model=Sequential()
+model.add(Conv2D(128, 2, padding='same', activation='relu', input_shape=(7,48,6)))
+model.add(MaxPooling2D(2))
+model.add(Dropout(0.2))
+model.add(Conv2D(128, 2, padding='same', activation='relu'))
+model.add(MaxPooling2D(2))
+model.add(Dropout(0.2))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Flatten())
+model.add(Dense(128, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(48*2*1, activation='relu'))
+model.add(Reshape((2, 48, 1)))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(1))
 
-for q in qunatile_list:
-    model=Sequential()
-    model.add(Conv2D(128, 2, padding='same', activation='relu', input_shape=(7,48,6)))
-    model.add(MaxPooling2D(2))
-    model.add(Dropout(0.2))
-    model.add(Conv2D(128, 2, padding='same', activation='relu'))
-    model.add(MaxPooling2D(2))
-    model.add(Dropout(0.2))
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(64, activation='relu'))
-    model.add(Flatten())
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(256, activation='relu'))
-    model.add(Dense(128, activation='relu'))
-    model.add(Dense(48*2*1, activation='relu'))
-    model.add(Reshape((2, 48, 1)))
-    model.add(Dense(1))
+es=EarlyStopping(monitor='val_loss', mode='auto', patience=30)
+rl=ReduceLROnPlateau(monitor='val_loss', mode='auto', patience=2, factor=0.5, min_delta=0.0001)
+cp=ModelCheckpoint(monitor='val_loss', mode='auto', save_best_only=True,
+                filepath='../data/modelcheckpoint/dacon_day_2_2_{epoch:02d}-{val_loss:.4f}.hdf5')
+    # model.compile(loss=lambda x_train, y_train:quantile_loss(q, x_train, y_train), optimizer='adam')
+model.compile(loss='mse', optimizer='adam')
+hist=model.fit(x_train, y_train, validation_split=0.2,
+            epochs=500, batch_size=64, callbacks=[es, rl])
+loss=model.evaluate(x_test, y_test)
+pred=model.predict(df_test)
 
-    es=EarlyStopping(monitor='loss', mode='auto', patience=30)
-    rl=ReduceLROnPlateau(monitor='loss', mode='auto', patience=10, factor=0.5)
-    cp=ModelCheckpoint(monitor='val_loss', mode='auto', save_best_only=True,
-                    filepath='../data/modelcheckpoint/dacon_day_2_2_{epoch:02d}-{val_loss:.4f}.hdf5')
-    model.compile(loss=lambda x_train, y_train:quantile_loss(q, x_train, y_train), optimizer='adam')
-    hist=model.fit(x_train, y_train, validation_split=0.2,
-                epochs=500, batch_size=64, callbacks=[es, cp, rl])
-    loss=model.evaluate(x_test, y_test)
-    pred=model.predict(df_test)
+pred=pred.reshape(81*2*48*1)
+y_pred=pd.DataFrame(pred)
 
-    pred=pred.reshape(81*2*48*1)
-    y_pred=pd.DataFrame(pred)
+file_path='./dacon/quantile_loss.csv'
+y_pred.to_csv(file_path)
+    
+# plt.plot(hist.history['loss'])
+# plt.plot(hist.history['val_loss'])
 
-    file_path='./dacon/quantile_loss_' + str(q) + '.csv'
-    y_pred.to_csv(file_path)
+# plt.xlabel('epochs')
+# plt.ylabel('loss, val_loss')
+
+# plt.legend(['loss', 'val_loss'])
+# plt.show()

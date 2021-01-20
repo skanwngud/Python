@@ -46,15 +46,6 @@ x_test=pd.concat(df_test) # combine test dataset
 x_train_1, x_val_1, y_train_1, y_val_1=train_test_split(df_train.iloc[:, :-2], df_train.iloc[:, :-2], train_size=0.7, random_state=0) # Target1 = day 7
 x_train_2, x_val_2, y_train_2, y_val_2=train_test_split(df_train.iloc[:, :-2], df_train.iloc[:, :-1], train_size=0.7, random_state=0) # Target2 = day 8
 
-# print(x_train_1.shape) # (36724, 7)
-# print(y_train_1.shape) # (36724, 7)
-# print(x_val_1.shape) # (15740, 7)
-# print(y_val_1.shape) # (15740, 7)
-print(x_train_2.shape) # (36724, 7)
-print(y_train_2.shape) # (36724, 8)
-print(x_val_2.shape) # (15740, 7)
-print(y_val_2.shape) # (15740, 8)
-
 # define callbacks
 es=EarlyStopping(monitor='val_loss', patience=10, mode='min')
 rl=ReduceLROnPlateau(monitor='val_loss', patience=5, mode='min')
@@ -62,37 +53,3 @@ cp=ModelCheckpoint(filepath='../data/modelcheckpoint/dacon_day_3_{epoch:02d}-{va
                     save_best_only=True)
 
 # Modeling
-input1=Input(shape=(7,))
-dense1=Dense(64, activation='relu')(input1)
-dense1=Dense(128, activation='relu')(dense1)
-dense1=Dense(128, activation='relu')(dense1)
-dense1=Dense(128, activation='relu')(dense1)
-dense1=Dense(128, activation='relu')(dense1)
-output1=Dense(1)(dense1)
-model1=Model(input1, output1)
-
-model1.compile(loss='mse', optimizer='adam')
-model1.fit(x_train_1, y_train_1, validation_split=0.2,
-            epochs=100, batch_size=64, callbacks=[es, cp, rl])
-y_pred_1=model1.predict(x_test)
-
-input2=Input(shape=(7,))
-dense2=Dense(64, activation='relu')(input2)
-dense2=Dense(128, activation='relu')(dense2)
-dense2=Dense(128, activation='relu')(dense2)
-output2=Dense(1)(dense2)
-model2=Model(input2, output2)
-
-model2.compile(loss='mse', optimizer='adam')
-model2.fit(x_train_2, y_train_2, validation_split=0.2,
-            epochs=100, batch_size=64, callbacks=[es, cp, rl])
-y_pred_2=model2.predict(x_test)
-
-for i in range(10):
-    pred=[]
-    pred.append([y_pred_1, y_pred_2])
-
-print(type(pred))
-
-predict=pd.DataFrame(pred)
-predict.to_csv('./dacon/sub_mis_1.csv')
