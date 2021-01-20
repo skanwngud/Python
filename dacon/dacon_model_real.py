@@ -6,6 +6,7 @@ from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.layers import Dense, Input, Dropout, LSTM, Flatten, Conv2D, Reshape, MaxPooling2D
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.backend import mean, maximum
 
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
@@ -47,47 +48,55 @@ y=y[:, :, :, -2:]
 print(x.shape)
 print(y.shape)
 
-x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, shuffle=False)
+x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_state=23)
 
-print(x_train.shape) # (869, 7, 48, 6)
-print(y_train.shape) # (869, 2, 48, 2)
+x_train=x_train.reshape(-1, 7*48*6)
+x_test=x_test.reshape(-1, 7*48*6)
 
-model=Sequential()
-model.add(Conv2D(128, 2, padding='same', activation='relu', input_shape=(7,48,6)))
-model.add(MaxPooling2D(2))
-model.add(Dropout(0.2))
-model.add(Conv2D(128, 2, padding='same', activation='relu'))
-model.add(Dense(128, activation='relu'))
-model.add(Dense(64, activation='relu'))
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dense(256, activation='relu'))
-model.add(Dense(2*48*2, activation='relu'))
-model.add(Reshape((2, 48, 2)))
-model.add(Dense(2))
+mms=MinMaxScaler()
+mms.fit(x_train)
+x_train=mms.transform(x_train)
+x_test=mms.transform(x_test)
 
-es=EarlyStopping(monitor='val_loss', mode='auto', patience=30)
-rl=ReduceLROnPlateau(monitor='val_loss', mode='auto', patience=2, factor=0.5)
-cp=ModelCheckpoint(monitor='val_loss', mode='auto', save_best_only=True,
+x_train=x_train.reshape(-1, 7, 48, 6)
+x_test=x_test.reshape(-1, 7, 48, 6)
+
+qunatile_list=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+
+def quantile_loss(q, y, pred):
+    err=(y-pred)
+    return mean(maximum(q*err, (q-1)*err), axis=-1)
+
+for q in qunatile_list:
+    model=Sequential()
+    model.add(Conv2D(128, 2, padding='same', activation='relu', input_shape=(7,48,6)))
+    model.add(MaxPooling2D(2))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(128, 2, padding='same', activation='relu'))
+    model.add(MaxPooling2D(2))
+    model.add(Dropout(0.2))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(64, activation='relu'))
+    model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(256, activation='relu'))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(48*2*1, activation='relu'))
+    model.add(Reshape((2, 48, 1)))
+    model.add(Dense(1))
+
+    es=EarlyStopping(monitor='loss', mode='auto', patience=30)
+    rl=ReduceLROnPlateau(monitor='loss', mode='auto', patience=10, factor=0.5)
+    cp=ModelCheckpoint(monitor='val_loss', mode='auto', save_best_only=True,
                     filepath='../data/modelcheckpoint/dacon_day_2_2_{epoch:02d}-{val_loss:.4f}.hdf5')
-model.compile(loss='mse', optimizer='adam')
-hist=model.fit(x_train, y_train, validation_split=0.2,
-            epochs=500, batch_size=32, callbacks=[es, cp, rl])
+    model.compile(loss=lambda x_train, y_train:quantile_loss(q, x_train, y_train), optimizer='adam')
+    hist=model.fit(x_train, y_train, validation_split=0.2,
+                epochs=500, batch_size=64, callbacks=[es, cp, rl])
+    loss=model.evaluate(x_test, y_test)
+    pred=model.predict(df_test)
 
-loss=model.evaluate(x_test, y_test)
-pred=model.predict(df_test)
+    pred=pred.reshape(81*2*48*1)
+    y_pred=pd.DataFrame(pred)
 
-print(pred.shape) # (81, 2, 48, 2)
-
-day_7=pred[:, :, :, 0]
-day_8=pred[:, :, :, 1]
-
-day_7=day_7.reshape(81*2*48)
-day_8=day_8.reshape(81*2*48)
-
-day_7=pd.DataFrame(day_7)
-day_8=pd.DataFrame(day_8)
-
-day_7.to_csv('./dacon/submission_day(7).csv')
-day_8.to_csv('./dacon/submission_day(8).csv')
-
+    file_path='./dacon/quantile_loss_' + str(q) + '.csv'
+    y_pred.to_csv(file_path)
