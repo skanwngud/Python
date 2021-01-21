@@ -23,6 +23,7 @@ df_test=df_test.to_numpy()
 df_train=df_train.reshape(-1, 48, 8)
 df_test=df_test.reshape(-1, 7, 48, 6)
 
+print(df_test.duplicated())
 def split_x(data, time_steps, y_col):
     x,y=list(), list()
     for i in range(len(data)):

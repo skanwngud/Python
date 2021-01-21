@@ -38,7 +38,7 @@ def preprocess_data(data, is_train=True):
 
     elif is_train==False: # test dataset
         temp=temp[['Hour', 'TARGET', 'GHI', 'DHI', 'DNI', 'WS', 'RH', 'T']]
-        return temp.iloc[-48, :]
+        return temp.iloc[-48:, :]
 
 
 df_train=preprocess_data(train) # train data 컬럼 추가 및 프리프로세싱
@@ -54,6 +54,7 @@ for i in range(81): # 0~80.csv
 
 x_test=pd.concat(df_test)
 x_test=x_test.to_numpy() # numpy 변환
+print(x_test.shape) # (648, )
 
 print(x_train.shape) # (52464, 10) ('Hour', 'TARGET', 'GHI', 'DHI', 'DNI', 'WS', 'RH', 'T', 'TARGET1', 'TARGET2')
 print(x_test.shape) # (648, )
@@ -91,7 +92,7 @@ def split_x(data, time_steps):
     return np.array(x)
 
 x_test=split_x(x_test, 1) # x_test data 를 한 행씩 자름
-x_test=x_test.reshape(-1, 1, 8)
+# x_test=x_test.reshape(-1, 1, 8)
 
 # train test split 으로 훈련용 데이터 자르기
 x_train, x_val, y1_train, y1_val, y2_train, y2_val=train_test_split(x, y1, y2, train_size=0.8, random_state=23)
@@ -107,10 +108,10 @@ quantile=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 def models():
     model=Sequential()
     model.add(Conv1D(128, 2, padding='same', activation='relu', input_shape=(1, 8)))
-    model.add(Dropout(0.2))
     model.add(Conv1D(256, 2, padding='same', activation='relu'))
-    model.add(Dropout(0.2))
+    model.add(Conv1D(128, 2, padding='same', activation='relu'))
     model.add(Flatten())
+    model.add(Dense(128, activation='relu'))
     model.add(Dense(256, activation='relu'))
     model.add(Dense(512, activation='relu'))
     model.add(Dense(256, activation='relu'))
@@ -120,7 +121,7 @@ def models():
     return model
 
 # import callbacks
-es=EarlyStopping(monitor='val_loss', patience=10, mode='min')
+es=EarlyStopping(monitor='val_loss', patience=20, mode='min')
 rl=ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=10, mode='min')
 cp=ModelCheckpoint(filepath='../data/modelcheckpoint/dacon_model_last_{epoch:02d}-{val_loss:.4f}.hdf5',
                     save_best_only=True, monitor='val_loss', mode='min')
@@ -132,7 +133,7 @@ for i in quantile:
     model.compile(loss=lambda y_true, y_pred:quantile_loss(i, y_true, y_pred),
                     optimizer='adam')
     model.fit(x_train, y1_train, validation_data=(x_val, y1_val),
-                epochs=10, batch_size=64, callbacks=[es, rl])
+                epochs=1000, batch_size=64, callbacks=[es, rl])
     pred=pd.DataFrame(model.predict(x_test).round(2))
     x.append(pred)
 df_temp1=pd.concat(x, axis=1)
@@ -145,7 +146,7 @@ for i in quantile:
     model=models()
     model.compile(loss=lambda y_true, y_pred:quantile_loss(i, y_true, y_pred),
                     optimizer='adam')
-    model.fit(x_train, y1_train, validation_data=(x_val, y1_val),
+    model.fit(x_train, y2_train, validation_data=(x_val, y2_val),
                 epochs=10, batch_size=64, callbacks=[es, rl])
     pred=pd.DataFrame(model.predict(x_test).round(2))
     x.append(pred)
