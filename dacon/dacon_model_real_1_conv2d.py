@@ -8,7 +8,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.backend import mean, maximum
 
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split
 
 df_train=pd.read_csv('./dacon/train/train_1.csv', header=0, index_col=0)
@@ -54,11 +54,17 @@ x_train=x_train.reshape(-1, 7*48*6)
 x_test=x_test.reshape(-1, 7*48*6)
 df_test=df_test.reshape(-1, 7*48*6)
 
-mms=MinMaxScaler()
-mms.fit(x_train)
-x_train=mms.transform(x_train)
-x_test=mms.transform(x_test)
-df_test=mms.transform(df_test)
+# mms=MinMaxScaler()
+# mms.fit(x_train)
+# x_train=mms.transform(x_train)
+# x_test=mms.transform(x_test)
+# df_test=mms.transform(df_test)
+
+ss=StandardScaler()
+ss.fit(x_train)
+x_train=ss.transform(x_train)
+x_test=ss.transform(x_test)
+x_val=ss.transform(df_test)
 
 x_train=x_train.reshape(-1, 7, 48, 6)
 x_test=x_test.reshape(-1, 7, 48, 6)
@@ -97,7 +103,7 @@ for q in qunatile_list:
     cp=ModelCheckpoint(monitor='val_loss', mode='auto', save_best_only=True,
                     filepath='../data/modelcheckpoint/dacon_day_2_2_{epoch:02d}-{val_loss:.4f}.hdf5')
     # model.compile(loss=lambda x_train, y_train:quantile_loss(q, x_train, y_train), optimizer='adam')
-    model.compile(loss=lambda y_train, df_test:quantile_loss(q, y_train, df_test), optimizer='adam')
+    model.compile(loss=lambda y_train, y_pred:quantile_loss(q, y_train, y_pred), optimizer='adam')
     hist=model.fit(x_train, y_train, validation_split=0.2,
                 epochs=500, batch_size=64, callbacks=[es, rl])
     loss=model.evaluate(x_test, y_test)
