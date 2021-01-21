@@ -23,7 +23,6 @@ df_test=df_test.to_numpy()
 df_train=df_train.reshape(-1, 48, 8)
 df_test=df_test.reshape(-1, 7, 48, 6)
 
-print(df_test.duplicated())
 def split_x(data, time_steps, y_col):
     x,y=list(), list()
     for i in range(len(data)):
@@ -108,7 +107,7 @@ for q in qunatile_list:
     hist=model.fit(x_train, y_train, validation_split=0.2,
                 epochs=500, batch_size=64, callbacks=[es, rl])
     loss=model.evaluate(x_test, y_test)
-    pred=model.predict(df_test)
+    pred=model.predict(df_test).round(2)
 
     pred=pred.reshape(81*2*48*1)
     y_pred=pd.DataFrame(pred)
