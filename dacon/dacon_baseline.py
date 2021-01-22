@@ -11,7 +11,7 @@ from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLRO
 
 
 train=pd.read_csv('./dacon/train/train.csv') # import train data
-
+sub=pd.read_csv('./dacon/sample_submission.csv') # import submission data
 # print(train.tail())
 # print(train.info()) # (52560, 9)
 
@@ -21,6 +21,7 @@ def preporcess_data(data, is_train=True):
     if is_train==True:
         temp['Target1']=temp['TARGET'].shift(-48).fillna(method='ffill')
         temp['Target2']=temp['TARGET'].shift(-48*2).fillna(method='ffill')
+        temp=temp.dropna()
         return temp.iloc[:-96]
 
     elif is_train==False:
@@ -45,8 +46,8 @@ for i in range(81): # open seires 0~80 test dataset
 
 x_test=pd.concat(df_test) # combine test dataset
 
-x_train_1, x_val_1, y_train_1, y_val_1=train_test_split(df_train.iloc[:, :-2], df_train.iloc[:, :-2], train_size=0.7, random_state=0) # Target1 = day 7
-x_train_2, x_val_2, y_train_2, y_val_2=train_test_split(df_train.iloc[:, :-2], df_train.iloc[:, :-1], train_size=0.7, random_state=0) # Target2 = day 8
+x_train_1, x_val_1, y_train_1, y_val_1=train_test_split(df_train.iloc[:, :-2], df_train.iloc[:, -2], train_size=0.7, random_state=0) # Target1 = day 7
+x_train_2, x_val_2, y_train_2, y_val_2=train_test_split(df_train.iloc[:, :-2], df_train.iloc[:, -1], train_size=0.7, random_state=0) # Target2 = day 8
 
 # define callbacks
 es=EarlyStopping(monitor='val_loss', patience=10, mode='min')
@@ -57,6 +58,8 @@ cp=ModelCheckpoint(filepath='../data/modelcheckpoint/dacon_day_3_{epoch:02d}-{va
 print(x_train_1.shape) # (326724, 7)
 print(y_train_1.shape) # (326724, 7)
 print(x_test.shape) # (3888, 7)
+
+x_test=x_test.to_numpy()
 
 # Modeling
 quantile_list=np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -77,13 +80,10 @@ def models(quantile_list, x_train, y_train, x_val, y_val, x_test):
 
     model.compile(loss=lambda y_true, y_pred:quantile_loss_dacon(quantile_list, y_true, y_pred), optimizer='adam')
     model.fit(x_train, y_train, validation_data=(x_val, y_val),
-                epochs=100, batch_size=64, callbacks=[es, rl])
+                epochs=10, batch_size=64, callbacks=[es, rl])
 
     model.evaluate(x_val, y_val)
-    pred=model.predict(x_test)
-    pred=pred.reshape(-1*1)
-    pred=pd.Series(pred.round(2))
-    print(pred.shape)
+    pred=pd.Series(model.predict(x_test).round(2))
     print(type(pred))
     return model, pred
 
@@ -100,5 +100,10 @@ def train_data(x_train, y_train, x_val, y_val, x_test):
     dacon_actual_pred.columns=quantile_list
     return dacon_models, dacon_actual_pred
 
+# Target 1 - Day7
 models_1, results_1=train_data(x_train_1, y_train_1, x_val_1, y_val_1, x_test)
 results_1.sort_index()[:48]
+
+# Target 2 - Day 8
+models_2, results_2=train_test_split(x_train_2, y_train_2, x_val_2, y_val_2, x_test)
+results_2.sort_index()[:48]
