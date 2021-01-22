@@ -156,3 +156,33 @@ num_temp2=df_temp2.to_numpy()
 submission.loc[submission.id.str.contains('Day8'), 'q_0.1':]=num_temp2
 
 submission.to_csv('./dacon/submission_last.csv', index=False)
+
+import matplotlib.pyplot as plt
+
+ranges = 336
+hours = range(ranges)
+sub=submission[ranges:ranges+ranges]
+
+q_01 = sub['q_0.1'].values
+q_02 = sub['q_0.2'].values
+q_03 = sub['q_0.3'].values
+q_04 = sub['q_0.4'].values
+q_05 = sub['q_0.5'].values
+q_06 = sub['q_0.6'].values
+q_07 = sub['q_0.7'].values
+q_08 = sub['q_0.8'].values
+q_09 = sub['q_0.9'].values
+
+plt.figure(figsize=(18,2.5))
+plt.subplot(1,1,1)
+plt.plot(hours, q_01, color='red')
+plt.plot(hours, q_02, color='#aa00cc')
+plt.plot(hours, q_03, color='#00ccaa')
+plt.plot(hours, q_04, color='#ccaa00')
+plt.plot(hours, q_05, color='#00aacc')
+plt.plot(hours, q_06, color='#aacc00')
+plt.plot(hours, q_07, color='#cc00aa')
+plt.plot(hours, q_08, color='#000000')
+plt.plot(hours, q_09, color='blue')
+plt.legend()
+plt.show()

@@ -107,3 +107,9 @@ results_1.sort_index()[:48]
 # Target 2 - Day 8
 models_2, results_2=train_test_split(x_train_2, y_train_2, x_val_2, y_val_2, x_test)
 results_2.sort_index()[:48]
+
+sub.loc[sub.id.str.contains('Day7'), 'q_0.1':]=results_1.sort_index().values
+sub.loc[sub.id.str.contains('Day8'), 'q_0.1':]=results_2.sort_index().values
+sub
+
+sub.to_csv('./dacon/sub_v3.csv', index=False)
