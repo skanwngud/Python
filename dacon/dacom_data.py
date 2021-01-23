@@ -59,9 +59,12 @@ y2=y2.reshape(-1, 48, 1)
 test=test.reshape(-1, 48, 6)
 
 def split_x(data, time_steps):
-    aa=list()
+    x=list()
+    y1=list()
+    y2=list()
     for i in len(data):
         x_end_number=i+time_steps
+        if x_end_number
 
 # 데이터 전처리
 x=x.reshape(-1, 48*6)
