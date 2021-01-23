@@ -53,24 +53,24 @@ y1=y1.to_numpy()
 y2=y2.to_numpy()
 test=test.to_numpy()
 
-x=x.reshape(-1, 1, 6)
-y1=y2.reshape(-1, 1, 1)
-y2=y2.reshape(-1, 1, 1)
-test=test.reshape(-1, 1, 6)
+x=x.reshape(-1, 48, 6)
+y1=y2.reshape(-1, 48, 1)
+y2=y2.reshape(-1, 48, 1)
+test=test.reshape(-1, 48, 6)
 
-print(test[0])
+def split_x(data, time_steps):
+    aa=list()
+    for i in len(data):
+        x_end_number=i+time_steps
 
 # 데이터 전처리
-x=x.reshape(-1, 1*6)
-test=test.reshape(-1, 1*6)
+x=x.reshape(-1, 48*6)
 
 ss=StandardScaler()
 ss.fit(x)
 x=ss.transform(x)
-test=ss.transform(test)
 
-x=x.reshape(-1, 1, 6)
-test=test.reshape(-1, 1, 6)
+x=x.reshape(-1, 48, 6)
 
 x_train, x_test, y_train_1, y_test_1=train_test_split(x, y1, train_size=0.8, random_state=23)
 x_train, x_test, y_train_2, y_test_2=train_test_split(x, y2, train_size=0.8, random_state=23)
@@ -90,17 +90,19 @@ rl=ReduceLROnPlateau(monitor='loss', factor=0.1)
 # 모델링
 def models():
     model=Sequential()
-    model.add(Conv1D(64, 2, padding='same', activation='relu', input_shape=(1, 6)))
+    model.add(Conv1D(64, 2, padding='same', activation='relu', input_shape=(48, 6)))
     model.add(Conv1D(64, 2, padding='same', activation='relu'))
     model.add(Flatten())
     model.add(Dense(64, activation='relu'))
     model.add(Dense(32, activation='relu'))
     model.add(Dense(1))
+
+    model.summary()
     return model
 
 def models2():
     model=Sequential()
-    model.add(LSTM(64, activation='relu', input_shape=(1,6)))
+    model.add(LSTM(64, activation='relu', input_shape=(48,6)))
     model.add(Dense(64, activation='relu'))
     model.add(Dense(32, activation='relu'))
     model.add(Dense(1))
@@ -108,7 +110,7 @@ def models2():
 
 def models3():
     model=Sequential()
-    model.add(GRU(64, activation='relu', input_shape=(1, 6)))
+    model.add(GRU(64, activation='relu', input_shape=(48, 6)))
     model.add(Dense(64, activation='relu'))
     model.add(Dense(32, activation='relu'))
     model.add(Dense(1))
@@ -128,7 +130,6 @@ for i in quantile:
 y_pred_1=pd.concat(x, axis=1)
 y_pred_1[y_pred_1<0]=0
 num_y_pred_1=y_pred_1.to_numpy()
-print(num_y_pred_1.shape)
 
 x=list()
 for i in quantile:
