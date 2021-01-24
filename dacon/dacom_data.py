@@ -33,17 +33,54 @@ df_train['Target2']=df_train.iloc[:, -1].shift(-96).fillna(method='ffill')
 df_train=df_train.drop(['Day', 'Hour', 'Minute'], axis=1) # 불필요한 컬럼 제거
 df_test=df_test.drop(['Day', 'Hour', 'Minute'], axis=1)
 
+print(df_train.info()) # (52560, 8)
+print(df_test.info()) # (27216, 6)
+
+df_train=df_train.to_numpy()
+df_test=df_test.to_numpy()
+
+test=df_test
+
+df_train=df_train.reshape(-1, 48, 8)
+def split_x(data, time_steps, y_col):
+    x=list()
+    y1=list()
+    y2=list()
+    for i in range(len(data)):
+        x_end_number=i+time_steps
+        y_end_number=time_steps+y_col
+        if x_end_number>len(data):
+            break
+        x_temp=data[i:x_end_number, :]
+        y1_temp=data[x_end_number:y_end_number, -2]
+        y2_temp=data[x_end_number:y_end_number, -1]
+        x.append(x_temp)
+        y1.append(y1_temp)
+        y2.append(y2_temp)
+    return np.array(x), np.array(y1), np.array(y2)
+
+x,y1, y2=split_x(df_train, 7, 1)
+
+x=x[:, :, :, :-2]
+
+print(x[0].shape)
+
+print(x.shape) # (1089, 7, 48, 8)
+print(y1.shape) # (1089, )
+print(y2.shape) # (1089, )
+
+print(y1[0])
 
 
-'''
+
 # 데이터 전처리
-x=x.reshape(-1, 48*6)
+x=x.reshape(-1, 7*48*6)
 
 ss=StandardScaler()
 ss.fit(x)
 x=ss.transform(x)
 
-x=x.reshape(-1, 48, 6)
+x=x.reshape(-1, 7, 48, 6)
 
 x_train, x_test, y_train_1, y_test_1=train_test_split(x, y1, train_size=0.8, random_state=23)
 x_train, x_test, y_train_2, y_test_2=train_test_split(x, y2, train_size=0.8, random_state=23)
@@ -149,4 +186,3 @@ plt.plot(hours, q_08, color='#000000')
 plt.plot(hours, q_09, color='blue')
 plt.legend()
 plt.show()
-'''
