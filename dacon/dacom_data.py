@@ -33,39 +33,9 @@ df_train['Target2']=df_train.iloc[:, -1].shift(-96).fillna(method='ffill')
 df_train=df_train.drop(['Day', 'Hour', 'Minute'], axis=1) # 불필요한 컬럼 제거
 df_test=df_test.drop(['Day', 'Hour', 'Minute'], axis=1)
 
-x=df_train.iloc[:, :-2]
-y1=df_train.iloc[:, -2]
-y2=df_train.iloc[:, -1]
-test=df_test.iloc[:, :]
-
-# print(test.info()) # 인덱스 제거 확인
-# print(x.info()) # 타겟1,2 컬럼 없어진 것 확인
-
-# print(x.shape) # (52560, 6)
-# print(y1.shape) # (52560, )
-# print(y2.shape) # (52560, )
-# print(test.shape) # (27216, 6)
 
 
-# 넘파이 변환
-x=x.to_numpy()
-y1=y1.to_numpy()
-y2=y2.to_numpy()
-test=test.to_numpy()
-
-x=x.reshape(-1, 48, 6)
-y1=y2.reshape(-1, 48, 1)
-y2=y2.reshape(-1, 48, 1)
-test=test.reshape(-1, 48, 6)
-
-def split_x(data, time_steps):
-    x=list()
-    y1=list()
-    y2=list()
-    for i in len(data):
-        x_end_number=i+time_steps
-        if x_end_number
-
+'''
 # 데이터 전처리
 x=x.reshape(-1, 48*6)
 
@@ -179,3 +149,4 @@ plt.plot(hours, q_08, color='#000000')
 plt.plot(hours, q_09, color='blue')
 plt.legend()
 plt.show()
+'''
