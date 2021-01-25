@@ -53,27 +53,28 @@ def split_x(data, x_row, y_col):
         if x_end_number>len(data):
             break
         x_temp=data[i:x_end_number, :]
-        y_temp=data[x_end_number:y_end_number, -2]
+        y_temp=data[x_end_number:y_end_number, -2:]
         x.append(x_temp)
         y.append(y_temp)
     return np.array(x), np.array(y)
 
-x,y1, y2=split_x(df_train, 7, 2)
+x,y=split_x(df_train, 7, 2)
 
 x=x[:, :, :, :-2]
-
 
 print(x[0].shape)
 print(x[0])
 
-print(x.shape) # (1089, 7, 48, 8)
-print(y1.shape) # (1089, )
-print(y2.shape) # (1089, )
-
-print(y1[0])
+print(x.shape) # (1089, 7, 48, 6)
+print(y.shape) # (1089, )
 
 # 데이터 전처리
 x=x.reshape(-1, 7*48*6)
+y=y.reshape(-1, 1)
+y1=y[:, 0]
+y2=y[:, -1]
+
+print(y[0])
 
 ss=StandardScaler()
 ss.fit(x)
@@ -83,15 +84,15 @@ x=x.reshape(-1, 7, 48, 6)
 y1=y1.reshape(-1, 1)
 y2=y2.reshape(-1, 1)
 
-tf.convert_to_tensor(y1)
-tf.convert_to_tensor(y2)
-
 x_train, x_test, y_train_1, y_test_1=train_test_split(x, y1, train_size=0.8, random_state=23)
 x_train, x_test, y_train_2, y_test_2=train_test_split(x, y2, train_size=0.8, random_state=23)
 
 print(type(x_train))
 print(type(y_train_1))
 print(type(y_train_2))
+
+x_train=x_train.reshape(-1, 7*48, 6)
+x_test=x_test.reshape(-1, 7*48, 6)
 
 # 퀀타일로스 정의
 quantile=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -107,7 +108,7 @@ rl=ReduceLROnPlateau(monitor='loss', factor=0.1)
 # 모델링
 def models():
     model=Sequential()
-    model.add(Conv1D(64, 2, padding='same', activation='relu', input_shape=(48, 6)))
+    model.add(Conv1D(64, 2, padding='same', activation='relu', input_shape=(7*48, 6)))
     model.add(Conv1D(64, 2, padding='same', activation='relu'))
     model.add(Flatten())
     model.add(Dense(64, activation='relu'))
