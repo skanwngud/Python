@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv2D, Conv1D, LSTM, GRU
@@ -42,36 +43,34 @@ df_test=df_test.to_numpy()
 test=df_test
 
 df_train=df_train.reshape(-1, 48, 8)
-def split_x(data, time_steps, y_col):
+
+def split_x(data, x_row, y_col):
     x=list()
-    y1=list()
-    y2=list()
+    y=list()
     for i in range(len(data)):
-        x_end_number=i+time_steps
-        y_end_number=time_steps+y_col
+        x_end_number=i+x_row
+        y_end_number=x_row+y_col
         if x_end_number>len(data):
             break
         x_temp=data[i:x_end_number, :]
-        y1_temp=data[x_end_number:y_end_number, -2]
-        y2_temp=data[x_end_number:y_end_number, -1]
+        y_temp=data[x_end_number:y_end_number, -2]
         x.append(x_temp)
-        y1.append(y1_temp)
-        y2.append(y2_temp)
-    return np.array(x), np.array(y1), np.array(y2)
+        y.append(y_temp)
+    return np.array(x), np.array(y)
 
-x,y1, y2=split_x(df_train, 7, 1)
+x,y1, y2=split_x(df_train, 7, 2)
 
 x=x[:, :, :, :-2]
 
+
 print(x[0].shape)
+print(x[0])
 
 print(x.shape) # (1089, 7, 48, 8)
 print(y1.shape) # (1089, )
 print(y2.shape) # (1089, )
 
 print(y1[0])
-
-
 
 # 데이터 전처리
 x=x.reshape(-1, 7*48*6)
@@ -81,10 +80,18 @@ ss.fit(x)
 x=ss.transform(x)
 
 x=x.reshape(-1, 7, 48, 6)
+y1=y1.reshape(-1, 1)
+y2=y2.reshape(-1, 1)
+
+tf.convert_to_tensor(y1)
+tf.convert_to_tensor(y2)
 
 x_train, x_test, y_train_1, y_test_1=train_test_split(x, y1, train_size=0.8, random_state=23)
 x_train, x_test, y_train_2, y_test_2=train_test_split(x, y2, train_size=0.8, random_state=23)
 
+print(type(x_train))
+print(type(y_train_1))
+print(type(y_train_2))
 
 # 퀀타일로스 정의
 quantile=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
@@ -110,21 +117,21 @@ def models():
     model.summary()
     return model
 
-def models2():
-    model=Sequential()
-    model.add(LSTM(64, activation='relu', input_shape=(48,6)))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(1))
-    return model
+# def models2():
+#     model=Sequential()
+#     model.add(LSTM(64, activation='relu', input_shape=(48,6)))
+#     model.add(Dense(64, activation='relu'))
+#     model.add(Dense(32, activation='relu'))
+#     model.add(Dense(1))
+#     return model
 
-def models3():
-    model=Sequential()
-    model.add(GRU(64, activation='relu', input_shape=(48, 6)))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(1))
-    return model
+# def models3():
+#     model=Sequential()
+#     model.add(GRU(64, activation='relu', input_shape=(48, 6)))
+#     model.add(Dense(64, activation='relu'))
+#     model.add(Dense(32, activation='relu'))
+#     model.add(Dense(1))
+#     return model
 
 
 # 컴파일, 훈련
