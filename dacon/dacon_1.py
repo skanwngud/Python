@@ -38,15 +38,17 @@ def preprocess_data(data, is_train=True):
     temp=temp[['GHI', 'DHI', 'DNI', 'WS', 'RH', 'T', 'TARGET']]
     return temp.iloc[:, :]
 
-# # 타겟값 생성 후 제일 뒤로 보내고 열맞춤
-#     if is_train==True:
-#         temp['Target1']=temp['TARGET'].shift(-48).fillna(method='ffill')
-#         temp['Target2']=temp['TARGET'].shift(-96).fillna(method='ffill')
-#         temp=temp.dropna()
-#         return temp.iloc[:-96, :]
+# 타겟값 생성 후 제일 뒤로 보내고 열맞춤
+    if is_train==True:
+        temp['Target1']=temp['TARGET'].shift(-48).fillna(method='ffill')
+        temp['Target2']=temp['TARGET'].shift(-96).fillna(method='ffill')
+        temp=temp.dropna()
+        return temp.iloc[:-96, :] # 7,8 일차를 예측하기 위해 이틀은 뺀다
 
-#     elif is_train==False:
-#         return temp.iloc[-48*5: 1:]
+    elif is_train==False:
+        return temp.iloc[-48*5: 1:] # 훈련에 5일치만 사용
+
+print(df_train.info()) # (52560, 9)
 
 # 같은 시간대로 묶기
 def same_train(train):

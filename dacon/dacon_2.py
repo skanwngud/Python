@@ -45,7 +45,7 @@ def preprocess_data(data):
 # 모델링
 def models():
     model=Sequential()
-    model.add(LSTM(64, activation='relu' ,input_shape=(7, 7)))
+    model.add(Dense(64, activation='relu' ,input_shape=(7, 7)))
     model.add(Dense(128, activation='relu'))
     model.add(Dense(256, activation='relu'))
     model.add(Dense(128, activation='relu'))
@@ -71,7 +71,7 @@ def compile(a, x_train, y_train, x_val, y_val):
         file_path=f'../data/modelcheckpoint/dacon_model_time{i}-{a}-{q}.hdf5'
         cp=ModelCheckpoint(file_path, save_best_only=True, monitor='val_loss')
         model.fit(x_train, y_train, validation_data=(x_val, y_val),
-                    epochs=100, batch_size=128, callbacks=[es, rl, cp])
+                    epochs=100, batch_size=128, callbacks=[es, rl, cp], verbose=2)
     return model
 
 # 예측
