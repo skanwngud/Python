@@ -45,7 +45,7 @@ def preprocess_data(data):
 # 모델링
 def models():
     model=Sequential()
-    model.add(Dense(64, activation='relu' ,input_shape=(7, 7)))
+    model.add(GRU(64, activation='relu' ,input_shape=(7, 7)))
     model.add(Dense(128, activation='relu'))
     model.add(Dense(256, activation='relu'))
     model.add(Dense(128, activation='relu'))
