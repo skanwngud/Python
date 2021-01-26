@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import tensorflow.keras.backend as K
+import matplotlib.pyplot as plt
 
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv1D, LSTM, GRU, SimpleRNN
@@ -34,18 +35,20 @@ def quantile_loss(q, y_true, y_pred):
 
 quantile_list=[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
+# GHI 컬럼 추가
 def preprocess_data(data):
     data=Add_feature(data)
     temp=data.copy()
     temp=temp[['GHI', 'DHI', 'DNI', 'WS', 'RH', 'T', 'TARGET']]
     return temp.iloc[:, :]
 
+# 모델링
 def models():
     model=Sequential()
-    model.add(Conv1D(64, 2, padding='same', activation='relu' ,input_shape=(7, 7)))
-    model.add(Conv1D(128, 2, padding='same', activation='relu'))
-    model.add(Conv1D(256, 2 ,padding='same', activation='relu'))
-    model.add(Conv1D(128, 2, padding='same', activation='relu'))
+    model.add(LSTM(64, activation='relu' ,input_shape=(7, 7)))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(256, activation='relu'))
+    model.add(Dense(128, activation='relu'))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
     model.add(Dense(64, activation='relu'))
@@ -54,9 +57,11 @@ def models():
     model.add(Dense(1))
     return model
 
+# 콜백 선언
 es=EarlyStopping(monitor='val_loss', mode='auto', patience=20)
 rl=ReduceLROnPlateau(monitor='val_loss', mode='auto', patience=10, factor=0.1)
 
+# 컴파일
 def compile(a, x_train, y_train, x_val, y_val):
     for q in quantile_list:
         print(str(q)+'번째')
@@ -69,6 +74,7 @@ def compile(a, x_train, y_train, x_val, y_val):
                     epochs=100, batch_size=128, callbacks=[es, rl, cp])
     return model
 
+# 예측
 def predict(a, x_train, y_train, x_val, y_val, x_test):
     x=list()
     for q in quantile_list:
@@ -160,3 +166,31 @@ sub.loc[sub.id.str.contains('Day7'), 'q_0.1':]=day_7.round(2)
 sub.loc[sub.id.str.contains('Day8'), 'q_0.1':]=day_8.round(2)
 
 sub.to_csv('./dacon/please.csv', index=False)
+
+ranges = 336
+hours = range(ranges)
+sub=sub[ranges:ranges+ranges]
+
+q_01 = sub['q_0.1'].values
+q_02 = sub['q_0.2'].values
+q_03 = sub['q_0.3'].values
+q_04 = sub['q_0.4'].values
+q_05 = sub['q_0.5'].values
+q_06 = sub['q_0.6'].values
+q_07 = sub['q_0.7'].values
+q_08 = sub['q_0.8'].values
+q_09 = sub['q_0.9'].values
+
+plt.figure(figsize=(18,2.5))
+plt.subplot(1,1,1)
+plt.plot(hours, q_01, color='red')
+plt.plot(hours, q_02, color='#aa00cc')
+plt.plot(hours, q_03, color='#00ccaa')
+plt.plot(hours, q_04, color='#ccaa00')
+plt.plot(hours, q_05, color='#00aacc')
+plt.plot(hours, q_06, color='#aacc00')
+plt.plot(hours, q_07, color='#cc00aa')
+plt.plot(hours, q_08, color='#000000')
+plt.plot(hours, q_09, color='blue')
+plt.legend()
+plt.show()
