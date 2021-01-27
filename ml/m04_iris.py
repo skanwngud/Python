@@ -9,6 +9,7 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.svm import LinearSVC, SVC # support vector model
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier # 분류모델
+from sklearn.linear_model import LogisticRegression # 분류모델
 from sklearn.ensemble import RandomForestClassifier # 분류모델
 from sklearn.tree import DecisionTreeClassifier # 분류모델
 
@@ -29,13 +30,13 @@ y=dataset.target
 from tensorflow.keras.utils import to_categorical
 # from keras.utils.np_utils import to_categorical - old keras version 
 
-ss=StandardScaler()
-ss.fit(x)
-x=ss.transform(x)
+# ss=StandardScaler()
+# ss.fit(x)
+# x=ss.transform(x)
 
-# mms=MinMaxScaler()
-# mms.fit(x)
-# x=mms.transform(x)
+mms=MinMaxScaler()
+mms.fit(x)
+x=mms.transform(x)
 '''
 x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_state=66)
 x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.8, random_state=66)
@@ -80,7 +81,8 @@ y_val=to_categorical(y_val)
 # model=SVC()
 # model=KNeighborsClassifier()
 # model=RandomForestClassifier()
-model=DecisionTreeClassifier()
+# model=DecisionTreeClassifier()
+model=LogisticRegression()
 
 # 3. Compile, fitting
 # model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
@@ -134,6 +136,14 @@ print('accuracy_score : ', accuracy_score(y, y_pred))
 # acc(MinMaxScaler) :  0.96
 # accuracy_score(MinMaxScaler) :  0.96
 
+# results (LogisticRegressor)
+# acc :  0.9733333333333334
+# accuracy_score :  0.9733333333333334
+# acc(StandardScaler) :  0.9733333333333334
+# accuracy_score(StandardScaler) :  0.9733333333333334
+# acc(MinMaxScaler) :  0.94
+# accuracy_score(MinMaxScaler) :  0.94
+
 # results (RandomForest)
 # acc :  1.0
 # accuracy_score :  1.0
@@ -143,3 +153,6 @@ print('accuracy_score : ', accuracy_score(y, y_pred))
 # acc :  1.0
 # accuracy_score :  1.0
 # Scaler 에 따른 변화 없음
+
+# Tensorflow
+# acc : 0.9666666388511658
