@@ -49,7 +49,31 @@ model.add(Dense(10, activation='softmax'))
 # modelcheckpoint
 import datetime
 import time
+import os
 # 현재 시간 출력
+
+filepath='../data/modelcheckpoint/'
+filename='_{epoch:02d}-{val_loss:.4f}.hdf5'
+modelpath=''.join([filepath, 'k45_', '{timer}', filename])
+
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.python.util.tf_export import keras_export
+from tensorflow.python.distribute import distributed_file_utils
+@keras_export('keras.callbacks.ModelCheckpoint')
+class MyModelCheckpoint(tf.keras.callbacks.ModelCheckpoint):
+    def _get_file_path(self, epoch, logs):
+        try:
+            file_path=self.filepath.format(epoch=epoch+1, timer=datetime.datetime.now().strftime('%m%d_%H%M'), **logs)
+        except KeyError as e:
+            raise KeyError('Failed to format this callback filepath:"{}".'
+                'Reason:{}'.format(self.filepath, e))
+        self._write_filepath=distributed_file_utils.write_filepath(file_path, self.model.distribute_strategy)
+        return self._write_filepath
+
+
+
+'''
 # print(date_now) # 2021-01-27 10:06:07.219552 / 실제 시간이 아닌 컴퓨터에 설정 된 시간으로 표기해줌
 
 # print(date_time) # 0127_1010
@@ -58,7 +82,7 @@ filename='_{epoch:02d}-{val_loss:.4f}.hdf5'
 date_now=datetime.datetime.now() # 문제점 : 이 시간대로 고정이 됨
 # date_time=date_now.strftime('%m%d_%H%M') # %m = month, %d = day, %H = Hour, %M = Minute
 date_time=date_now.strftime('%x_%X') # 01/27/21_18:16:11
-modelpath=''.join([filepath, 'k45_', date_time, filename]) # .join 문자열 합치는 함수 
+modelpath=os.path.join(filepath, 'k45_', date_time, filename) # .join 문자열 합치는 함수 
 
 print(date_time)
 print(type(date_time))
@@ -69,7 +93,7 @@ print(type(date_time))
 # modelpath='..\data\modelcheckpoint\k45_mnist_{epoch:02d}-{val_loss:.4f}.hdf5'
 # 02d = 정수 두 번째 자릿수까지 표기, .4f = 소수점 네 번째 자릿수까지 표기
 # skanwngud\Study\modelCheckpoint
-
+'''
 
 early=EarlyStopping(monitor='val_loss', patience=10, mode='auto')
 cp=ModelCheckpoint(filepath=modelpath,
