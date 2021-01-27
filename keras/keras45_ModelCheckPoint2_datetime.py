@@ -54,18 +54,32 @@ import datetime
 filepath='../data/modelcheckpoint/'
 filename='_{epoch:02d}-{val_loss:.4f}.hdf5'
 # modelpath=''.join([filepath, 'k45_', date_time, filename]) # .join 문자열 합치는 함수 
-date_now=datetime.datetime.now() # 문제점 : 이 시간대로 고정이 됨
-date_time=date_now.strftime('%m%d_%H%M') # %m = month, %d = day, %H = Hour, %M = Minute
+# date_now=datetime.datetime.now() # 문제점 : 이 시간대로 고정이 됨
+# date_time=date_now.strftime('%m%d_%H%M') # %m = month, %d = day, %H = Hour, %M = Minute
+
+def timen_n():
+    time=datetime.datetime.today()
+    mm=time.month
+    dd=time.day
+    HH=time.hour
+    MM=time.minute
+    time_now=''.join([str(mm), str(dd), '_', str(HH), str(MM)])
+    return time_now
+
+time_today=timen_n()
+
+for i in time_today:
+    
 
 # print(modelpath)
-
+print(timen_n())
 # modelpath='..\data\modelcheckpoint\k45_mnist_{epoch:02d}-{val_loss:.4f}.hdf5'
 # 02d = 정수 두 번째 자릿수까지 표기, .4f = 소수점 네 번째 자릿수까지 표기
 # skanwngud\Study\modelCheckpoint
 
 
 early=EarlyStopping(monitor='val_loss', patience=10, mode='auto')
-cp=ModelCheckpoint(filepath=''.join([filepath, 'k_45', date_time, filename]), monitor='val_loss', save_best_only=True, mode='auto')
+cp=ModelCheckpoint(filepath=''.join([filepath, 'k_45', time_today, filename]), monitor='val_loss', save_best_only=True, mode='auto',)
 # filepath - 가중치 세이브, 최저점을 찍을 때마다 weight 가 들어간 파일을 만듬
 # 세이브 된 최적 가중치를 이용해서 모델 평가, 예측을 좀 더 쉽고 빠르게 할 수 있다
 
