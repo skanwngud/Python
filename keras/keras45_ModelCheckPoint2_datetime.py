@@ -96,7 +96,7 @@ print(type(date_time))
 '''
 
 early=EarlyStopping(monitor='val_loss', patience=10, mode='auto')
-cp=ModelCheckpoint(filepath=modelpath,
+cp=MyModelCheckpoint(filepath=modelpath,
                   monitor='val_loss', save_best_only=True, mode='auto',)
 # cp=ModelCheckpoint(filepath='../data/modelcheckpoint/k45_modelcheckpoint_{epoch:02d}-{val_loss:.4f}.hdf5',
 #                     monitor='val_loss', save_best_only=True, mode='auto')
