@@ -55,3 +55,4 @@ print('cross_val : ', cross_val_score(RandomForestClassifier(), x_train, y_train
 # score :  0.9411764705882353
 # acc :  0.9411764705882353
 # cross_val :  [0.94117647 1.         1.         1.         1.         0.9375        1.         1.         0.9375     1.        ]
+

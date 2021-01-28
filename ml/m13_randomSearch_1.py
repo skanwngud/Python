@@ -26,6 +26,7 @@ kfold=KFold(n_splits=5, shuffle=True) # n_splits= 몇 등분할 지
 x_train, x_test, y_train, y_test=train_test_split(x,y, train_size=0.8, random_state=23)
 
 # model 에 들어갈 parameters dictionary 생성
+# model 마다 갖고있는 parameters 가 다르기 때문에 주의
 parameters=[
     {'C':[1, 10, 100, 1000], 'kernel':['linear']},
     {'C':[1, 10, 100], 'kernel':['rbf'], 'gamma':[0.001, 0.0001]},
@@ -56,3 +57,5 @@ print('모델 스코어 : ', model.score(x_test, y_test))
 # 최적의 매개 변수 :  SVC(C=1, kernel='linear')
 # 최종 정답률 :  1.0
 # 모델 스코어 :  1.0
+
+# RandomizedSearchCV 는 model.fit 을 해야한다
