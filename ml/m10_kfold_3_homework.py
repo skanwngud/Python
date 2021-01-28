@@ -34,17 +34,33 @@ for i in model:
     score=cross_val_score(i, x, y, cv=kf)
     print('score : ', score, ' - '+str(i))
 
-x_train, x_val, y_train, y_val=train_test_split(x, y, train_size=0.8, random_state=23)
+# x_train, x_test, y_train, y_test=train_test_split(x, y, train_size=0.8)
+# x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.8, random_state=23)
 
-print('\n')
+# print('\n')
+
+# for i in model:
+#     score1=cross_val_score(i, x_train, y_train, cv=kf)
+#     print('score : ', score1, ' - '+str(i)+' - train_test_split')
+
+# for i in model:
+#     score2=cross_val_score(i, [x_train, x_val], [y_train, y_val], cv=kf)
+#     print('score : ', score2, ' - '+str(i)+' - train')
+    
+
+for train_index, validate_index in kf.split(x):
+    x_train, x_validate=x[train_index], x[validate_index]
+    y_train, y_validate=y[train_index], y[validate_index]
+
+print(x.shape)
+print(y.shape)
+print(x_train.shape)
+print(x_validate.shape)
+print(y_train.shape)
+print(y_validate.shape)
 
 for i in model:
-    score1=cross_val_score(i, x_train, y_train, cv=kf)
-    print('score : ', score1, ' - '+str(i)+' - train_test_split')
-
-for i in model:
-    score2=cross_val_score(i, [x_train, x_val], [y_train, y_val], cv=kf)
-    print('score : ', score2, ' - '+str(i)+' - train')
+    print('score : ', cross_val_score(i, x_train, y_train), ' - ' + str(i) +' _ train')
     
 # results
 # score :  [0.96666667 0.96666667 0.9        0.83333333 0.93333333]  - LinearSVC()
@@ -61,3 +77,11 @@ for i in model:
 # score :  [0.95833333 0.95833333 0.95833333 0.95833333 1.        ]  - LogisticRegression() - train_test_split
 # score :  [0.95833333 0.91666667 0.95833333 0.95833333 0.91666667]  - RandomForestClassifier() - train_test_split
 # score :  [0.95833333 0.95833333 0.95833333 0.95833333 0.875     ]  - DecisionTreeClassifier() - train_test_split
+
+
+# score :  [1.         1.         0.95833333 0.91666667 1.        ]  - LinearSVC() _ train
+# score :  [0.95833333 1.         0.95833333 1.         0.95833333]  - SVC() _ train
+# score :  [0.95833333 1.         0.95833333 1.         0.95833333]  - KNeighborsClassifier() _ train
+# score :  [0.95833333 1.         0.91666667 1.         1.        ]  - LogisticRegression() _ train
+# score :  [0.95833333 1.         0.91666667 0.91666667 1.        ]  - RandomForestClassifier() _ train
+# score :  [0.95833333 1.         0.875      1.         0.95833333]  - DecisionTreeClassifier() _ train
