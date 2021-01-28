@@ -48,20 +48,24 @@ for i in model:
 #     print('score : ', score2, ' - '+str(i)+' - train')
     
 
-for train_index, validate_index in kf.split(x):
-    x_train, x_validate=x[train_index], x[validate_index]
-    y_train, y_validate=y[train_index], y[validate_index]
+for train_index, test_index in kf.split(x):
+    x_train, x_test=x[train_index], x[test_index]
+    y_train, y_test=y[train_index], y[test_index]
+
+x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.8, random_state=33)
 
 print(x.shape)
 print(y.shape)
 print(x_train.shape)
-print(x_validate.shape)
+print(x_val.shape)
+print(x_test.shape)
 print(y_train.shape)
-print(y_validate.shape)
+print(y_val.shape)
+print(y_test.shape)
 
 for i in model:
     print('score : ', cross_val_score(i, x_train, y_train), ' - ' + str(i) +' _ train')
-    
+
 # results
 # score :  [0.96666667 0.96666667 0.9        0.83333333 0.93333333]  - LinearSVC()
 # score :  [0.96666667 0.96666667 0.96666667 0.96666667 0.96666667]  - SVC()
@@ -79,9 +83,9 @@ for i in model:
 # score :  [0.95833333 0.95833333 0.95833333 0.95833333 0.875     ]  - DecisionTreeClassifier() - train_test_split
 
 
-# score :  [1.         1.         0.95833333 0.91666667 1.        ]  - LinearSVC() _ train
-# score :  [0.95833333 1.         0.95833333 1.         0.95833333]  - SVC() _ train
-# score :  [0.95833333 1.         0.95833333 1.         0.95833333]  - KNeighborsClassifier() _ train
-# score :  [0.95833333 1.         0.91666667 1.         1.        ]  - LogisticRegression() _ train
-# score :  [0.95833333 1.         0.91666667 0.91666667 1.        ]  - RandomForestClassifier() _ train
-# score :  [0.95833333 1.         0.875      1.         0.95833333]  - DecisionTreeClassifier() _ train
+# score :  [0.95       0.94736842 0.94736842 1.         0.94736842]  - LinearSVC() _ train
+# score :  [0.95       1.         1.         0.94736842 0.89473684]  - SVC() _ train
+# score :  [0.95       0.94736842 1.         1.         0.94736842]  - KNeighborsClassifier() _ train
+# score :  [0.95       1.         1.         1.         0.89473684]  - LogisticRegression() _ train
+# score :  [0.9        1.         1.         1.         0.89473684]  - RandomForestClassifier() _ train
+# score :  [0.9        0.94736842 1.         1.         0.94736842]  - DecisionTreeClassifier() _ train
