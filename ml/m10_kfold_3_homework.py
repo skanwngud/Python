@@ -39,9 +39,14 @@ x_train, x_val, y_train, y_val=train_test_split(x, y, train_size=0.8, random_sta
 print('\n')
 
 for i in model:
-    score=cross_val_score(i, x_train, y_train, cv=kf)
-    print('score : ', score, ' - '+str(i)+'2')
+    score1=cross_val_score(i, x_train, y_train, cv=kf)
+    print('score : ', score1, ' - '+str(i)+' - train_test_split')
 
+for i in model:
+    score2=cross_val_score(i, [x_train, x_val], [y_train, y_val], cv=kf)
+    print('score : ', score2, ' - '+str(i)+' - train')
+    
+# results
 # score :  [0.96666667 0.96666667 0.9        0.83333333 0.93333333]  - LinearSVC()
 # score :  [0.96666667 0.96666667 0.96666667 0.96666667 0.96666667]  - SVC()
 # score :  [1.         0.96666667 0.93333333 0.93333333 0.96666667]  - KNeighborsClassifier()
@@ -50,9 +55,9 @@ for i in model:
 # score :  [1.         0.96666667 0.9        0.93333333 0.9       ]  - DecisionTreeClassifier()
 
 
-# score :  [0.95833333 0.875      1.         0.95833333 1.        ]  - LinearSVC()2
-# score :  [0.95833333 0.95833333 0.95833333 1.         0.95833333]  - SVC()2
-# score :  [1.         0.95833333 0.95833333 0.95833333 1.        ]  - KNeighborsClassifier()2
-# score :  [0.95833333 0.95833333 0.95833333 0.95833333 1.        ]  - LogisticRegression()2
-# score :  [0.95833333 0.95833333 0.95833333 0.95833333 0.91666667]  - RandomForestClassifier()2
-# score :  [0.95833333 0.95833333 1.         0.95833333 0.875     ]  - DecisionTreeClassifier()2
+# score :  [0.95833333 0.875      1.         0.95833333 1.        ]  - LinearSVC() - train_test_split
+# score :  [0.95833333 0.95833333 0.95833333 1.         0.95833333]  - SVC() - train_test_split
+# score :  [1.         0.95833333 0.95833333 0.95833333 1.        ]  - KNeighborsClassifier() - train_test_split
+# score :  [0.95833333 0.95833333 0.95833333 0.95833333 1.        ]  - LogisticRegression() - train_test_split
+# score :  [0.95833333 0.91666667 0.95833333 0.95833333 0.91666667]  - RandomForestClassifier() - train_test_split
+# score :  [0.95833333 0.95833333 0.95833333 0.95833333 0.875     ]  - DecisionTreeClassifier() - train_test_split
