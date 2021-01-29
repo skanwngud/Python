@@ -111,19 +111,22 @@ if __name__=='__main__':
     run()
     for epoch in range(num_epochs):
         for i, (images, targets) in enumerate(train_loader):
-            gc.collect()
-            torch.cuda.empty_cache()    
             optimizer.zero_grad()
 
             images=images.to(device)
+            
             targets=targets.to(device)
+            # targets=torch.tensor(targets).to(torch.int64)
 
             outputs=model(images)
+            # outputs=torch.tensor(images).to(torch.int64)
             loss=criterion(outputs, targets)
+            # loss=torch.tensor(loss).to(torch.int64)
 
             loss.backward()
             optimizer.step()
-
+            gc.collect()
+            torch.cuda.empty_cache()   
             if (i+1) % 10 == 0:
                 outputs=outputs>0.5
                 acc=(outputs==targets).float().mean()
