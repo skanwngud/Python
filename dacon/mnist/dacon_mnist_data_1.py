@@ -24,7 +24,7 @@ from torchvision.models import resnet50
 
 # custom dataset
 
-for i in range(50000):
+for i in range(10001):
     class MnistDataset(Dataset):
         def __init__(
             self,
