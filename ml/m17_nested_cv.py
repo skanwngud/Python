@@ -26,8 +26,14 @@ parameters=[
 ]
 
 # 2. modeling
-model=GridSearchCV(SVC(), parameters, cv=kfold) # 위의 파라미터를 종류별로 돌게 된다
+model=GridSearchCV(SVC(), parameters, cv=kfold)
+score=cross_val_score(model, x_train, y_train, cv=kfold) # model, data, cv
 
+print('교차검증점수 : ', score)
+# 교차검증점수 :  [0.95833333 1.         1.         0.95833333 0.95833333]
+# GridSearhCV 에서 나온 최적값들을 또 kfold 로 5번 더 학습함
+
+'''
 # 3. fitting
 model.fit(x_train, y_train)
 
@@ -41,3 +47,4 @@ print('모델 스코어 : ', model.score(x_test, y_test))
 # 최적의 매개 변수 :  SVC(C=1, kernel='linear')
 # 최종 정답률 :  1.0
 # 모델 스코어 :  1.0
+'''

@@ -50,6 +50,9 @@ model=make_pipeline(MinMaxScaler(), SVC())
 scaler=[MinMaxScaler(), StandardScaler()]
 search=[RandomizedSearchCV, GridSearchCV]
 
+import datetime
+
+time_start=datetime.datetime.now()
 
 print('Pipeline')
 for i in scaler:
@@ -73,15 +76,19 @@ for i in scaler:
 
         print(str([i, j])+' : '+str(results))
         
+time_end=datetime.datetime.now()
+print('spent_time : ', time_end-time_start)
 
 # results
 # Pipeline
-# [MinMaxScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.41271745243689517
-# [MinMaxScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.44592592047128465
-# [StandardScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.4141963542701439
-# [StandardScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.4133194752833015
+# [MinMaxScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.4193428987644571
+# [MinMaxScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.40885222166332846
+# [StandardScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.4277394787288128
+# [StandardScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.4332449701281882
+
 # make_pipeline
-# [MinMaxScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.42151160293395074
-# [MinMaxScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.4195435694048566
-# [StandardScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.4251905438782623
-# [StandardScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.4061541255605223
+# [MinMaxScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.44348738360966244
+# [MinMaxScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.42582031715036506
+# [StandardScaler(), <class 'sklearn.model_selection._search.RandomizedSearchCV'>] : 0.415097787408249
+# [StandardScaler(), <class 'sklearn.model_selection._search.GridSearchCV'>] : 0.4039250628136606
+# spent_time :  0:01:09.705786
