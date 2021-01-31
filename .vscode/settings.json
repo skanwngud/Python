@@ -24,9 +24,9 @@
           "settings": {
               "python.pythonPath": "/Users/me/virtualenvs/djangovenv/bin/python3"
         },
-<<<<<<< HEAD
-        "python.pythonPath": "/Users/juhyeong_y/opt/anaconda3/bin/python"
-=======
-        "python.pythonPath": "D:\\Anaconda\\envs\\aidemy\\python.exe"
->>>>>>> 9a10f3825961d0d69eecab6232ad591b83c333b0
-    }
+// <<<<<<< HEAD
+//         "python.pythonPath": "/Users/juhyeong_y/opt/anaconda3/bin/python"
+// =======
+//         "python.pythonPath": "D:\\Anaconda\\envs\\aidemy\\python.exe"
+// >>>>>>> 9a10f3825961d0d69eecab6232ad591b83c333b0
+//     }
