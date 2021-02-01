@@ -20,8 +20,8 @@ x_train, x_test, y_train, y_test=train_test_split(
         dataset.data, dataset.target, train_size=0.8, random_state=23
 )
 
-x_train=x_train[:, 1:]
-x_test=x_test[:, 1:]
+# x_train=x_train[:, 1:]
+# x_test=x_test[:, 1:]
 
 # 2. model
 model=GradientBoostingClassifier()
