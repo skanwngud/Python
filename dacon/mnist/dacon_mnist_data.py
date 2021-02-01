@@ -28,7 +28,7 @@ x=x.to_numpy()
 y=y.to_numpy()
 pred=pred.to_numpy()
 
-x=x.reshape(-1, 28, 28, 1)
+x=x.reshape(-1, 28, 28, 1)/255.
 pred=pred.reshape(-1, 28, 28, 1)
 
 print(x.shape) # (2048, 784)
