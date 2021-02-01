@@ -11,10 +11,10 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 
-from sklearn.datasets import load_wine
+from sklearn.datasets import load_boston
 
 # 1. data
-dataset=load_wine()
+dataset=load_boston()
 
 x_train, x_test, y_train, y_test=train_test_split(
         dataset.data, dataset.target, train_size=0.8, random_state=23
