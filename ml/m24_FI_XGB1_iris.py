@@ -32,7 +32,7 @@ start_time=datetime.datetime.now()
 model=XGBClassifier(n_jobs=1, use_label_encoder=False)
 
 # 3. fitting
-model.fit(x_train, y_train)
+model.fit(x_train, y_train, eval_metric='logloss')
 
 # 4. score, predict
 acc=model.score(x_test, y_test)

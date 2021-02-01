@@ -29,10 +29,11 @@ start_time=datetime.datetime.now()
 
 # 2. model
 # model=GradientBoostingClassifier()
-model=XGBClassifier(n_jobs=1, use_label_encoder=False, eval_metrics='logloss')
+model=XGBClassifier(n_jobs=1, use_label_encoder=False)
+# use_label_encoder = False : 특정 숫자, 문자를 변환하겠냐하는 것
 
 # 3. fitting
-model.fit(x_train, y_train)
+model.fit(x_train, y_train, eval_metrics='logloss')
 
 # 4. score, predict
 acc=model.score(x_test, y_test)
