@@ -31,7 +31,7 @@ statr_time=datetime.datetime.now()
 # model=GradientBoostingClassifier()
 jobs=[-1, 8, 4, 1]
 for i in jobs:
-    model=XGBClassifier(n_jobs=i)
+    model=XGBClassifier(n_jobs=i, use_label_encoder=False, eval_mtrics='logloss')
 
     # 3. fitting
     model.fit(x_train, y_train)

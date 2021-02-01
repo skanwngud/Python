@@ -29,7 +29,7 @@ start_time=datetime.datetime.now()
 
 # 2. model
 # model=GradientBoostingClassifier()
-model=XGBClassifier(n_jobs=1)
+model=XGBClassifier(n_jobs=1, use_label_encoder=False)
 
 # 3. fitting
 model.fit(x_train, y_train)
