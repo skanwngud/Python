@@ -6,15 +6,17 @@ import numpy as np
 import pandas as pd
 import warnings
 warnings.filterwarnings('ignore')
+import datetime
 
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import train_test_split
+from xgboost import XGBClassifier
 
-from sklearn.datasets import load_iris
+from sklearn.datasets import load_breast_cancer
 
 # 1. data
-dataset=load_iris()
+dataset=load_breast_cancer()
 
 x_train, x_test, y_train, y_test=train_test_split(
         dataset.data, dataset.target, train_size=0.8, random_state=23
@@ -23,8 +25,11 @@ x_train, x_test, y_train, y_test=train_test_split(
 # x_train=x_train[:, 1:]
 # x_test=x_test[:, 1:]
 
+start_time=datetime.datetime.now()
+
 # 2. model
-model=GradientBoostingClassifier()
+# model=GradientBoostingClassifier()
+model=XGBClassifier(n_jobs=1)
 
 # 3. fitting
 model.fit(x_train, y_train)
@@ -50,6 +55,11 @@ print(cut_columns(model.feature_importances_,dataset.feature_names,8))
 print(model.feature_importances_)
 print('acc : ', acc)
 
+end_time=datetime.datetime.now()
+spent_time=end_time-start_time
+
+print(spent_time)
+
 # def plot_feature_importances(model):
 #     n_features=dataset.data.shape[1]
 #     plt.barh(np.arange(n_features), model.feature_importances_,
@@ -71,3 +81,19 @@ print('acc : ', acc)
 
 # [0.02004825 0.63242566 0.34752609]
 # acc :  0.9666666666666667
+
+# n_jobs=-1
+# acc :  0.9824561403508771
+# 0:00:00.085743
+
+# n_jobs=8
+# acc :  0.9824561403508771
+# 0:00:00.076766
+
+# n_jobs=4
+# acc :  0.9824561403508771
+# 0:00:00.078788
+
+# n_jobs=1
+# acc :  0.9824561403508771
+# 0:00:00.124339
