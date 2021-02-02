@@ -43,4 +43,6 @@ print(sub.head())
 
 sub.to_csv('../data/dacon/data/samples_3.csv', index=False)
 
+print(model.evaluate(x_val, y_val))
+
 # results

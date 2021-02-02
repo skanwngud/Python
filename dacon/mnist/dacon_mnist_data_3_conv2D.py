@@ -7,6 +7,8 @@ import warnings
 warnings.filterwarnings(action='ignore')
 import matplotlib.pyplot as plt
 
+import datetime
+
 # read csv files
 train=pd.read_csv('../data/dacon/data/train.csv', index_col=0, header=0)
 pred=pd.read_csv('../data/dacon/data/test.csv', index_col=0, header=0)
@@ -61,12 +63,17 @@ kf=KFold(n_splits=20, shuffle=True, random_state=22)
 
 print(pred.shape)
 
+start_time=datetime.datetime.now()
 
+i=0
 for train_index, validation_index in kf.split(x, y):
     x_train=x[train_index]
     x_val=x[validation_index]
     y_train=y[train_index]
     y_val=y[validation_index]
+
+    i+=1
+    print(str(i) + ' 번째 훈련')
 
     # train=datagen.flow(x_train, y_train, batch_size=128)
     # val=datagen.flow(x_val, y_val, batch_size=128)
@@ -88,7 +95,7 @@ for train_index, validation_index in kf.split(x, y):
     es=EarlyStopping(monitor='val_loss', patience=50, mode='auto')
     rl=ReduceLROnPlateau(monitor='val_loss', patience=25, mode='auto', verbose=1)
     cp=ModelCheckpoint(save_best_only=True, monitor='val_acc', mode='auto',
-                        filepath='../data/modelcheckpoint/dacon_mnist_data_{val_acc:.4f}_{val_loss:.4f}.hdf5')
+                        filepath='../data/modelcheckpoint/dacon_mnist_data_%02d_{val_acc:.4f}_{val_loss:.4f}.hdf5'%str(i))
 
     # input=Input(shape=(28, 28, 1))
     # a=Conv2D(128, (2,2),  padding='same')(input)
@@ -169,10 +176,15 @@ for train_index, validation_index in kf.split(x, y):
     model.add(MaxPooling2D(3, padding='same'))
     model.add(Dropout(0.2))
     model.add(Flatten())
+    model.add(BatchNormalization())
     model.add(Dense(256, activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dense(512, activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dense(256, activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dense(128, activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dense(10, activation='softmax'))
 
     # model.summary()
@@ -183,7 +195,11 @@ for train_index, validation_index in kf.split(x, y):
     # model.fit_generator(train, epochs=500, validation_data=(val),
     #             callbacks=[es, rl, cp])
 
-    model.eval()
+    loss=model.evaluate(x_val, y_val)
+    print('loss : ', loss[0])
+    print('acc : ', loss[1])
+
+    print(str(i) + ' 번째 훈련 종료')
     
 sub['digit']=np.argmax(model.predict(pred), axis=1)
 # sub['digit']=np.argmax(model.predict_generator(pred), axis=1)
@@ -191,3 +207,8 @@ sub['digit']=np.argmax(model.predict(pred), axis=1)
 print(sub.head())
 
 sub.to_csv('../data/dacon/data/samples.csv', index=False)
+
+end_time=datetime.datetime.now()
+spent_time=end_time-start_time
+
+print('걸린 시간 : ', spent_time)
