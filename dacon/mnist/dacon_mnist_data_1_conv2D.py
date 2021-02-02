@@ -1,3 +1,6 @@
+## Conv2D, train_test_split
+
+
 # import libraries
 import numpy as np
 import pandas as pd
@@ -16,7 +19,7 @@ from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Flatten, Dropou
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from tensorflow.keras.utils import to_categorical
 
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, KFold
 from sklearn.decomposition import PCA
 
 x=train.iloc[:, 2:] # Letter 제외
@@ -27,10 +30,6 @@ pred=pred.iloc[:, 1:] # Letter 제외
 x=x.to_numpy()
 y=y.to_numpy()
 pred=pred.to_numpy()
-
-x=x.reshape(-1, 28, 28, 1)/255.
-pred=pred.reshape(-1, 28, 28, 1)
-
 print(x.shape) # (2048, 784)
 print(y.shape) # (2048, )
 
@@ -47,11 +46,19 @@ print(x_test.shape) # (410, 784)
 print(y_train.shape) # (1310, )
 print(y_val.shape) # (328, )
 print(y_test.shape) # (410, )
+print(pred.shape)
 
-# pca=PCA(95)
+# pca=PCA(784)
 # x_train=pca.fit_transform(x_train)
 # x_test=pca.transform(x_test)
 # x_val=pca.transform(x_val)
+# pred=pca.transform(pred)
+
+x_train=x_train.reshape(-1, 28, 28, 1)/255.
+x_test=x_test.reshape(-1, 28, 28, 1)/255.
+x_val=x_val.reshape(-1, 28, 28, 1)/255.
+pred=pred.reshape(-1, 28, 28, 1)/255.
+
 
 # cumsum=np.cumsum(pca.explained_variance_ratio_)
 # print(np.argmax(cumsum>=0.95)+1) # 95
@@ -74,8 +81,8 @@ output=Dense(10, activation='softmax')(dense)
 model=Model(input, output)
 
 # compile
-es=EarlyStopping(monitor='val_loss', patience=10, mode='auto')
-rl=ReduceLROnPlateau(monitor='acc', patience=5, mode='auto', verbose=1)
+es=EarlyStopping(monitor='val_loss', patience=50, mode='auto')
+rl=ReduceLROnPlateau(monitor='val_acc', patience=5, mode='auto', verbose=1)
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics='acc')
 model.fit(x_train, y_train, validation_data=(x_val, y_val),

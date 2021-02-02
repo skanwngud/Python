@@ -15,6 +15,8 @@ from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.decomposition import PCA
 from sklearn.metrics import accuracy_score
 
+from xgboost import XGBClassifier
+
 # print(train.info()) # (2048, 786)
 # print(pred.info()) # (20480, 784)
 
@@ -67,10 +69,18 @@ x_val=x_val.reshape(-1, 94, 1)
 
 pred=pred.reshape(-1, 94, 1)
 
-print(pred.shape) # (20480, 784)
+print(pred.shape) # (20480, 94)
 
 
 # model
+# model=XGBClassifier(n_estimators=1000, n_jobs=8, learning_rate=0.01)
+
+# model.fit(x_train, y_train, eval_set=[(x_train, y_train), (x_test, y_test)],
+#             eval_metric=['mlogloss'], early_stopping_rounds=30, verbose=1)
+
+# score=model.score(x_test, y_test)
+
+# print('score : ', score) # score :  0.2658536585365854
 model=Sequential()
 model.add(Conv1D(128, 2, padding='same', activation='relu',input_shape=(94, 1)))
 model.add(Conv1D(256, 2, padding='same', activation='relu'))
@@ -84,6 +94,7 @@ model.add(Dense(512, activation='relu'))
 model.add(Dense(1024, activation='relu'))
 model.add(Flatten())
 model.add(Dense(512, activation='relu'))
+model.add(Dense(1024, activation='relu'))
 model.add(Dense(10, activation='softmax'))
 
 es=EarlyStopping(patience=50)
@@ -98,12 +109,13 @@ model.fit(x_train, y_train, validation_data=(x_val, y_val),
 # cross_val_score(model, x_test, y_test, cv=kf)
 
 # eval, pred
-# loss=model.evaluate(x_test, y_test)
+loss=model.evaluate(x_test, y_test)
 # y_pred=model.predict(pred)
 
+print(loss) # [7.086297988891602, 0.22439023852348328]
 
 sub['digit']=np.argmax(model.predict(pred), axis=1)
 
 print(sub.head())
 
-sub.to_csv('../data/dacon/data/samples2.csv', index=False)
+sub.to_csv('../data/dacon/data/samples3.csv', index=False)
