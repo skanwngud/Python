@@ -35,14 +35,10 @@ for train_index, validation_index in kf.split(x, y):
     y_train=y[train_index]
     y_val=y[validation_index]
 
-model=load_model('../data/modelcheckpoint/best2_dacon_mnist_data_0.8293_0.7568.hdf5')
+model=load_model('../data/modelcheckpoint/best_dacon_mnist_data_0.6569_0.8439.hdf5')
 
 sub['digit']=np.argmax(model.predict(pred), axis=1)
 
 print(sub.head())
 
 sub.to_csv('../data/dacon/data/samples_3.csv', index=False)
-
-print(model.evaluate(x_val, y_val))
-
-# results
