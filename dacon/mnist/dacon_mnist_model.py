@@ -36,7 +36,7 @@ for train_index, validation_index in kf.split(x, y):
     y_train=y[train_index]
     y_val=y[validation_index]
 
-model=load_model('../data/modelcheckpoint/best4_dacon_mnist_data_0.8725_0.7391.hdf5')
+model=load_model('../data/modelcheckpoint/weight_0.9412-0.3282.hdf5')
 
 sub['digit']=np.argmax(model.predict(pred), axis=1)
 
