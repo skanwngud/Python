@@ -29,13 +29,14 @@ pred=pred.reshape(-1, 28, 28, 1)/255
 
 y=to_categorical(y)
 
+
 for train_index, validation_index in kf.split(x, y):
     x_train=x[train_index]
     x_val=x[validation_index]
     y_train=y[train_index]
     y_val=y[validation_index]
 
-model=load_model('../data/modelcheckpoint/best_dacon_mnist_data_0.6569_0.8439.hdf5')
+model=load_model('../data/modelcheckpoint/best4_dacon_mnist_data_0.8725_0.7391.hdf5')
 
 sub['digit']=np.argmax(model.predict(pred), axis=1)
 

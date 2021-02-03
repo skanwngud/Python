@@ -49,7 +49,7 @@ print(type(x_train))
 x_train, x_letter_train=flow1.next()
 x_train, y_train=flow2.next()
 
-print('x_train.shape={}'.format(x_train.shape)) # (1638, 28, 28, 1)
+print('x_train.shape={}'.format(x_train.shape)) # (1638, 28, 28, 1) # (32, 28, 28, 1)
 # print(x_letter_train.shape) # (1638, )
 # print(y_train.shape) # (1638, 10)
 
