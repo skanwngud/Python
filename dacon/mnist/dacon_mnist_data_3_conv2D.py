@@ -52,7 +52,7 @@ pred=pred.reshape(-1, 28, 28, 1)/255.
 
 # y=to_categorical(y)
 
-n=20
+n=50
 
 kf=StratifiedKFold(n_splits=n, shuffle=True, random_state=22)
 
@@ -72,7 +72,7 @@ for train_index, test_index in kf.split(x, y):
     i+=1
     print(str(n) + ' 번째 중 ' + str(i) + ' 번째 훈련')
 
-    x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.9, random_state=99)
+    # x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.9, random_state=99)
 
     train=datagen.flow(x_train, y_train, batch_size=64)
     val=datagen2.flow(x_test, y_test)
@@ -82,7 +82,7 @@ for train_index, test_index in kf.split(x, y):
     es=EarlyStopping(monitor='val_loss', patience=100, mode='auto')
     rl=ReduceLROnPlateau(monitor='val_loss', patience=20, mode='auto', verbose=1, factor=0.1)
     cp=ModelCheckpoint(save_best_only=True, monitor='val_acc', mode='auto',
-                        filepath='../data/modelcheckpoint/weight.h5')
+                        filepath='../data/modelcheckpoint/weight.h5', verbose=1)
     cp2=ModelCheckpoint(filepath='../data/modelcheckpoint/weight_%s_{val_acc:.4f}_{val_loss:.4f}.hdf5'%i,
                         save_best_only=True, monitor='val_acc', mode='auto')
 
@@ -149,10 +149,10 @@ for train_index, test_index in kf.split(x, y):
                 callbacks=[es, rl, cp, cp2], verbose=1)
 
     model.load_weights('../data/modelcheckpoint/weight.h5')
-    result += model.predict_generator(pred, verbose=True)/20
+    result += model.predict_generator(pred2, verbose=True)/20
 
-    hists=pd.DataFrame(hist.history)
-    val_loss_min.append(hists['val_loss'].min)
+    # hists=pd.DataFrame(hist.history)
+    # val_loss_min.append(hists['val_loss'].min)
 
     loss=model.evaluate_generator(test)
 
