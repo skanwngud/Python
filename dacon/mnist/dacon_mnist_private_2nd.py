@@ -1,4 +1,5 @@
 '''
+# import libraries
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -9,16 +10,18 @@ from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Flatten
 
 from keras.callbacks import ModelCheckpoint
-from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator # 이미지 생성자
 from sklearn import metrics
 
 from sklearn.model_selection import train_test_split
 
-import cv2
+import cv2 # openCV
 
 import gc
+# garbage collection : 현대 언어에서 쓰이는 메모리 처리 과정
 from keras import backend as bek
 
+# data
 train=pd.read_csv('../data/dacon/data/train.csv')
 test=pd.read_csv('../data/dacon/data/test.csv')
 
@@ -309,12 +312,12 @@ for train, val in kfold.split(train_224):
     model = create_model()
 
 
-    training_generator = datagen.flow(X_train, Y_train, batch_size=8,seed=7,shuffle=True)
-    validation_generator = valgen.flow(X_val, Y_val, batch_size=8,seed=7,shuffle=True)
-    model.fit(training_generator,epochs=150,callbacks=[LearningRateScheduler(lr_decay),es,checkpoint_val_acc],
+    training_generator = datagen.flow(X_train, Y_train, batch_size=16,seed=7,shuffle=True)
+    validation_generator = valgen.flow(X_val, Y_val, batch_size=16,seed=7,shuffle=True)
+    model.fit(training_generator,epochs=200,callbacks=[LearningRateScheduler(lr_decay),es,checkpoint_val_acc],
                shuffle=True,
                validation_data=validation_generator,
-               steps_per_epoch =len(X_train)//32
+               steps_per_epoch =len(X_train)//16
                )
 
     del X_train
