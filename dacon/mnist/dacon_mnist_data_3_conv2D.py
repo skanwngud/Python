@@ -30,7 +30,6 @@ from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 from sklearn.decomposition import PCA
 
-# 
 datagen = ImageDataGenerator(width_shift_range=(-1, 1), height_shift_range=(-1, 1))
 
 datagen2=ImageDataGenerator()
@@ -49,6 +48,8 @@ print(y.shape) # (2048, )
 
 x=x.reshape(-1, 28, 28, 1)/255.
 pred=pred.reshape(-1, 28, 28, 1)/255.
+
+x=np.resize(56, 56)
 
 # y=to_categorical(y)
 
@@ -139,7 +140,7 @@ for train_index, test_index in kf.split(x, y):
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Dense(10, activation='softmax'))
-
+    
     # model.summary()
 
     model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(epsilon=None), metrics='acc')
