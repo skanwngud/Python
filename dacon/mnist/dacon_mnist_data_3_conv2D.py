@@ -27,9 +27,10 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from tensorflow.keras.utils import to_categorical
 
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 from sklearn.decomposition import PCA
 
+# 
 datagen = ImageDataGenerator(width_shift_range=(-1, 1), height_shift_range=(-1, 1))
 
 datagen2=ImageDataGenerator()
@@ -49,59 +50,67 @@ print(y.shape) # (2048, )
 x=x.reshape(-1, 28, 28, 1)/255.
 pred=pred.reshape(-1, 28, 28, 1)/255.
 
-y=to_categorical(y)
+# y=to_categorical(y)
 
-kf=KFold(n_splits=20, shuffle=True, random_state=22)
+n=20
 
-print(pred.shape)
+kf=StratifiedKFold(n_splits=n, shuffle=True, random_state=22)
+
+# print(pred.shape) # (20480, 28, 28, 1)
 
 start_time=datetime.datetime.now()
 
 i=0
 result=0
 val_loss_min=list()
-for train_index, validation_index in kf.split(x, y):
+for train_index, test_index in kf.split(x, y):
     x_train=x[train_index]
-    x_val=x[validation_index]
+    x_test=x[test_index]
     y_train=y[train_index]
-    y_val=y[validation_index]
+    y_test=y[test_index]
 
     i+=1
-    print(str(i) + ' 번째 훈련')
+    print(str(n) + ' 번째 중 ' + str(i) + ' 번째 훈련')
 
+    x_train, x_val, y_train, y_val=train_test_split(x_train, y_train, train_size=0.9, random_state=99)
 
-    train=datagen.flow(x_train, y_train, batch_size=128)
-    val=datagen2.flow(x_val, y_val)
+    train=datagen.flow(x_train, y_train, batch_size=64)
+    val=datagen2.flow(x_test, y_test)
+    test=datagen2.flow(x_test, y_test)
     pred2=datagen2.flow(pred, shuffle=False)
 
-    es=EarlyStopping(monitor='val_loss', patience=50, mode='auto')
+    es=EarlyStopping(monitor='val_loss', patience=100, mode='auto')
     rl=ReduceLROnPlateau(monitor='val_loss', patience=20, mode='auto', verbose=1, factor=0.1)
     cp=ModelCheckpoint(save_best_only=True, monitor='val_acc', mode='auto',
                         filepath='../data/modelcheckpoint/weight.h5')
+    cp2=ModelCheckpoint(filepath='../data/modelcheckpoint/weight_%s_{val_acc:.4f}_{val_loss:.4f}.hdf5'%i,
+                        save_best_only=True, monitor='val_acc', mode='auto')
 
     model=Sequential()
-    model.add(Conv2D(64, 5, padding='same', input_shape=(28, 28, 1)))
+    model.add(Conv2D(256, 3, padding='same', input_shape=(28, 28, 1)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(2, padding='same'))
-    model.add(Conv2D(128, 5, padding='same'))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(2, padding='same'))
-    model.add(Conv2D(256, 5, padding='same'))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(2, padding='same'))
+    model.add(MaxPooling2D(3, padding='same'))
     model.add(Dropout(0.2))
-    model.add(Conv2D(512, 5, padding='same'))
+    model.add(Conv2D(256, 3, padding='same'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(2, padding='same'))
+    model.add(MaxPooling2D(3, padding='same'))
     model.add(Dropout(0.2))
-    model.add(Conv2D(1024, 5, padding='same'))
+    model.add(Conv2D(512, 3, padding='same'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(2, padding='same'))
+    model.add(MaxPooling2D(3, padding='same'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(1024, 3, padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(3, padding='same'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(1024, 3, padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(3, padding='same'))
     model.add(Dropout(0.2))
     model.add(Conv2D(512, 3, padding='same'))
     model.add(BatchNormalization())
@@ -133,11 +142,11 @@ for train_index, validation_index in kf.split(x, y):
 
     # model.summary()
 
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics='acc')
+    model.compile(loss='sparse_categorical_crossentropy', optimizer=Adam(epsilon=None), metrics='acc')
     # hist=model.fit(x_train, y_train, validation_data=(x_val, y_val),
     #             epochs=500, batch_size=128, callbacks=[es, rl, cp])
-    hist=model.fit_generator(train, epochs=300, validation_data=(val),
-                callbacks=[es, rl, cp], verbose=1)
+    hist=model.fit_generator(train, epochs=500, validation_data=(val),
+                callbacks=[es, rl, cp, cp2], verbose=1)
 
     model.load_weights('../data/modelcheckpoint/weight.h5')
     result += model.predict_generator(pred, verbose=True)/20
@@ -145,7 +154,12 @@ for train_index, validation_index in kf.split(x, y):
     hists=pd.DataFrame(hist.history)
     val_loss_min.append(hists['val_loss'].min)
 
-    print(str(i) + ' 번째 훈련 종료')
+    loss=model.evaluate_generator(test)
+
+    print('loss : ', loss[0])
+    print('acc : ', loss[1])
+
+    print(str(n) + ' 번째 중 ' + str(i) + ' 번째 훈련 종료')
     
 # sub['digit']=np.argmax(model.predict(pred), axis=1)
 
