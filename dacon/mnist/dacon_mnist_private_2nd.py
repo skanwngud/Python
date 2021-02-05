@@ -25,6 +25,7 @@ from keras import backend as bek
 train=pd.read_csv('../data/dacon/data/train.csv')
 test=pd.read_csv('../data/dacon/data/test.csv')
 
+# make train data set
 x_train=train.drop(['id', 'letter', 'digit'], axis=1).values
 x_train=x_train.reshape(-1, 28, 28, 1)
 
@@ -33,23 +34,28 @@ x_train=np.where((x_train<=20)&(x_train!=0), 0., x_train)
 x_train=x_train/255
 x_train=x_train.astype('float32')
 
+# make test data set (only digit)
 y=train['digit']
-y_train=np.zeros((len(y), len(y.unique()))) # 0 ~ 9
+y_train=np.zeros((len(y), len(y.unique()))) # 0 ~ 9 까지의 10행을 추가한다
 
 for i, digit in enumerate(y): # y 안의 i 와 digit
-    y_train[i, digit]=1
+    y_train[i, digit]=1 # 일반적인 OneHotEncoding 방법
 
-train_224=np.zeros([2048, 50, 50, 3], dtype=np.float32)
+train_224=np.zeros([2048, 50, 50, 3], dtype=np.float32) # 50, 50 사이즈의 검은 배경을 만든다
 
 for i,s in enumerate(x_train):
     converted=cv2.cvtColor(s, cv2.COLOR_GRAY2RGB)
+    # 기존 데이터를 흑백에서 컬러로 바꾸어 특성을 강조시킨다
     resized=cv2.resize(converted, (50, 50), interpolation=cv2.INTER_CUBIC)
-    del converted
+    # 28, 28 사이즈의 기존 데이터를 정사각형 형태의 50, 50 사이즈로 늘린다
+    # cv2.INTER_LINEAR 도 있는데 이건 정사각형이 아닌 선형 형태로 상하좌우로만 늘림
+    del converted # 변수초기화
     train_224[i]=resized
     del resized
     bek.clear_session()
     gc.collect()
 
+# 훈련 데이터 증폭을 위해 데이터 생성
 datagen=ImageDataGenerator(
         width_shift_range=0.05,
         height_shift_range=0.05,
@@ -58,10 +64,15 @@ datagen=ImageDataGenerator(
         validation_split=0.2
 )
 
+# 검증 데이터는 default 값으로 한다
 valgen=ImageDataGenerator()
 
 from keras.callbacks import LearningRateScheduler, EarlyStopping
 
+# EfficientNet 모델 사용
+# EfficientNet 모델은 기존 CNN 모델에서의 단점을 보완한 모델로써
+# 채널을 늘리거나 레이어를 깊게 쌓거나 노드 수를 늘리는 것과 같은 3가지의 방법으로
+# 성능을 개선하는 기존 모델보다 훨씬 빠르고 성능이 높게 나온다
 def create_model():
     effnet=tf.keras.applications.EfficientNetB3(
         include_top=True,
@@ -79,6 +90,7 @@ def create_model():
                     metrics=['acc'])
     return model
 
+# optimizer learningrate
 initial_learningrate=2e-3
 
 from sklearn.model_selection import RepeatedKFold, KFold
