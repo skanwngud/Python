@@ -30,3 +30,4 @@ im_npy=np.load('../data/dacon/data/a.npy')
 # image_set=np.concatenate((im_npy, im_npy1))
 
 # np.save('../data/dacon/data/image_set.npy', arr=image_set)
+
