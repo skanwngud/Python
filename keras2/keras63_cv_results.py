@@ -70,10 +70,36 @@ print(search.cv_results_)
 acc=search.score(x_test, y_test)
 print('최종스코어 : ', acc)
 
-# results
+'''
+results
 
-# {'optimizer': 'rmsprop', 'drop': 0.2, 'batch_size': 50}
-# <tensorflow.python.keras.wrappers.scikit_learn.KerasClassifier object at 0x0000028817E3EA60>
-# 0.9661999940872192
-# 200/200 [==============================] - 0s 1ms/step - loss: 0.1043 - acc: 0.9740
-# 최종스코어 :  0.9739999771118164
+{'optimizer': 'adam', 'drop': 0.1, 'batch_size': 20}
+<tensorflow.python.keras.wrappers.scikit_learn.KerasClassifier object at 0x0000024C54A09A60>
+0.9554666876792908
+{'mean_fit_time': array([ 5.07590024,  4.6074903 ,  3.13821212,  3.38062429, 13.07331459,
+        3.42199238,  4.58181628,  8.89286153,  4.39520907,  4.38356336]), 'std_fit_time': array([0.30755139, 0.06280603, 0.04822569, 0.11503678, 0.33873331,
+       0.05572256, 0.11539272, 0.08675135, 0.082882  , 0.03243678]), 'mean_score_time': array([1.2077318 , 1.32977955, 0.68088826, 1.02168695, 2.52471542,
+       1.28507916, 1.30518365, 2.68312359, 1.24885408, 1.3284653 ]), 'std_score_time': array([0.24990637, 0.10979783, 0.14624176, 0.02485399, 0.05290294,
+       0.07979403, 0.01319614, 0.36445677, 0.02843574, 0.09387153]), 'param_optimizer': masked_array(data=['rmsprop', 'adadelta', 'rmsprop', 'adadelta',
+                   'rmsprop', 'adam', 'adam', 'adam', 'adadelta',
+                   'adadelta'],
+             mask=[False, False, False, False, False, False, False, False,
+                   False, False],
+       fill_value='?',
+            dtype=object), 'param_drop': masked_array(data=[0.3, 0.2, 0.3, 0.3, 0.2, 0.1, 0.1, 0.1, 0.3, 0.1],
+             mask=[False, False, False, False, False, False, False, False,
+                   False, False],
+       fill_value='?',
+            dtype=object), 'param_batch_size': masked_array(data=[30, 20, 50, 30, 10, 30, 20, 10, 20, 20],
+             mask=[False, False, False, False, False, False, False, False,
+                   False, False],
+       fill_value='?',
+            dtype=object), 'params': [{'optimizer': 'rmsprop', 'drop': 0.3, 'batch_size': 30}, {'optimizer': 'adadelta', 'drop': 0.2, 'batch_size': 20}, {'optimizer': 'rmsprop', 'drop': 0.3, 'batch_size': 50}, {'optimizer': 'adadelta', 'drop': 0.3, 'batch_size': 30}, {'optimizer': 'rmsprop', 'drop': 0.2, 'batch_size': 10}, {'optimizer': 'adam', 'drop': 0.1, 'batch_size': 30}, {'optimizer': 'adam', 'drop': 0.1, 'batch_size': 20}, {'optimizer': 'adam', 'drop': 0.1, 'batch_size': 10}, {'optimizer': 'adadelta', 'drop': 0.3, 'batch_size': 20}, {'optimizer': 'adadelta', 'drop': 0.1, 'batch_size': 20}], 'split0_test_score': array([0.95585001, 0.34009999, 0.95375001, 0.1728    , 0.95920002,
+       0.95249999, 0.95880002, 0.94125003, 0.17135   , 0.37079999]), 'split1_test_score': array([0.95485002, 0.30450001, 0.95380002, 0.19984999, 0.95324999,
+       0.95674998, 0.95235002, 0.92559999, 0.1992    , 0.38545001]), 'split2_test_score': array([0.95165002, 0.38080001, 0.95490003, 0.16635001, 0.94954997,
+       0.95564997, 0.95525002, 0.94919997, 0.25764999, 0.36410001]), 'mean_test_score': array([0.95411668, 0.3418    , 0.95415002, 0.17966667, 0.954     ,
+       0.95496664, 0.95546669, 0.93868333, 0.2094    , 0.37345   ]), 'std_test_score': array([0.00179133, 0.03117253, 0.00053073, 0.01451265, 0.00397515,
+       0.00180107, 0.00263765, 0.00980411, 0.0359625 , 0.00891525]), 'rank_test_score': array([ 4,  8,  3, 10,  5,  2,  1,  6,  9,  7])}
+500/500 [==============================] - 1s 1ms/step - loss: 0.1326 - acc: 0.9574
+최종스코어 :  0.9574000239372253
+'''

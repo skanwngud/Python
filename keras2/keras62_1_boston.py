@@ -11,19 +11,26 @@ from keras.datasets import boston_housing
 
 from sklearn.model_selection import RandomizedSearchCV
 
+# data
 (x_train, y_train), (x_test, y_test)=boston_housing.load_data()
 
 print(x_train.shape) # (404, 13)
 print(y_train.shape) # (404, )
 
-# data
+# model
 def build_model(activation='relu', batches=64, learning_rate=0.01,
                 optimizer='adam'):
     model=Sequential()
     model.add(Dense(64, activation=activation, input_shape=(13, )))
     model.add(Dense(128, activation=activation))
     model.add(Dense(256, activation=activation))
+    model.add(Dense(512, activation=activation))
+    model.add(Dense(512, activation=activation))
+    model.add(Dense(512, activation=activation))
+    model.add(Dense(256, activation=activation))
+    model.add(Dense(256, activation=activation))
     model.add(Dense(128, activation=activation))
+    model.add(Dense(64, activation=activation))
     model.add(Dense(1))
     
     model.compile(loss='mse', optimizer=optimizer, metrics=['mae'])
@@ -39,7 +46,7 @@ def create_parameter():
 
 es=EarlyStopping(patience=30, verbose=1)
 rl=ReduceLROnPlateau(patience=5, verbose=1)
-cp=ModelCheckpoint(filepath='../data/modelcheckpoint/keras62_{val_loss:.4f}.hdf5',
+cp=ModelCheckpoint(filepath='../data/modelcheckpoint/keras62_boston_{val_loss:.4f}.hdf5',
                     verbose=1, save_best_only=True)
 
 model2=build_model()
@@ -58,3 +65,9 @@ print(search.best_params_)
 print(search.best_score_)
 
 print('최종 스코어 : ', mse)
+
+# results
+# <tensorflow.python.keras.wrappers.scikit_learn.KerasRegressor object at 0x0000026CA149F2E0>
+# {'optimizer': 'rmsprop', 'learning_rate': 0.001, 'batch_size': 128, 'activation': 'relu'}
+# -59.750118255615234
+# 최종 스코어 :  -62.9643440246582
