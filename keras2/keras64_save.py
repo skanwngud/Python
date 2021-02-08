@@ -49,7 +49,6 @@ model2=build_model()
 from keras.wrappers.scikit_learn import KerasClassifier # sklearn 으로 싸겠단 의미
 
 model2=KerasClassifier(build_fn=build_model, verbose=1)
-# 아까 정의해줬던 model 을 KerasClassfier 로 싸서 sklearn 이 인식하게끔 만들어줌
 
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
@@ -58,27 +57,23 @@ search=RandomizedSearchCV(model2, hyperparameters, cv=3)
 
 search.fit(x_train, y_train, verbose=1)
 
-search.best_estimator_.save('../data/h5/keras64_save_model2.h5')
-import pickle
-pickle.dump(search.best_estimator_, open('../data/h5/keras64_pickle2.dat', 'wb'))
-
+search.best_estimator_.model.save('../data/h5/keras64_save_model2.h5')
+# 그냥 model.save 하면 안 되고 best_estimator_ 를 사용해야 한다.
 
 print(search.best_params_) # 내가 선택한 파라미터 중 가장 좋은 것
 print(search.best_estimator_) # 전체 파라미터 중 가장 좋은 것
 print(search.best_score_)
-# best_params_, best_estimator_ 둘 중 하나만 먹힘
-
-# TypeError: If no scoring is specified, the estimator passed should have a 'score' method.
-# The estimator <tensorflow.python.keras.engine.functional.Functional object at 0x000001C41E277DF0> does not.
-# keras model 을 sklearn 과 엮으면 위에 해당하는 Type error 가 나온다.
-# 해결하기 위해선 wrapping 을 해줘야한다.
 acc=search.score(x_test, y_test)
+
 print('최종스코어 : ', acc)
 
 # results
 
-# {'optimizer': 'rmsprop', 'drop': 0.2, 'batch_size': 50}
-# <tensorflow.python.keras.wrappers.scikit_learn.KerasClassifier object at 0x0000028817E3EA60>
-# 0.9661999940872192
-# 200/200 [==============================] - 0s 1ms/step - loss: 0.1043 - acc: 0.9740
-# 최종스코어 :  0.9739999771118164
+# {'optimizer': 'adam', 'drop': 0.1, 'batch_size': 20}
+# <tensorflow.python.keras.wrappers.scikit_learn.KerasClassifier object at 0x00000281C5B131F0>        
+# 0.9582499861717224
+# 최종스코어 :  0.961899995803833
+
+# pickle 은 먹히지 않음
+# import pickle
+# pickle.dump(search.best_estimator_, open('../data/h5/keras64_pickle2.dat', 'wb'))
