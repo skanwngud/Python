@@ -1,3 +1,6 @@
+# 61 copy
+# model.cv_results
+
 # 0. import labraries
 import numpy as np
 import tensorflow
@@ -5,7 +8,6 @@ import tensorflow
 from keras.models import Sequential, Model
 from keras.layers import Dense, Dropout, Input
 from keras.datasets import mnist
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
 
 (x_train, y_train), (x_test, y_test)=mnist.load_data()
 
@@ -41,30 +43,24 @@ def create_hyperparameter():
     return {'batch_size' :  batches, 'optimizer' : optimizer,
             'drop' : dropout}
 
-es=EarlyStopping(patience=5, verbose=1)
-rl=ReduceLROnPlateau(patience=3, verbose=1)
-cp=ModelCheckpoint('../data/modelcheckpoint/keras61_{val_loss:.4f}-{val_acc:.4f}.hdf5',
-                verbose=1, save_best_only=True)
-
 hyperparameters=create_hyperparameter()
 model2=build_model()
 
 from keras.wrappers.scikit_learn import KerasClassifier # sklearn 으로 싸겠단 의미
 
-model2=KerasClassifier(build_fn=build_model, verbose=1, epochs=100, validation_split=0.2)
+model2=KerasClassifier(build_fn=build_model, verbose=1)
 # 아까 정의해줬던 model 을 KerasClassfier 로 싸서 sklearn 이 인식하게끔 만들어줌
-# model.fit 에서 해주는 것과 같은 파라미터 사용 가능 (e.g. epochs, validation_data/split, callbacks...)
-# callbacks 가 적용 가능하기 때문에 learning_rate 를 파라미터화 시키지 않아도 된다
-# kerasClassifier 부터 적용함
 
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 
 search=RandomizedSearchCV(model2, hyperparameters, cv=3)
 
-search.fit(x_train, y_train, verbose=1, validation_split=0.2, callbacks=[es, rl, cp])
+search.fit(x_train, y_train, verbose=1)
+
 print(search.best_params_) # 내가 선택한 파라미터 중 가장 좋은 것
 print(search.best_estimator_) # 전체 파라미터 중 가장 좋은 것
 print(search.best_score_)
+print(search.cv_results_)
 # best_params_, best_estimator_ 둘 중 하나만 먹힘
 
 # TypeError: If no scoring is specified, the estimator passed should have a 'score' method.
@@ -75,8 +71,9 @@ acc=search.score(x_test, y_test)
 print('최종스코어 : ', acc)
 
 # results
-# {'optimizer': 'adam', 'drop': 0.3, 'batch_size': 30}
-# <tensorflow.python.keras.wrappers.scikit_learn.KerasClassifier object at 0x0000020B14954EE0>
-# 0.9800666769345602
-# 334/334 [==============================] - 1s 2ms/step - loss: 0.0698 - acc: 0.9863
-# 최종스코어 :  0.986299991607666
+
+# {'optimizer': 'rmsprop', 'drop': 0.2, 'batch_size': 50}
+# <tensorflow.python.keras.wrappers.scikit_learn.KerasClassifier object at 0x0000028817E3EA60>
+# 0.9661999940872192
+# 200/200 [==============================] - 0s 1ms/step - loss: 0.1043 - acc: 0.9740
+# 최종스코어 :  0.9739999771118164
