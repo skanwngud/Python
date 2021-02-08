@@ -58,9 +58,9 @@ search=RandomizedSearchCV(model2, hyperparameters, cv=3)
 
 search.fit(x_train, y_train, verbose=1)
 
+search.best_estimator_.save('../data/h5/keras64_save_model2.h5')
 import pickle
-pickle.dump(search, open('../data/h5/keras64_pickle2.dat', 'wb'))
-search.save('../data/h5/keras64_save_model2.h5')
+pickle.dump(search.best_estimator_, open('../data/h5/keras64_pickle2.dat', 'wb'))
 
 
 print(search.best_params_) # 내가 선택한 파라미터 중 가장 좋은 것

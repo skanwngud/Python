@@ -59,6 +59,7 @@ search=RandomizedSearchCV(model2, hyperparameters, cv=3)
 search.fit(x_train, y_train, verbose=1)
 
 pipe=Pipeline(search)
+# pipe=make_pipeline(search)
 print(search.best_params_) # 내가 선택한 파라미터 중 가장 좋은 것
 print(search.best_estimator_) # 전체 파라미터 중 가장 좋은 것
 print(search.best_score_)
