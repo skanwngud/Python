@@ -28,56 +28,58 @@ datagen=ImageDataGenerator(
 
 datagen2=ImageDataGenerator()
 
-data_generator=datagen.flow_from_directory(
-    './../data/image/data/male',
+train=datagen.flow_from_directory(
+    './../data/image/data/',
     target_size=(128, 128),
     class_mode='binary',
-    batch_size=179
+    batch_size=27
 )
 
-# print(data_generator[0][0])
+for i in enumerate(range(5)):
+    img, label=train.next()
 
-# female_generator=datagen2.flow_from_directory(
-#     'c:/data/image/data/female',
+x_train, x_test, y_train, y_test=train_test_split(img, label, train_size=0.8, random_state=23)
+
+# test=datagen2.flow_from_directory(
+#     './../data/image/data/',
 #     target_size=(128, 128),
 #     class_mode='binary',
-#     batch_size=32
+#     batch_size=27
 # )
 
 
-# train, test=train_test_split(
-#     data_generator,
-#     train_size=0.8,
-#     random_state=32
-# )
+model=Sequential()
+model.add(Conv2D(128, 2, padding='same', input_shape=(128, 128, 3)))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(MaxPooling2D(2, padding='same'))
+model.add(Conv2D(128, 2, padding='same'))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(MaxPooling2D(2, padding='same'))
+model.add(Conv2D(128, 2, padding='same'))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(MaxPooling2D(2, padding='same'))
+model.add(Flatten())
+model.add(Dense(1024))
+model.add(BatchNormalization())
+model.add(Activation('relu'))
+model.add(Dense(1, activation='softmax'))
 
-# print(train[0])
+model.compile(
+    loss='categorical_crossentropy',
+    optimizer=Adam(learning_rate=0.01), 
+    metrics=['acc']
+)
 
-# model=Sequential()
-# model.add(Conv2D(128, 2, padding='same', input_shape=(128, 128, 3)))
-# model.add(Flatten())
-# model.add(Dense(1, activation='sigmoid'))
+history=model.fit(
+    x_train,
+    y_train,
+    batch_size=32,
+    epochs=5,
+    validation_data=(x_test, y_test)
+)
 
-# model.summary()
-
-# model.compile(
-#     loss='binary_crossentropy',
-#     optimizer=Adam(learning_rate=0.1),
-#     metrics=['acc']
-# )
-
-# model.fit(
-#     train[0][0],
-#     train[0][1],
-#     steps_per_epoch=10,
-#     validation_steps=4,
-#     validation_data=test,
-#     epochs=3
-# )
-
-# loss=model.evaluate(
-#     test
-# )
-
-# print('loss : ', loss[0])
-# print('acc : ', loss[1])
+print('loss : ', history.history['loss'][-1])
+print('acc : ', history.history['acc'][-1])
