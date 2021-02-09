@@ -57,6 +57,7 @@ def build_model(optimizer='adam', drop=0.2):
                     optimizer=optimizer, metrics=['acc'])
     return model
 
+# parameter
 def creat_parameter():
     batches=[16, 32, 64, 128]
     optimizers=['rmsprop', 'adam', 'adadelta']
@@ -71,7 +72,7 @@ rl=ReduceLROnPlateau(patience=10, verbose=1)
 cp=ModelCheckpoint(filepath='../data/modelcheckpoint/keras65_pipeline.hdf5',
                     save_best_only=True, verbose=1)
 
-model2=KerasClassifier(build_fn=build_model(), verbose=1)
+model2=KerasClassifier(build_fn=build_model, verbose=1)
 
 search=RandomizedSearchCV(model2, hyperparameter, cv=kf, verbose=1)
 
