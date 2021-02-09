@@ -92,6 +92,8 @@ history=model.fit_generator(
 # steps_per_epoch = 전체 데이터 갯수를 batch_size 로 나눴을 때의 값을 넣어준다.
 # e.g. 160개의 데이터를 5의 batch_size 로 나눈 값이 32 이므로 32로 넣어줘야한다.
 # 그 값의 미만인 경우 (31) 전체 학습을 31 번만 진행한다.
+# 만약 32 로 다 떨어지지 않는 경우 (e.g. 161) 에는 161/5= 32.2 이므로 0.2 분의 훈련도
+# 진행해야하기 때문에 1을 더 추가시켜 33을 최적의 epochs 로 넣어준다.
 
 # fit 은 x,y 를 따로 넣어주지만 fit_generator 은 flow, flow_from_directory 을 통과한 데이터 자체를 넣어준다.
 

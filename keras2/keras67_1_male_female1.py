@@ -19,36 +19,43 @@ from sklearn.model_selection import train_test_split
 datagen=ImageDataGenerator(
     width_shift_range=0.1,
     height_shift_range=0.1,
-    rotation_range=0.1,
+    rotation_range=5,
     vertical_flip=True,
     horizontal_flip=True,
-    zoom_range=0.2,
+    zoom_range=0.7,
     rescale=1./255,
-    validation_split=0.2
+    validation_split=0.2,
+    shear_range=1.2
 )
 
-datagen2=ImageDataGenerator()
+# datagen2=ImageDataGenerator()
 
 male=datagen.flow_from_directory(
     'c:/data/image/data/',
-    target_size=(128, 128),
+    target_size=(64, 64),
     class_mode='binary',
-    batch_size=32,
+    batch_size=1389,
     subset="training"
-
 )
 
 male2=datagen.flow_from_directory(
     'c:/data/image/data/',
-    target_size=(128, 128),
+    target_size=(64, 64),
     class_mode='binary',
-    batch_size=32,
+    batch_size=347,
     subset="validation"
-
 )
 
-print(male)
-print(male2)
+# print(male[0][1])
+# print(male2[0])
+
+
+np.save('.././data/image/data/train_set.npy', arr=male[0][0])
+np.save('.././data/image/data/test_set.npy', arr=male[0][1])
+np.save('.././data/image/data/val_set.npy', arr=male2[0][0])
+np.save('.././data/image/data/val_test_set.npy', arr=male2[0][1])
+
+
 
 # female=datagen.flow_from_directory(
 #     'c:/data/image/data/',
@@ -79,6 +86,7 @@ print(male2)
 
 # print(train[0])
 
+'''
 model=Sequential()
 model.add(Conv2D(128, 2, padding='same', input_shape=(128, 128, 3)))
 model.add(BatchNormalization())
@@ -123,8 +131,13 @@ history = model.fit_generator(
 
 print('loss : ', history.history['loss'][-1])
 print('acc : ', history.history['acc'][-1])
+'''
 
 # results
 # Epoch 00048: early stopping
 # loss :  0.6074425578117371
 # acc :  0.659375011920929
+
+# Epoch 00076: early stopping
+# loss :  0.6229947805404663
+# acc :  0.640625
