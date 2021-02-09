@@ -72,10 +72,10 @@ cp=ModelCheckpoint(filepath='../data/modelcheckpoint/keras65_pipeline.hdf5',
                     save_best_only=True, verbose=1)
 
 model2=KerasClassifier(build_fn=build_model(), verbose=1)
-
-search=RandomizedSearchCV(model2, hyperparameter, cv=kf, verbose=1)
-
 pipe=make_pipeline(MinMaxScaler(), model2, verbose=1)
+
+search=RandomizedSearchCV(pipe, hyperparameter, cv=kf, verbose=1)
+
 
 search.fit(x_train, y_train, epochs=100, validation_data=(x_val, y_val),
             callbacks=[es, cp, rl])
