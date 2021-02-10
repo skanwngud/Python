@@ -1,3 +1,6 @@
+# 나를 찍어서 남자인지 여자인지 구별
+# acc도 나오게끔
+
 # fit_generator 사용
 
 import tensorflow
@@ -28,57 +31,64 @@ datagen=ImageDataGenerator(
     shear_range=1.2
 )
 
-datagen2=ImageDataGenerator()
+datagen2=ImageDataGenerator(rescale=1./255)
 
-male=datagen.flow_from_directory(
+train=datagen.flow_from_directory(
     'c:/data/image/data/',
-    target_size=(64, 64),
+    target_size=(128, 128),
     class_mode='binary',
-    batch_size=1389,
+    batch_size=32,
     subset="training"
 )
 
-male2=datagen.flow_from_directory(
+val=datagen.flow_from_directory(
     'c:/data/image/data/',
-    target_size=(64, 64),
+    target_size=(128, 128),
     class_mode='binary',
-    batch_size=347,
+    batch_size=32,
     subset="validation"
 )
+
+im=Image.open(
+    'c:/data/image/data/my.jpg'
+)
+
+my=np.asarray(im)
+my=np.resize(
+    my,
+    (128, 128, 3)
+)
+my=my.reshape(
+    1, 128, 128, 3
+)
+predict=datagen2.flow(my)
 
 # print(male[0][1])
 # print(male2[0])
 
 
-np.save('.././data/image/data/train_set.npy', arr=male[0][0])
-np.save('.././data/image/data/test_set.npy', arr=male[0][1])
-np.save('.././data/image/data/val_set.npy', arr=male2[0][0])
-np.save('.././data/image/data/val_test_set.npy', arr=male2[0][1])
+# female=datagen.flow_from_directory(
+#     'c:/data/image/data/',
+#     target_size=(128, 128),
+#     class_mode='binary',
+#     batch_size=32
+# )
+
+# female_generator=datagen2.flow_from_directory(
+#     'c:/data/image/data/female',
+#     target_size=(128, 128),
+#     class_mode='binary',
+#     batch_size=32
+# )
 
 
+# train, test=train_test_split(
+#     train,
+#     train_size=0.8,
+#     random_state=32
+# )
 
-female=datagen.flow_from_directory(
-    'c:/data/image/data/',
-    target_size=(128, 128),
-    class_mode='binary',
-    batch_size=32
-)
-
-female_generator=datagen2.flow_from_directory(
-    'c:/data/image/data/female',
-    target_size=(128, 128),
-    class_mode='binary',
-    batch_size=32
-)
-
-
-train, test=train_test_split(
-    male,
-    train_size=0.8,
-    random_state=32
-)
-
-print(train[0])
+# print(train[0])
 
 
 model=Sequential()
@@ -116,22 +126,24 @@ es=EarlyStopping(patience=20, verbose=1, monitor='loss')
 rl=ReduceLROnPlateau(patience=10, verbose=1, monitor='loss')
 
 history = model.fit_generator(
-    male,
-    steps_per_epoch=10,
-    epochs=100,
+    train,
+    steps_per_epoch=44,
+    epochs=5,
     callbacks=[es, rl],
-    validation_data=male2
+    validation_data=val
 )
 
+pred=np.where(model.predict(predict)>0.5, 1, 0)
+
+
+print(pred)
 print('loss : ', history.history['loss'][-1])
 print('acc : ', history.history['acc'][-1])
 
+if pred==1:
+    print('남성')
+
+else:
+    print('여성')
 
 # results
-# Epoch 00048: early stopping
-# loss :  0.6074425578117371
-# acc :  0.659375011920929
-
-# Epoch 00076: early stopping
-# loss :  0.6229947805404663
-# acc :  0.640625
