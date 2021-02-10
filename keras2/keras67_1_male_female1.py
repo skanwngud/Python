@@ -32,7 +32,7 @@ datagen2=ImageDataGenerator()
 
 male=datagen.flow_from_directory(
     'c:/data/image/data/',
-    target_size=(64, 64),
+    target_size=(128, 128),
     class_mode='binary',
     batch_size=1389,
     subset="training"
@@ -40,7 +40,7 @@ male=datagen.flow_from_directory(
 
 male2=datagen.flow_from_directory(
     'c:/data/image/data/',
-    target_size=(64, 64),
+    target_size=(128, 128),
     class_mode='binary',
     batch_size=347,
     subset="validation"
@@ -56,7 +56,7 @@ np.save('.././data/image/data/val_set.npy', arr=male2[0][0])
 np.save('.././data/image/data/val_test_set.npy', arr=male2[0][1])
 
 
-
+'''
 female=datagen.flow_from_directory(
     'c:/data/image/data/',
     target_size=(128, 128),
@@ -135,3 +135,4 @@ print('acc : ', history.history['acc'][-1])
 # Epoch 00076: early stopping
 # loss :  0.6229947805404663
 # acc :  0.640625
+'''
