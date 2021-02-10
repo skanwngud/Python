@@ -95,7 +95,7 @@ model.add(Dropout(0.2))
 model.add(Conv2D(128, 2, padding='same'))
 model.add(BatchNormalization())
 model.add(Activation('relu'))
-model.add(MaxPooling2D(2, padding='same'))
+# model.add(MaxPooling2D(2, padding='same'))
 model.add(Dropout(0.2))
 model.add(Conv2D(128, 2, padding='same'))
 model.add(BatchNormalization())
@@ -156,7 +156,7 @@ es=EarlyStopping(patience=20, verbose=1, monitor='loss')
 rl=ReduceLROnPlateau(patience=10, verbose=1, monitor='loss')
 cp=ModelCheckpoint(
     filepath='c:/data/modelcheckpoint/keras67_my_{val_acc:.4f}_{val_loss:.4f}.hdf5',
-    monitor='val_loss',
+    monitor='val_acc',
     save_best_only=True,
     verbose=1
 )
