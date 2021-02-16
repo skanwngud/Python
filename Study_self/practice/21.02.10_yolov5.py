@@ -32,9 +32,6 @@ train_img_list, val_img_list=train_test_split(
 
 # print(len(train_img_list), len(val_img_list)) # 60, 15
 
-import yaml
-with open('c:/data/image/project/'):
-    
 
 with open('c:/data/image/project/train.txt', 'w') as f:
     f.write('\n'.join(train_img_list)+'\n')
