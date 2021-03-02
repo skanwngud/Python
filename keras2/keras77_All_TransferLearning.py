@@ -119,7 +119,7 @@ MobileNet()
 Total params: 4,253,864
 Trainable params: 0
 Non-trainable params: 4,253,864
-_________________________________________________________________
+__________________________________________________________________________________________________
 <tensorflow.python.keras.engine.functional.Functional object at 0x0000022F91F48A90> :  137
 <tensorflow.python.keras.engine.functional.Functional object at 0x0000022F91F48A90> :  0
 

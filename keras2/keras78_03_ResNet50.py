@@ -83,8 +83,8 @@ y_pred=model.predict(
 )
 
 print(loss)
-print(np.argmax(y_pred, axis=-1))
-print(np.argmax(x_test, axis=-1))
+print(np.argmax(y_pred[:5], axis=-1))
+print(np.argmax(y_test[:5], axis=-1))
 
-# preprocess_input = x
-#
+# results
+# [2.953702211380005, 0.5546000003814697]

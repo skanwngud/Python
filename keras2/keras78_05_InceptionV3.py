@@ -83,8 +83,7 @@ y_pred=model.predict(
 )
 
 print(loss)
-print(np.argmax(y_pred, axis=-1))
-print(np.argmax(x_test, axis=-1))
+print(np.argmax(y_pred[:5], axis=-1))
+print(np.argmax(y_test[:5], axis=-1))
 
-# preprocess_input = x
-#
+# ValueError: Input size must be at least 75x75; got `input_shape=(32, 32, 3)`

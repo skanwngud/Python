@@ -1,9 +1,9 @@
-# 실습 - cifar10 으로 NasNetMobile 넣어서 만들 것
+# 실습 - cifar10 으로 NASNetMobile 넣어서 만들 것
 
 import tensorflow
 import numpy as np
 
-from keras.applications import NasNetMobile
+from keras.applications import NASNetMobile
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, BatchNormalization, Activation
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
@@ -25,16 +25,16 @@ x_train=x_train/255.
 x_val=x_val/255.
 x_test=x_test/255.
 
-NasNetMobile=NasNetMobile(
+NASNetMobile=NASNetMobile(
     weights='imagenet',
     include_top=False,
     input_shape=(32, 32, 3)
 )
 
-NasNetMobile.trainable=False
+NASNetMobile.trainable=False
 
 model=Sequential()
-model.add(NasNetMobile)
+model.add(NASNetMobile)
 model.add(Flatten())
 model.add(Dense(1024))
 model.add(BatchNormalization())
@@ -83,8 +83,7 @@ y_pred=model.predict(
 )
 
 print(loss)
-print(np.argmax(y_pred, axis=-1))
-print(np.argmax(x_test, axis=-1))
+print(np.argmax(y_pred[:5], axis=-1))
+print(np.argmax(y_test[:5], axis=-1))
 
-# preprocess_input = x
-#
+# ValueError: When setting `include_top=True` and loading `imagenet` weights, `input_shape` should be (224, 224, 3).

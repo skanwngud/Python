@@ -1,9 +1,9 @@
-# 실습 - cifar10 으로 EfficientNetB0 넣어서 만들 것
+# 실습 - cifar10 으로 ResNet50V2 넣어서 만들 것
 
 import tensorflow
 import numpy as np
 
-from keras.applications import EfficientNetB0
+from keras.applications import ResNet50V2
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, BatchNormalization, Activation
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
@@ -25,16 +25,16 @@ x_train=x_train/255.
 x_val=x_val/255.
 x_test=x_test/255.
 
-EfficientNetB0=EfficientNetB0(
+ResNet50V2=ResNet50V2(
     weights='imagenet',
     include_top=False,
     input_shape=(32, 32, 3)
 )
 
-EfficientNetB0.trainable=False
+ResNet50V2.trainable=False
 
 model=Sequential()
-model.add(EfficientNetB0)
+model.add(ResNet50V2)
 model.add(Flatten())
 model.add(Dense(1024))
 model.add(BatchNormalization())
@@ -83,8 +83,8 @@ y_pred=model.predict(
 )
 
 print(loss)
-print(np.argmax(y_pred, axis=-1))
-print(np.argmax(x_test, axis=-1))
+print(np.argmax(y_pred[:5], axis=-1))
+print(np.argmax(y_test[:5], axis=-1))
 
-# preprocess_input = x
-#
+# [5.112666130065918, 0.35519999265670776]
+# [1 0 1 0 6]

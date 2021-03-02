@@ -87,4 +87,4 @@ print(np.argmax(y_pred, axis=-1))
 print(np.argmax(x_test, axis=-1))
 
 # results
-# 
+# [2.965426445007324, 0.4465999901294708]

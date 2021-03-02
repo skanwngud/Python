@@ -8,6 +8,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Flatten, BatchNormalization, Activation
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
 from keras.datasets import cifar10
+from keras.utils import to_categorical
 
 from sklearn.model_selection import train_test_split
 
@@ -24,6 +25,10 @@ print(x_train.shape)
 x_train=x_train/255.
 x_val=x_val/255.
 x_test=x_test/255.
+
+y_train=to_categorical(y_train)
+y_val=to_categorical(y_val)
+y_test=to_categorical(y_test)
 
 vgg16=VGG16(
     weights='imagenet',
@@ -63,7 +68,7 @@ rl=ReduceLROnPlateau(
 
 model.compile(
     optimizer='adam',
-    loss='sparse_categorical_crossentropy',
+    loss='categorical_crossentropy',
     metrics='acc'
 )
 
@@ -83,8 +88,9 @@ y_pred=model.predict(
 )
 
 print(loss)
-print(np.argmax(y_pred, axis=-1))
-print(np.argmax(x_test, axis=-1))
+print(np.argmax(y_pred[:5], axis=-1))
+print(np.argmax(y_test[:5], axis=-1))
 
-# preprocess_input = x
-#
+# [3.4048569202423096, 0.6180999875068665]
+# [3 8 8 1 6]
+# [3 8 8 0 6]
