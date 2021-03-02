@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 def softmax(x):
     return np.exp(x)/np.sum(np.exp(x)) # np.exp 찾아볼 것
+    # np.exp (지수 함수)
 
 x=np.arange(1, 5) # 1 부터 5까지 1씩
 y=softmax(x) # 전부 합치면 1
