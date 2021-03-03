@@ -33,7 +33,7 @@ pad_x=pad_sequences(x, padding='pre', maxlen=5) # 'pre' - 앞쪽부터, 'post' -
 # 자동으로 가장 긴 문장 기준으로 크기를 맞춰준다
 
 print(pad_x)
-print(pad_x.shape) # (13, 5) / maxlen = 4 -> (13, 4)
+print(pad_x.shape) # (13, 5) : 중복 제외 13개의 단어, 가장 긴 문장에 들어간 단어의 갯수 5개 / maxlen = 4 -> (13, 4)
 # (13, 5) 중 앞 뒤로 일정부분을 날리기 위해선 maxlen 사용
 
 print(np.unique(pad_x)) # 객체별로 수치가 나옴
@@ -70,7 +70,7 @@ acc=model.evaluate(
     pad_x, labels
 )[1] # [0] = loss, [1] = metrics
 
-print(acc)
+print('acc : ', acc)
 
 """
 벡터화
@@ -78,3 +78,14 @@ pad_sequence 시 수치를 원핫인코딩을 실시하게 되면 문장이 길�
 벡터화를 시키게 되면 x,y 의 좌표상에 찍어주게 되므로 크기를 줄일 수 있다
 (eg. 0 = 1 0 0 0 을 0 = 0.22 로 바꿔줌)
 """
+
+# results
+
+# LSTM
+# acc :  0.9230769276618958
+
+# Conv1D
+# acc :  0.8461538553237915
+
+# Dense
+# acc :  0.7846154570579529
