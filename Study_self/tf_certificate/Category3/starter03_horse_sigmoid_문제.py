@@ -41,30 +41,65 @@ def solution_model():
     zip_ref.close()
 
     train_datagen = ImageDataGenerator(
+        rescale=1./255,
+        width_shift_range=0.1,
+        height_shift_range=0.1,
+    )
         #Your code here. Should at least have a rescale. Other parameters can help with overfitting.)
 
-    validation_datagen = ImageDataGenerator(#Your Code here)
+    validation_datagen = ImageDataGenerator(
+        rescale=1./255,
+    )#Your Code here)
 
     train_generator = train_datagen.flow_from_directory(
+        'tmp/horse-or-human/',
+        target_size=(300, 300),
+        class_mode='binary'
+    )
         #Your Code Here)
 
     validation_generator = validation_datagen.flow_from_directory(
+        'tmp/testdata/',
+        target_size=(300, 300),
+        class_mode='binary'
+    )
         #Your Code Here)
 
 
     model = tf.keras.models.Sequential([
+        tf.keras.layers.Conv2D(64, 2, activation='relu', input_shape=(300, 300, 3)),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Conv2D(64, 3, activation='relu'),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D(128, 3, activation='relu'),
+        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.MaxPool2D(),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(32, activation='relu'),
         # Note the input shape specified on your first layer must be (300,300,3)
         # Your Code here
 
         # This is the last layer. You should not change this code.
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
+
+    model.compile(
+        loss='binary_crossentropy',
+        optimizer='adam',
+        metrics='acc'
+    ) #Your Code Here#)
+
+    model.fit(
+        train_generator,
+        validation_data=validation_generator,
+        batch_size=16,
+        epochs=1
+    ) #Your Code Here#)
+
     return model
 
-
-    model.compile(#Your Code Here#)
-
-    model.fit(#Your Code Here#)
 
     # NOTE: If training is taking a very long time, you should consider setting the batch size
     # appropriately on the generator, and the steps per epoch in the model.fit() function.
@@ -75,4 +110,4 @@ def solution_model():
 # and the score will be returned to you.
 if __name__ == '__main__':
     model = solution_model()
-    model.save("mymodel.h5")
+    model.save("c:/data/modelcheckpoint/mymodel3_1.h5")
