@@ -40,7 +40,7 @@ rl=tf.keras.callbacks.ReduceLROnPlateau(
 
 def solution_model():
     url = 'https://storage.googleapis.com/download.tensorflow.org/data/sarcasm.json'
-    urllib.request.urlretrieve(url, 'sarcasm.json')
+    urllib.request.urlretrieve(url, 'C:\ML\sarcasm.json')
 
     # DO NOT CHANGE THIS CODE OR THE TESTS MAY NOT WORK
     vocab_size = 1000
@@ -54,45 +54,59 @@ def solution_model():
     sentences = []
     labels = []
     # YOUR CODE HERE
-    with open('sarcasm.json', 'r') as f:
+    with open('C:\ML\sarcasm.json', 'r') as f:
         datasets=json.load(f)
     for item in datasets:
         sentences.append(item['headline'])
         labels.append(item['is_sarcastic'])
 
-        x_train=sentences[0:training_size]
-        x_test=sentences[training_size:]
-        y_train=labels[0:training_size]
-        y_test=labels[training_size:]
+    x_train=sentences[0:training_size]
+    x_test=sentences[training_size:]
+    y_train=labels[0:training_size]
+    y_test=labels[training_size:]
 
-    token=Tokenizer()
-    x_train=token.fit_on_sequences(x_train)
-    x_test=token.fit_on_sequences(x_test)
+    x_train=np.array(x_train)
+    x_test=np.array(x_test)
+    y_train=np.array(y_train)
+    y_test=np.array(y_test)
 
-    x_train=pad_sequences(
+    token=Tokenizer(num_words=vocab_size, oov_token=oov_tok)
+
+    token.fit_on_texts(x_train)
+    token.fit_on_texts(x_test)
+
+    x_train=token.texts_to_sequences(x_train)
+    x_test=token.texts_to_sequences(x_test)
+
+    pad_x_train=pad_sequences(
         x_train,
+        padding=padding_type,
+        truncating=trunc_type,
         maxlen=max_length
     )
 
-    x_test=pad_sequences(
+    pad_x_test=pad_sequences(
         x_test,
+        padding=padding_type,
+        truncating=trunc_type,
         maxlen=max_length
     )
-    
+
     model = tf.keras.Sequential([
         tf.keras.layers.Embedding(
-            input_dim=vocab_size,
+            input_dim=training_size,
             output_dim=embedding_dim,
             input_length=max_length),
-        tf.keras.layers.Conv1D(128, 2, padding='same'),
-        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.Conv1D(64, 2),
+        tf.keras.layers.Conv1D(64, 2),
         tf.keras.layers.Activation('relu'),
-        tf.keras.layers.LSTM(128, activation=None),
-        tf.keras.layers.BatchNormalization(),
-        tf.keras.layers.Activation('relu'),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Bidirectional(
+            tf.keras.layers.LSTM(32, activation='relu')),
+        tf.keras.layers.Dropout(0.3),
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(32, activation='relu'),
     # YOUR CODE HERE. KEEP THIS OUTPUT LAYER INTACT OR TESTS MAY FAIL
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
@@ -104,11 +118,20 @@ def solution_model():
     )
 
     model.fit(
-        x_train, y_train,
-        epochs=1,
-        batch_size=32,
+        pad_x_train, y_train,
+        epochs=100,
+        batch_size=16,
+        validation_split=0.2,
         callbacks=[es, rl]
     )
+
+    loss=model.evaluate(
+        pad_x_test, y_test
+    )
+
+    print('loss : ', loss[0])
+    print('acc : ', loss[1])
+    
     return model
 
 

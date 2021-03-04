@@ -33,6 +33,7 @@ import csv
 import tensorflow as tf
 import numpy as np
 import urllib
+import pandas as pd
 
 # DO NOT CHANGE THIS CODE
 def windowed_dataset(series, window_size, batch_size, shuffle_buffer):
@@ -56,10 +57,10 @@ def solution_model():
       reader = csv.reader(csvfile, delimiter=',')
       next(reader)
       for row in reader:
-        sunspots.append(# YOUR CODE HERE)
-        time_step.append(# YOUR CODE HERE)
+        sunspots.append(float(row[2]))# YOUR CODE HERE)
+        time_step.append(float(row[0]))# YOUR CODE HERE)
 
-    series = # YOUR CODE HERE
+    series = np.array(sunspots)# YOUR CODE HERE
 
     # DO NOT CHANGE THIS CODE
     # This is the normalization function
@@ -74,10 +75,10 @@ def solution_model():
     split_time = 3000
 
 
-    time_train = # YOUR CODE HERE
-    x_train = # YOUR CODE HERE
-    time_valid = # YOUR CODE HERE
-    x_valid = # YOUR CODE HERE
+    time_train = time[:split_time] # YOUR CODE HERE
+    x_train = series[:split_time] # YOUR CODE HERE
+    time_valid =time[split_time:] # YOUR CODE HERE
+    x_valid = series[split_time:] # YOUR CODE HERE
 
     # DO NOT CHANGE THIS CODE
     window_size = 30
@@ -89,6 +90,14 @@ def solution_model():
 
 
     model = tf.keras.models.Sequential([
+        tf.keras.layers.Conv1D(filters=60, kernel_size=5,
+                               strides=1, padding="causal",
+                               activation="relu",
+                               input_shape=[None, 1]),
+        tf.keras.layers.LSTM(60, return_sequences=True),
+        tf.keras.layers.LSTM(60, return_sequences=True),
+        tf.keras.layers.Dense(30, activation="relu"),
+        tf.keras.layers.Dense(10, activation="relu"),
       # YOUR CODE HERE. Whatever your first layer is, the input shape will be [None,1] when using the Windowed_dataset above, depending on the layer type chosen
       tf.keras.layers.Dense(1)
     ])
@@ -99,6 +108,17 @@ def solution_model():
 
 
     # YOUR CODE HERE TO COMPILE AND TRAIN THE MODEL
+    model.compile(
+        optimizer='adam',
+        loss='mae'
+    )
+
+    model.fit(
+        train_set,
+        batch_size=256,
+        epochs=100
+    )
+
     return model
 
 
@@ -108,7 +128,7 @@ def solution_model():
 # and the score will be returned to you.
 if __name__ == '__main__':
     model = solution_model()
-    model.save("mymodel.h5")
+    model.save("c:/data/modelcheckpoint/mymodel5.h5")
 
 
 
