@@ -13,8 +13,8 @@ from keras.layers import Dense, Input, Conv2D, Flatten, UpSampling2D, Conv2DTran
 
 x_train=x_train.reshape(60000, 784).astype('float32')/255
 x_test=x_test.reshape(10000, 784)/255.
-x_train_2=x_train.reshape(60000, 28, 28, 1)/255.
-x_test_2=x_test.reshape(10000, 28, 28, 1)/255.
+x_train_2=x_train.reshape(60000, 28, 28, 1)
+x_test_2=x_test.reshape(10000, 28, 28, 1)
 
 # 노이즈 생성
 x_train_noised=x_train+np.random.normal(0, 0.1, size=x_train.shape) # random.normal = 정규분포에 맞게 0부터 0.1 사이의 수치를 점으로 찍음
@@ -46,7 +46,7 @@ model.compile(
 
 model.fit(
     x_train_noised_2, x_train, # 노이즈가 있는 데이터와 없는 데이터를 번갈아가며 훈련시킴
-    epochs=10
+    epochs=1
 )
 
 output=model.predict(
