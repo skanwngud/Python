@@ -30,6 +30,8 @@ x_test_noised_2=np.clip(x_test_noised_2, a_min=0, a_max=1)
 def autoencoder(hidden_layer_size):
     model=Sequential()
     model.add(Conv2D(154, kernel_size=2, input_shape=(28, 28, 1), activation='relu'))
+    model.add(Dense(128, activation='relu'))
+    model.add(Conv2DTranspose(154, 2, padding='same', activation='relu'))
     model.add(Flatten())
     model.add(Dense(units=784, activation='sigmoid'))
     return model
@@ -71,7 +73,7 @@ for i, ax in enumerate([ax1, ax2, ax3, ax4, ax5]):
 
 # 노이즈 이미지
 for i, ax in enumerate([ax6, ax7, ax8, ax9, ax10]):
-    ax.imshow(x_test_noised_2[random_images[i]].reshape(28, 28), cmap='gray')
+    ax.imshow(x_test_noised[random_images[i]].reshape(28, 28), cmap='gray')
     if i==0:
         ax.set_ylabel('NOISE', size=20)
     ax.grid(False)
