@@ -89,14 +89,14 @@ def solution_model():
         loss='binary_crossentropy',
         optimizer='adam',
         metrics='acc'
-    ) #Your Code Here#)
+    ) #Your Code Here
 
     model.fit(
         train_generator,
         validation_data=validation_generator,
         batch_size=16,
         epochs=1
-    ) #Your Code Here#)
+    ) #Your Code Here
 
     return model
 

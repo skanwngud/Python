@@ -73,7 +73,7 @@ def solution_model():
         tf.keras.layers.MaxPooling2D(),
         tf.keras.layers.Conv2D(128, 3, activation='relu'),
         tf.keras.layers.Dropout(0.2),
-        tf.keras.layers.MaxPool2D(),
+        tf.keras.layers.MaxPooling2D(),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dense(64, activation='relu'),
@@ -89,14 +89,14 @@ def solution_model():
         loss='categorical_crossentropy',
         optimizer='adam',
         metrics='acc'
-    ) #Your Code Here#)
+    ) #Your Code Here
 
     model.fit(
         train_generator,
         validation_data=validation_generator,
         batch_size=16,
         epochs=1
-    ) #Your Code Here#)
+    ) #Your Code Here
 
     return model
 
