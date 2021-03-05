@@ -30,6 +30,11 @@ def autoencoder():
 
     return model
 
+def autoencoder():
+    model=Sequential()
+    model.add(Conv2D(154, 2, padding='same', input_shape=(28, 28, 1), activation='relu'))
+    model.add(Conv2D(1, 2, padding='same', activation='sigmoid'))
+
 model=autoencoder()
 
 model.summary()
