@@ -59,7 +59,7 @@ results=model.predict(
 # random image generate
 random_imgs=np.random.randint(x_test.shape[0], size=5) # x_test.shape[0] : x_test 의 갯수, size=5 : 5개의 이미지를 뽑아냄
 
-plt.figure(figsize=(7, 2)) # 출력 이미지 크기 정하기
+plt.figure(figsize=(7, 10)) # 출력 이미지 크기 정하기
 
 for i, img_idx in enumerate(random_imgs):
     ax=plt.subplot(2, 7, i+1) # 원본 이미지를 출력 할 크기
