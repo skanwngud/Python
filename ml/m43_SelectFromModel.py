@@ -59,6 +59,11 @@ for thresh in thresholds:
 # for 문 돌리기 전에 모델을 먼저 돌려 feature_importances 를 추출해야한다.
 # (단, 위의 feature_importances 가 신뢰 할 수 있다는 가정하에)
 
+print('가중치 : ', model.coef_)
+print('바이어스 : ', model.intercept_)
+# AttributeError: Coefficients are not defined for Booster type None : Booster 타입에선 coef_ 가 정의 되지 않는다
+# Booster 모델은 y=ax+b 의 형태로 학습을 하는 게 아님 (coef_ 가 없을 뿐 다른 용어로써 존재한다)
+
 '''
 (404, 13)
 Thresh=0.002, n=13, R2 : 85.36%
