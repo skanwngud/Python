@@ -14,17 +14,30 @@ from xgboost import XGBRegressor, XGBClassifier
 
 from sklearn.datasets import load_diabetes
 
-from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV
+from sklearn.model_selection import train_test_split, GridSearchCV, RandomizedSearchCV, KFold
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import r2_score, accuracy_score
 
 x,y=load_diabetes(return_X_y=True)
 
-x_train, x_test, y_train, y_test=train_test_split(
-    x,y,
-    train_size=0.8,
+# x_train, x_test, y_train, y_test=train_test_split(
+#     x,y,
+#     train_size=0.8,
+#     random_state=23
+# )
+
+
+kf=KFold(
+    n_splits=5,
+    shuffle=True,
     random_state=23
 )
+
+for train_index, test_index in kf.split(x,y):
+    x_train=x[train_index]
+    x_test=x[test_index]
+    y_train=y[train_index]
+    y_test=y[test_index]
 
 print(x_train.shape) # (353, 10)
 
@@ -43,7 +56,8 @@ model=RandomizedSearchCV(
     XGBRegressor(
         n_jobs=-1
     ),
-    parameters
+    parameters,
+    cv=kf
 )
 
 model.fit(
@@ -79,7 +93,7 @@ for thresh in thresholds: # 9개
     select_x_train=selection.transform(x_train) # x_train 을 selection 형태로 바꿈
     print(select_x_train.shape)
 
-    selection_model=RandomizedSearchCV(XGBRegressor(n_jobs=8), parameters)
+    selection_model=RandomizedSearchCV(XGBRegressor(n_jobs=8), parameters, cv=kf)
     selection_model.fit(select_x_train, y_train)
 
     select_x_test=selection.transform(x_test)
