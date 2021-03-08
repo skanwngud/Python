@@ -94,3 +94,4 @@ Thresh=0.564, n=1, R2 : 43.27%
 '''
 
 # 과제 1. prefit 에 대해 알아올 것
+# 과제 2. PowerTransformer, MaxAbsScaler 에 대해 알아올 것

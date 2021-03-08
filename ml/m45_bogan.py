@@ -24,7 +24,7 @@ ts
 2021-03-05    10.0
 '''
 
-ts_intp_linear=ts.interpolate() # nan 값들을 보간법으로 처리해줌
+ts_intp_linear=ts.interpolate() # nan 값들을 보간법으로 처리해줌 (linear 방식)
 print(ts_intp_linear)
 
 '''
