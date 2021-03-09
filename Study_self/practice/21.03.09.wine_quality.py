@@ -51,13 +51,15 @@ df=pd.read_csv('c:/data/csv/winequality-white.csv', delimiter=';')
 x=df.iloc[:, :-1].values # (4898, 11)
 y=df['quality'].values # (4898)
 
-
 scaler=MinMaxScaler()
 scaler.fit(x)
 x=scaler.transform(x)
 
+print(np.unique(y)) # [3 4 5 6 7 8 9]
+
+
 # x=x.reshape(-1, 11, 1)
-y=y.reshape(-1, 10, 1)
+y=y.reshape(-1, 1)
 
 one=OneHotEncoder()
 one.fit(y)
@@ -103,7 +105,7 @@ x=BatchNormalization()(x)
 x=Activation('relu')(x)
 
 
-output=Dense(10, activation='softmax')(x)
+output=Dense(7, activation='softmax')(x)
 model=Model(input, output)
 
 model.compile(
@@ -138,3 +140,7 @@ print('Acc : ', loss[1])
 # results (Dense)
 # Loss :  0.99104243516922
 # Acc :  0.6165643930435181
+
+# results ()
+# Loss :  1.0602443218231201
+# Acc :  0.5644171833992004
