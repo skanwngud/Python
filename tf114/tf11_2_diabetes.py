@@ -1,6 +1,7 @@
 import tensorflow as tf
 
 from sklearn.datasets import load_diabetes
+from sklearn.metrics import r2_score
 
 datasets = load_diabetes()
 x_train = datasets.data # (442, 10)
