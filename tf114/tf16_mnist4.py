@@ -37,7 +37,7 @@ y = tf.placeholder(
 w1 = tf.get_variable(
     'weight1',
     shape = [784, 256],
-    initializer = tf.contrib.layers.xavier_initializer() # kernel_initializer() : 가중치 초기화
+    initializer = tf.initializers.he_normal() # kernel_initializer() : 가중치 초기화
 )
 
 print('w1 : ', w1) # w1 :  <tf.Variable 'weight1:0' shape=(784, 100) dtype=float32_ref>
@@ -57,7 +57,7 @@ print('b1 : ', b1) # b1 :  <tf.Variable 'bias1:0' shape=(100,) dtype=float32_ref
 w2 = tf.get_variable(
     'weight2',
     shape = [256, 128],
-    initializer=tf.contrib.layers.xavier_initializer()
+    initializer=tf.initializers.he_normal()
 )
 
 b2 = tf.Variable(
@@ -73,7 +73,7 @@ b2 = tf.Variable(
 w3 = tf.get_variable(
     'weight3',
     shape = [128, 64],
-    initializer=tf.contrib.layers.xavier_initializer()
+    initializer=tf.initializers.he_normal()
 )
 
 b3 = tf.Variable(
@@ -84,7 +84,7 @@ b3 = tf.Variable(
 w4 = tf.get_variable(
     'weight4',
     shape = [64, 10],
-    initializer=tf.contrib.layers.xavier_initializer()
+    initializer=tf.initializers.he_normal()
 )
 
 b4 = tf.Variable(
@@ -118,7 +118,7 @@ loss = tf.reduce_mean(-tf.reduce_sum(y * tf.log(hypothesis), axis = 1))
 train = tf.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)
 
 training_epochs = 200
-batch_size = 50
+batch_size = 100
 total_batch = int(len(x_train)/batch_size) # 60000/100 = 600
 
 sess = tf.Session()
@@ -173,3 +173,10 @@ print('Acc : ', sess.run(
 # training finished!!
 # Acc :  0.8269
 
+# Epoch :  0200 cost = 0.033295874
+# training finished!!
+# Acc :  0.9758
+
+# Epoch :  0200 cost = 0.026092614
+# training finished!!
+# Acc :  0.9759
