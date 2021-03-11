@@ -50,8 +50,9 @@ with tf.Session() as sess:
         if step % 100 == 0:
             print(step, cost_val)
 
-    # h, c, a = sess.run(
-    #     [hypothesis, predict, accuracy],
-    #     feed_dict = {x:x_train, y:y_train}
-    # )
-    # print(h, c, a)
+    h, c, a = sess.run(
+        [hypothesis, predict, accuracy],
+        feed_dict = {x:x_train, y:y_train}
+    )
+    print(h, c, a)
+
