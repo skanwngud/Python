@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 from sklearn.datasets import load_wine
 from sklearn.preprocessing import OneHotEncoder
@@ -36,7 +37,7 @@ b = tf.Variable(
 
 hypothesis = tf.nn.softmax(tf.matmul(x, w) + b)
 loss = tf.reduce_mean(-tf.reduce_sum(y * tf.log(hypothesis), axis = 1))
-train = tf.train.GradientDescentOptimizer(learning_rate=1e-5).minimize(loss)
+train = tf.train.AdamOptimizer(learning_rate=1e-5).minimize(loss)
 
 predict = tf.cast(hypothesis > 0.5, dtype = tf.float32)
 accuracy = tf.reduce_mean(tf.cast(tf.equal(predict, y), dtype = tf.float32))
@@ -54,4 +55,4 @@ with tf.Session() as sess:
         [hypothesis, accuracy],
         feed_dict={x:x_train, y:y_train}
     )
-    print(a)
+    print(np.argmax(h, axis = -1)[:5], a)
