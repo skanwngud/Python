@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 
 from sklearn.datasets import load_wine
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 
 datasets=load_wine()
 x_train = datasets.data
@@ -11,6 +11,10 @@ y_train = datasets.target.reshape(-1, 1)
 one = OneHotEncoder()
 one.fit(y_train)
 y_train = one.transform(y_train).toarray()
+
+# mms = MinMaxScaler()
+# mms.fit(x_train)
+# x_train = mms.transform(x_train)
 
 print(x_train.shape) # (178, 13)
 print(y_train.shape) # (178, 3)
@@ -44,15 +48,20 @@ accuracy = tf.reduce_mean(tf.cast(tf.equal(predict, y), dtype = tf.float32))
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
-    for step in range(20001):
+    for step in range(50001):
         cost_val, hy_val, _ = sess.run(
             [loss, hypothesis, train],
             feed_dict={x:x_train, y:y_train}
         )
-        if step % 1000 == 0:
+        if step % 5000 == 0:
             print(step, cost_val)
     h, a = sess.run(
         [hypothesis, accuracy],
         feed_dict={x:x_train, y:y_train}
     )
-    print(np.argmax(h, axis = -1)[:5], a)
+    print(np.argmax(h, axis = -1), '\n', np.argmax(y_train, axis = -1), '\n', a)
+
+    # results
+    # 0.9812734 - tf.zeros
+    # 0.63670415 - mms, tf.random_normal
+    # 0.93445694 - mms, tf.zeros

@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-xy=np.loadtxt('/Users/juhyeong_y/Documents/Study/tensorflow/data-04-zoo.csv', delimiter=',', dtype=np.float32)
+xy=np.loadtxt('c:/ML/Study/tensorflow/data-04-zoo.csv', delimiter=',', dtype=np.float32)
 x_data=xy[:, 0:-1]
 y_data=xy[:, [-1]]
 
