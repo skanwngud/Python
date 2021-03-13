@@ -13,8 +13,8 @@ tf.set_random_seed(12)
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 
-x_train = x_train.reshape(-1, 28, 28, 1)/255.
-x_test = x_test.reshape(-1, 28, 28, 1)/255.
+x_train = x_train.reshape(-1, 32, 32, 3)/255.
+x_test = x_test.reshape(-1, 32, 32, 3)/255.
 
 print(x_train.shape)
 print(y_train.shape)
@@ -26,7 +26,7 @@ total_batch = int(len(x_train)/batch_size) # 60000/100
 
 x = tf.placeholder(
     tf.float32,
-    [None, 28, 28, 1]
+    [None, 32, 32, 3]
 )
 
 y = tf.placeholder(
@@ -37,7 +37,7 @@ y = tf.placeholder(
 # 2. model
 # w1
 w1 = tf.get_variable(
-    'w1', shape = [3, 3, 1, 32] # 32 : filter (output node)
+    'w1', shape = [3, 3, 3, 32] # 32 : filter (output node)
 )
 
 b1 = tf.Variable(
@@ -208,3 +208,5 @@ print('Acc : ', sess.run(
     accuracy,
     feed_dict={x:x_test, y:y_test}
 ))
+
+# results
