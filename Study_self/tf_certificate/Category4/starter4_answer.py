@@ -98,15 +98,15 @@ def solution_model():
             output_dim=embedding_dim,
             input_length=max_length),
         tf.keras.layers.Conv1D(64, 2),
-        tf.keras.layers.Conv1D(64, 2),
+        # tf.keras.layers.Conv1D(64, 2),
         tf.keras.layers.Activation('relu'),
         tf.keras.layers.Dropout(0.3),
         tf.keras.layers.Bidirectional(
-            tf.keras.layers.LSTM(32, activation='relu')),
+            tf.keras.layers.LSTM(32, return_sequences=True)),
         tf.keras.layers.Dropout(0.3),
         tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(32, activation='relu'),
+        # tf.keras.layers.Dense(64, activation='relu'),
+        # tf.keras.layers.Dense(32, activation='relu'),
     # YOUR CODE HERE. KEEP THIS OUTPUT LAYER INTACT OR TESTS MAY FAIL
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
