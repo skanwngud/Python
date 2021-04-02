@@ -46,13 +46,13 @@ from keras.optimizers import Adam
 from sklearn.model_selection import train_test_split
 
 es=EarlyStopping(
-    patience=30,
+    patience=10,
     verbose=1,
     monitor='val_loss'
 )
 
 rl=ReduceLROnPlateau(
-    patience=10,
+    patience=5,
     verbose=1,
     factor=0.5,
     monitor='val_loss'
