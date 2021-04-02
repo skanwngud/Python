@@ -128,7 +128,7 @@ def solution_model():
 # and the score will be returned to you.
 if __name__ == '__main__':
     model = solution_model()
-    model.save("c:/data/modelcheckpoint/mymodel5.h5")
+    model.save("mymodel5.h5")
 
 
 

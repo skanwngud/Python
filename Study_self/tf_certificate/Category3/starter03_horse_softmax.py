@@ -54,14 +54,16 @@ def solution_model():
     train_generator = train_datagen.flow_from_directory(
         'tmp/horse-or-human/',
         target_size=(300, 300),
-        class_mode='binary'
+        class_mode='categorical',
+        batch_size=16
     )
         #Your Code Here)
 
     validation_generator = validation_datagen.flow_from_directory(
         'tmp/testdata/',
         target_size=(300, 300),
-        class_mode='binary'
+        class_mode='categorical',
+        batch_size=16
     )
         #Your Code Here)
 
@@ -70,10 +72,11 @@ def solution_model():
         tf.keras.layers.Conv2D(64, 2, activation='relu', input_shape=(300, 300, 3)),
         tf.keras.layers.Dropout(0.2),
         tf.keras.layers.Conv2D(64, 3, activation='relu'),
-        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.MaxPooling2D(3),
         tf.keras.layers.Conv2D(128, 3, activation='relu'),
         tf.keras.layers.Dropout(0.2),
-        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.MaxPooling2D(3),
+        tf.keras.layers.Dropout(0.3),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dense(64, activation='relu'),
@@ -82,7 +85,7 @@ def solution_model():
         # Your Code here
 
         # This is the last layer. You should not change this code.
-        tf.keras.layers.Dense(1, activation='softmax')
+        tf.keras.layers.Dense(2, activation='softmax')
     ])
 
     model.compile(
@@ -95,7 +98,7 @@ def solution_model():
         train_generator,
         validation_data=validation_generator,
         batch_size=16,
-        epochs=1
+        epochs=100
     ) #Your Code Here
 
     return model

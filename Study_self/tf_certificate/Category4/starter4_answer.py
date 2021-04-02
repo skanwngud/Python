@@ -28,7 +28,7 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 es=tf.keras.callbacks.EarlyStopping(
-    patience=30,
+    patience=20,
     verbose=1
 )
 
@@ -104,9 +104,14 @@ def solution_model():
         tf.keras.layers.Bidirectional(
             tf.keras.layers.LSTM(32, return_sequences=True)),
         tf.keras.layers.Dropout(0.3),
+<<<<<<< HEAD
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(32, activation='relu'),
+=======
         tf.keras.layers.Flatten(),
         # tf.keras.layers.Dense(64, activation='relu'),
         # tf.keras.layers.Dense(32, activation='relu'),
+>>>>>>> 3b84ef7be9b8026d58ffde4b6221d535f63d6db0
     # YOUR CODE HERE. KEEP THIS OUTPUT LAYER INTACT OR TESTS MAY FAIL
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
