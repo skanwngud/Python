@@ -55,3 +55,4 @@ print('time : ', datetime.datetime.now() - str_time)
 # epochs : 1000
 # results :  [0.47519055008888245, 0.9736841917037964]
 # time :  0:03:10.027603
+
