@@ -3,6 +3,8 @@ import tensorflow as tf
 import autokeras as ak
 import datetime
 
+from tensorflow.keras.models import load_model
+
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 
@@ -40,6 +42,17 @@ print('trials : {}'.format(trials))
 print('epochs : {}'.format(epoch))
 print('results : ', results)
 print('time : ', datetime.datetime.now() - str_time)
+
+model2 = model.export_model()
+model2.save(
+    'c:/data/h5/ak_cancer.h5'
+)
+
+model3 = load_model(
+    'c:/data/h5/ak_cancer.h5'
+)
+
+results2 = model3.evaluate(x_test, y_test)
 
 # trials : 2
 # epochs : 10

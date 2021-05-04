@@ -6,11 +6,12 @@ import autokeras as ak
 import datetime
 
 from tensorflow.keras.datasets import boston_housing
+from tensorflow.keras.models import load_model
 
 str_time = datetime.datetime.now()
 
-epoch = 1000
-trials = 5
+epoch = 5
+trials = 500
 
 (x_train, y_train), (x_test, y_test) = boston_housing.load_data()
 
@@ -18,7 +19,6 @@ model = ak.StructuredDataRegressor(
     max_trials=trials,
     overwrite=True
 )
-
 
 model.fit(
     x_train, y_train,
@@ -31,6 +31,20 @@ print('max_trials : {}'.format(trials))
 print('epochs : {}'.format(epoch))
 print('results : ', results)
 print('time : ', datetime.datetime.now() - str_time)
+
+model2 = model.export_model()
+try:
+    model2.save('c:/data/h5/ak_boston', save_format = tf)
+except:
+    model2.save('c:/data/h5/ak_boston_err')
+
+models3 = load_model(
+    'c:/data/h5/ak_boston'
+)
+
+results2 = models3.evaluate(x_test, y_test)
+
+print('models3 : ', results2)
 
 # max_trials : 2
 # epochs : 10
