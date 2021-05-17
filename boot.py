@@ -16,3 +16,5 @@ print(a)
 b = a + 1.0
 
 print(a==b)
+
+print(bin(8125))
