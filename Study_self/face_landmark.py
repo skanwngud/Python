@@ -2,8 +2,10 @@ import cv2
 import dlib
 import numpy as np
 
+# face detect
 detector = dlib.get_frontal_face_detector()
 
+# face land mark predict
 predictor = dlib.shape_predictor('c:/ML/Study/Study_self/shape_predictor_68_face_landmarks.dat')
 
 cap = cv2.VideoCapture('c:/ML/Study/Study_self/video.mp4')
