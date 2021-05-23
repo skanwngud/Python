@@ -5,7 +5,7 @@ import datetime
 from keras.layers import Conv2D, BatchNormalization, Activation,\
     Flatten, Dense, Input
 from keras.models import Sequential, Model, load_model
-from keras.datasets import cifar10
+from keras.datasets import cifar10, fashion_mnist
 from keras.utils import to_categorical
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 
@@ -15,7 +15,8 @@ from tensorflow.python.keras.layers.core import Dropout
 
 str_time = datetime.datetime.now()
 
-(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+# (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+(x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
 x_train, x_val, y_train, y_val = train_test_split(
     x_train, y_train,
@@ -26,6 +27,10 @@ x_train, x_val, y_train, y_val = train_test_split(
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
 y_val = to_categorical(y_val)
+
+x_train = x_train.reshape(-1, 28, 28, 1)
+x_test = x_test.reshape(-1, 28, 28, 1)
+x_val = x_val.reshape(-1, 28, 28, 1)
 
 print(x_train.shape) # (40000, 32, 32, 3)
 print(y_train.shape) # (40000, 10)
@@ -42,7 +47,7 @@ rl = ReduceLROnPlateau(patience=10, verbose=1, factor=0.5)
 mc = ModelCheckpoint('c:/data/modelcheckpoint/test.hdf5', verbose=1, save_best_only=True)
 
 # model
-input = Input(shape = (32, 32, 3))
+input = Input(shape = (x_train.shape[1], x_train.shape[2], 1))
 layer = cnn_layer(32, 2, 2, input)
 layer = cnn_layer(32, 2, 2, layer)
 layer = cnn_layer(32, 2, 2, layer)
@@ -65,7 +70,7 @@ model.compile(
 model.fit(
     x_train, y_train,
     validation_data = (x_val, y_val),
-    epochs = 1000,
+    epochs = 5,
     batch_size = 32,
     callbacks = [es, rl, mc]
 )
