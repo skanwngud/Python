@@ -74,3 +74,110 @@ def conv1d(x, scope, nf, *, w_init_stdev = 0.02):
         c = tf.reshape(tf.matmul(tf.reshape(x, [-1, nx]), tf.reshape(w, [-1, nf]))+b, start+[nf])
         return c
 
+def attention_mask(nd, ns, *, dtype):
+    i = tf.range(nd)[:, None]
+    j = tf.range(ns)
+    m = i >= j - ns + nd
+    return tf.cast(m, dtype)
+
+"""
+tf.cast : 텐서를 새로운 형태로 casting 하는데 사용
+부동소수점형에서 정수형으로 바꾸는 경우 소수점을 버린다
+"""
+
+def attn(x, scope, n_state, *, past, hparams):
+    assert x.shape.ndims == 3
+    assert n_state % hparams.n_head == 0
+    if past is not None:
+        assert past.shape.ndims == 5
+
+    def split_heads(x):
+        return tf.transpose(split_states(x, hparams.n_head), [0, 2, 1, 3])
+
+    def merge_head(x):
+        return merge_states(tf.transpose(x, [0, 2, 1, 3]))
+
+    def mask_attn_weights(w):
+        _, _, nd, ns = shape_list(w)
+        b = attention_mask(nd, ns, dtype = w.dtype)
+        b = tf.reshape(b, [1, 1, nd, ns])
+        w = w*b - tf.cast(1e10, w.dtype)*(1-b)
+        return w
+
+    def multihead_attn(q, k, v):
+        w = tf.matmul(q, k, transpose_b=True)
+        w = w * tf.rsqrt(tf.cast(v.shape[-1].value, w.dtype))
+
+        w = mask_attn_weights(w)
+        w = softmax(w)
+        a = tf.matmul(w, v)
+        return a
+
+    with tf.variable_scope(scope):
+        c = conv1d(x, 'c_attn', n_state * 3)
+        q, k, v = map(split_heads, tf.split(c, 3, axis = 2))
+        present = tf.stack([k, v], axis = 1)
+        if past is not None:
+            pk, pv = tf.unstack(past, axis = 1)
+            k = tf.concat([pk, k], axis = -2)
+            v = tf.concat([pv, v], axis = -2)
+        a = multihead_attn(q, k, v)
+        a = merge_head(a)
+        a = conv1d(a, 'c_proj', n_state)
+        return a, present
+
+def mlp(x, scope, n_state, *, hparams):
+    with tf.variable_scope(scope):
+        nx = x.shape[1].value
+        h = gelu(conv1d(x, 'c_fc', n_state))
+        h2 = conv1d(h, 'c_proj', nx)
+        return h2
+
+def block(x, scope, *, past, hparams):
+    with tf.variable_scope(scope):
+        nx = x.shape[-1].value
+        a, present = attn(norm(x, 'ln_1'))
+        x += a
+        m = mlp(norm(x, 'ln_2'), 'mlp', nx * 4, hparams=hparams)
+        x += m
+        return x, present
+
+def past_shape(*, hparams, batch_size = None, sequence = None):
+    return [batch_size, hparams.n_layer, 2, hparams.n_head, sequence, hparams.n_embd//hparams.n_head]
+
+def expand_tile(value, size):
+    value = tf.convert_to_tensor(value, name= 'value')
+    ndims = value.shape.ndims
+    return tf.tile(tf.expand_dims(value, axis = 0), [size] + [1]*ndims)
+
+def position_for(tokens, past_length):
+    batch_size = tf.shape(tokens)[0]
+    nsteps = tf.shape(tokens)[1]
+    return expand_tile(past_length + tf.range(nsteps), batch_size)
+
+def model(hparams, X, past = None, scope = 'model', reuse = False):
+    with tf.variable_scope(scope, reuse = reuse):
+        results = {}
+        batch, sequence = shape_list(X)
+
+        wpe = tf.get_variable('wpe', [hparams.n_ctx, hparams.n_embd],
+                                initializer = tf.random_normal_initializer(stddev = 0.01))
+        wte = tf.get_variable('wte', [hparams.n_vocab, hparams.n_embd],
+                                initializer =tf.random_normal_initializer(stddev = 0.02))
+        past_length = 0 if past is None else tf.shape(past)[-2]
+        h = tf.gather(wte, X) + tf.gather(wpe, position_for(X, past_length))
+
+        presents = list()
+        pasts = tf.unstack(past, axis = 1) if past is not None else [None] * hparams.n_layer
+        assert len(pasts) == hparams.n_layer
+        for layer, past in enumerate(pasts):
+            h, present = block(h, 'h%d' % layer, past = past, hparams = hparams)
+            presents.append(present)
+        results['present'] = tf.stack(presents, axis = 1)
+        h = norm(h, 'ln_f')
+
+        h_flat = tf.reshape(h, [batch * sequence, hparams.n_embd])
+        logits = tf.matmul(h_flat, wte, transpose_b = True)
+        logits = tf.reshape(logits, [batch, sequence, hparams.n_vocab])
+        results['logtis'] = logits
+        return results
