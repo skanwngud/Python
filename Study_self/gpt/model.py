@@ -14,8 +14,8 @@ def default_hparams():
     )
 
 def shape_list(x):
-    static = x.shape.as_list() # 정적 shape
-    dynamic = tf.shape(x)      # 동적 shape
+    static = x.shape.as_list() # list 형태로 shape 출력
+    dynamic = tf.shape(x)      
     return [dynamic[i] if s is None else s for i, s in enumerate(static)]
 
 # define softmax
@@ -73,6 +73,11 @@ def conv1d(x, scope, nf, *, w_init_stdev = 0.02):
         b = tf.get_variable('b', [nf], initializer=tf.constant_initializer(0))
         c = tf.reshape(tf.matmul(tf.reshape(x, [-1, nx]), tf.reshape(w, [-1, nf]))+b, start+[nf])
         return c
+"""
+nx = input_dims
+nf = output_dims
+"""
+
 
 def attention_mask(nd, ns, *, dtype):
     i = tf.range(nd)[:, None]
@@ -88,6 +93,13 @@ tf.cast : 텐서를 새로운 형태로 casting 하는데 사용
 def attn(x, scope, n_state, *, past, hparams):
     assert x.shape.ndims == 3
     assert n_state % hparams.n_head == 0
+    """
+    assert(가정설정문) : 조건, 메세지(메세지는 생략 가능)
+    x.shape.ndims == 3 인 경우만 True, 그 외는 전부 예외처리함
+
+    ndims = number of dimensions (차원의 수)
+
+    """
     if past is not None:
         assert past.shape.ndims == 5
 
@@ -107,6 +119,9 @@ def attn(x, scope, n_state, *, past, hparams):
     def multihead_attn(q, k, v):
         w = tf.matmul(q, k, transpose_b=True)
         w = w * tf.rsqrt(tf.cast(v.shape[-1].value, w.dtype))
+        """
+        transpose_b = True : 행렬곱을 할 때 shape 를 맞춰주기 위해 전치시킴
+        """
 
         w = mask_attn_weights(w)
         w = softmax(w)
@@ -128,7 +143,7 @@ def attn(x, scope, n_state, *, past, hparams):
 
 def mlp(x, scope, n_state, *, hparams):
     with tf.variable_scope(scope):
-        nx = x.shape[1].value
+        nx = x.shape[-1].value
         h = gelu(conv1d(x, 'c_fc', n_state))
         h2 = conv1d(h, 'c_proj', nx)
         return h2
@@ -136,7 +151,7 @@ def mlp(x, scope, n_state, *, hparams):
 def block(x, scope, *, past, hparams):
     with tf.variable_scope(scope):
         nx = x.shape[-1].value
-        a, present = attn(norm(x, 'ln_1'))
+        a, present = attn(norm(x, 'ln_1'), 'attn', nx, past=past, hparams=hparams)
         x += a
         m = mlp(norm(x, 'ln_2'), 'mlp', nx * 4, hparams=hparams)
         x += m

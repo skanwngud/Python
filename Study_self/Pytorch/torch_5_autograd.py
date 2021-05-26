@@ -29,6 +29,7 @@ y = torch.randn(
 ) # 출력층을 통해 최종적으로 나가는 데이터
 
 w1 = torch.randn(
+    Input_size,
     Hidden_size,
     device=device,
     dtype=torch.float,
@@ -36,6 +37,7 @@ w1 = torch.randn(
 ) # 입력층을 통해 들어온 데이터가 연산 될 은닉층으로 들어가는 데이터
 
 w2 = torch.randn(
+    Hidden_size,
     Output_size,
     device=device,
     dtype=torch.float,
@@ -58,7 +60,6 @@ for t in range(1, 501):
         # w 값을 위에서 설정한 learning_rate 를 곱한 뒤 gradient 를 계산한다
         # 음수값을 취한 이유는, 가장 최소값의 gradient 를 찾기 위해 반대방향으로 계산한다
 
-        w1.grad_zero()
-        w2.grad_zero()
+        w1.grad.zero_()
+        w2.grad.zero_()
         # 최종적으로 gradient 가 계산이 되었다면, 0으로 초기화하여 다시 처음부터 반복문을 돌린다
-
