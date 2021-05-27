@@ -4,9 +4,9 @@ import torch
 import torch.cuda
 
 print(torch.__version__)
-# cuda = torch.device('cuda')
+cuda = torch.device('cuda')
 
 print(torch.cuda.is_available())
-# print(torch.cuda.device_count())
-# # print(torch.cuda.current_device())
-# print(torch.cuda.get_device_name())
+print(torch.cuda.device_count())
+print(torch.cuda.current_device())
+print(torch.cuda.get_device_name())

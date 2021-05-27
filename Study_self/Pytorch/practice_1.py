@@ -140,12 +140,12 @@ def evalutate(model, test_loader):
             correct += prediction.eq(label.view_as(prediction)).sum().item()    # 예측한 결과값과 실제 결과값이 일치한 횟수를 저장
 
     test_loss /= len(test_loader.dataset)                                       # 업데이트 된 전체 loss 값을 test_loader 내에 존재하는 mini_batch 데이터 갯수만큼 나눔
-    test_accuracy = 100. * correct / len(test_loader.dataset)                  # test_loader 데이터로 얼마나 맞췄는지를 계산
+    test_accuracy = 100. * correct / len(test_loader.dataset)                   # test_loader 데이터로 얼마나 맞췄는지를 계산
     return test_loss, test_accuracy                                             # 최종적으로 loss 값과 accuracy 값을 return
 
 for epoch in range(1, epochs + 1):
-    train(model, train_loader, optimizer, log_interval=200)
-    test_loss, test_accuracy = evalutate(model, test_loader)
+    train(model, train_loader, optimizer, log_interval=200)                     # log_interval == iterations / mini_batch 가 200번 끝날 때마다 출력
+    test_loss, test_accuracy = evalutate(model, test_loader)                    # 각 epoch 별로 출력 되는 loss 와 accuracy 값을 계산
     print('\n[Epoch : {}], \tTest Loss : {:.4f}, \tTest Accuracy : {:.2f}%\n'.format(epoch, test_loss, test_accuracy))
 
 """
