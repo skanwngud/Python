@@ -3,8 +3,8 @@ import tensorflow as tf
 
 from tensorflow.contrib.training import HParams
 
-# parameters 
-def default_hparams():
+# parameters
+def default_hparams(): # interatcive_conditional_samples.py 에서 사용 
     return HParams(
         n_vocab = 0,
         n_ctx = 1024,
@@ -13,19 +13,19 @@ def default_hparams():
         n_layer = 12
     )
 
-def shape_list(x):
+def shape_list(x): # split_state, merge_state, conv1d, attn/mask_attn_weights, model 에서 사용
     static = x.shape.as_list() # list 형태로 shape 출력
     dynamic = tf.shape(x)      
     return [dynamic[i] if s is None else s for i, s in enumerate(static)]
 
 # define softmax
-def softmax(x, axis = 1):
+def softmax(x, axis = 1): # attn/multi_head_attn 에서 사용
     x = x - tf.reduce_max(x, axis = axis, keepdims = True)      # keepdims : 행렬의 합산 후에도 차원을 유지한다
     ex = tf.exp(x)
     return ex / tf.reduce_sum(ex, axis = axis, keepdims = True)
 
 # define gelu
-def gelu(x):
+def gelu(x): # mlp 에서 사용
     return 0.5 * x * (1 + tf.tanh(np.sqrt(2/np.pi) * (x+0.044715 * tf.pow(x, 3))))
 """
 NLP 에서 주로 사용 되는 ELU 계열의 활성화 함수
@@ -35,7 +35,7 @@ NLP 에서 주로 사용 되는 ELU 계열의 활성화 함수
 """
 
 # normalization
-def norm(x, scope, *, axis = -1, epsilon = 1e-5):
+def norm(x, scope, *, axis = -1, epsilon = 1e-5): # block, model 에서 사용
     with tf.variable_scope(scope):
         n_state = x.shape[-1].value
         g = tf.get_variable('g', [n_state], initializer=tf.constant_initializer(1))
@@ -53,7 +53,7 @@ tf.constant_initializer() : 제공된 값으로 모든 것을 초기화 함
 tf.rsqrt : sqrt 에 제곱근을 씌움
 """
 
-def split_states(x, n):
+def split_states(x, n): # attn/split_head
     *start, m = shape_list(x)
     return tf.reshape(x, start + [n, m//n])
 
@@ -61,12 +61,12 @@ def split_states(x, n):
 *start : start 라는 변수에 여러개의 값을 저장할 때 사용
 """
 
-def merge_states(x):
+def merge_states(x): # attn/merge_head
     *start, a, b = shape_list(x)
     return tf.reshape(x, start + [a*b])
 
 # conv1d layer 선언
-def conv1d(x, scope, nf, *, w_init_stdev = 0.02):
+def conv1d(x, scope, nf, *, w_init_stdev = 0.02): # attn, mlp
     with tf.variable_scope(scope):
         *start, nx = shape_list(x)
         w = tf.get_variable('w', [1, nx, nf], initializer=tf.random_normal_initializer(stddev=w_init_stdev))
@@ -79,7 +79,7 @@ nf = output_dims
 """
 
 
-def attention_mask(nd, ns, *, dtype):
+def attention_mask(nd, ns, *, dtype): # attn/mask_attn_weights
     i = tf.range(nd)[:, None]
     j = tf.range(ns)
     m = i >= j - ns + nd
@@ -90,7 +90,7 @@ tf.cast : 텐서를 새로운 형태로 casting 하는데 사용
 부동소수점형에서 정수형으로 바꾸는 경우 소수점을 버린다
 """
 
-def attn(x, scope, n_state, *, past, hparams):
+def attn(x, scope, n_state, *, past, hparams): # block
     assert x.shape.ndims == 3
     assert n_state % hparams.n_head == 0
     """
@@ -141,14 +141,14 @@ def attn(x, scope, n_state, *, past, hparams):
         a = conv1d(a, 'c_proj', n_state)
         return a, present
 
-def mlp(x, scope, n_state, *, hparams):
+def mlp(x, scope, n_state, *, hparams): # block
     with tf.variable_scope(scope):
         nx = x.shape[-1].value
         h = gelu(conv1d(x, 'c_fc', n_state))
         h2 = conv1d(h, 'c_proj', nx)
         return h2
 
-def block(x, scope, *, past, hparams):
+def block(x, scope, *, past, hparams): # model
     with tf.variable_scope(scope):
         nx = x.shape[-1].value
         a, present = attn(norm(x, 'ln_1'), 'attn', nx, past=past, hparams=hparams)
@@ -160,12 +160,12 @@ def block(x, scope, *, past, hparams):
 def past_shape(*, hparams, batch_size = None, sequence = None):
     return [batch_size, hparams.n_layer, 2, hparams.n_head, sequence, hparams.n_embd//hparams.n_head]
 
-def expand_tile(value, size):
+def expand_tile(value, size): # position_for
     value = tf.convert_to_tensor(value, name= 'value')
     ndims = value.shape.ndims
     return tf.tile(tf.expand_dims(value, axis = 0), [size] + [1]*ndims)
 
-def position_for(tokens, past_length):
+def position_for(tokens, past_length): # model
     batch_size = tf.shape(tokens)[0]
     nsteps = tf.shape(tokens)[1]
     return expand_tile(past_length + tf.range(nsteps), batch_size)
