@@ -81,16 +81,7 @@ def train(model, train_loader, optimizer, log_interval):
         optimizer.step()
 
         if batch_idx % log_interval == 0:
-            print(
-                'Epochs : {}, \tTrain_Loss : {}/{}({.4f:})%'.format(
-                    epoch,
-                    batch_idx * len(image),
-                    len(train_loader.dataset),
-                    100 * batch_idx / len(train_loader),
-                ))
-
             print(f'Train Epoch : {epoch} [{batch_idx * len(image)}/{len(train_loader.dataset)} ({100 * batch_idx/len(train_loader):.0f})%] \tTrain Loss : {loss.item():.4f}')
-
 def evaluate(model, test_loader):
     model.eval()
     test_loss = 0
@@ -115,4 +106,4 @@ for epoch in range(1, epochs + 1):
     print(f'Epochs : {epoch}\n')
     train(model, train_loader, optimizer, log_interval=200)
     test_loss, accuracy = evaluate(model, test_loader)
-    print(f'\nTest Loss : {test_loss:.4f}, \tAccuracy : {accuracy}\n')
+    print(f'\nTest Loss : {test_loss:.4f} \tAccuracy : {accuracy}\n')
