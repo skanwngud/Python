@@ -57,7 +57,7 @@ class Net(nn.Module):
         x = F.log_softmax(x, dim = 1)
         return x
 
-# train, evaluate
+# define model, optimizer, criterion
 model = Net().to(device)
 optimizer = torch.optim.SGD(
     model.parameters(),
@@ -66,3 +66,26 @@ optimizer = torch.optim.SGD(
 )
 criterion = nn.CrossEntropyLoss()
 print(model)
+
+# train, evaluate
+def train(model, train_loader, optimizer, log_interval):
+    model.train()
+    
+    for batch_idx, (image, label) in enumerate(train_loader):
+        image = image.to(device)
+        label = label.to(device)
+
+        optimizer.zero_grad()
+        output = model(image)
+        loss = criterion(output, label)
+        loss.backward()
+        optimizer.step()
+
+        if batch_idx % log_interval == 0:
+            print(
+                'Epochs : {}, \tTrain_Loss : {}/{}({.4f:})%'.format(
+                    epoch,
+                    batch_idx * len(image),
+                    len(train_loader.dataset),
+                    100 * batch_idx / len(train_loader),
+                ))
