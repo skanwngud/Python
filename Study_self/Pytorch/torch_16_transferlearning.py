@@ -29,3 +29,10 @@ test_data = datasets.CIFAR10(
     )
 )
 
+train_loader = torch.utils.data.DataLoader(
+    train_data, batch_size = 32
+)
+
+test_loader = torch.utils.data.DataLoader(
+    test_data, batch_size = 32
+)
