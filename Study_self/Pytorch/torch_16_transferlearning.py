@@ -36,3 +36,5 @@ train_loader = torch.utils.data.DataLoader(
 test_loader = torch.utils.data.DataLoader(
     test_data, batch_size = 32
 )
+
+class
