@@ -37,4 +37,8 @@ test_loader = torch.utils.data.DataLoader(
     test_data, batch_size = 32
 )
 
-class
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+
+        self.fc1
