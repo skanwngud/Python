@@ -175,4 +175,139 @@ for epoch in range(1, 11):
     test_loss, accuracy = test(model, test_loader)
     print(f'\nTest Loss : {test_loss:.4f} \t Accuracy : {accuracy:.0f} %\n')
 
-print(str_time - datetime.datetime.now())
+print(f'time : {datetime.datetime.now() - str_time}')
+
+"""
+current device is cuda
+Epochs : 1
+
+Epochs : 1 [0 / 50000 (0)%] Train Loss : 2.4025
+Epochs : 1 [6400 / 50000 (13)%] Train Loss : 1.5899
+Epochs : 1 [12800 / 50000 (26)%] Train Loss : 1.4147
+Epochs : 1 [19200 / 50000 (38)%] Train Loss : 1.5564
+Epochs : 1 [25600 / 50000 (51)%] Train Loss : 1.3139
+Epochs : 1 [32000 / 50000 (64)%] Train Loss : 1.4410
+Epochs : 1 [38400 / 50000 (77)%] Train Loss : 1.1136
+Epochs : 1 [44800 / 50000 (90)%] Train Loss : 1.1554
+
+Test Loss : 0.0317       Accuracy : 63 %
+
+Epochs : 2
+
+Epochs : 2 [0 / 50000 (0)%] Train Loss : 0.9165
+Epochs : 2 [6400 / 50000 (13)%] Train Loss : 1.1187
+Epochs : 2 [12800 / 50000 (26)%] Train Loss : 0.9480
+Epochs : 2 [19200 / 50000 (38)%] Train Loss : 1.2776
+Epochs : 2 [25600 / 50000 (51)%] Train Loss : 1.0362
+Epochs : 2 [32000 / 50000 (64)%] Train Loss : 1.0411
+Epochs : 2 [38400 / 50000 (77)%] Train Loss : 0.7999
+Epochs : 2 [44800 / 50000 (90)%] Train Loss : 0.8674
+
+Test Loss : 0.0259       Accuracy : 71 %
+
+Epochs : 3
+
+Epochs : 3 [0 / 50000 (0)%] Train Loss : 0.7478
+Epochs : 3 [6400 / 50000 (13)%] Train Loss : 0.9229
+Epochs : 3 [12800 / 50000 (26)%] Train Loss : 0.7556
+Epochs : 3 [19200 / 50000 (38)%] Train Loss : 0.9860
+Epochs : 3 [25600 / 50000 (51)%] Train Loss : 0.5803
+Epochs : 3 [32000 / 50000 (64)%] Train Loss : 0.8819
+Epochs : 3 [38400 / 50000 (77)%] Train Loss : 0.8095
+Epochs : 3 [44800 / 50000 (90)%] Train Loss : 0.7935
+
+Test Loss : 0.0224       Accuracy : 75 %
+
+Epochs : 4
+
+Epochs : 4 [0 / 50000 (0)%] Train Loss : 0.5936
+Epochs : 4 [6400 / 50000 (13)%] Train Loss : 0.8523
+Epochs : 4 [12800 / 50000 (26)%] Train Loss : 0.6487
+Epochs : 4 [19200 / 50000 (38)%] Train Loss : 1.0982
+Epochs : 4 [25600 / 50000 (51)%] Train Loss : 0.5765
+Epochs : 4 [32000 / 50000 (64)%] Train Loss : 0.8108
+Epochs : 4 [38400 / 50000 (77)%] Train Loss : 0.5593
+Epochs : 4 [44800 / 50000 (90)%] Train Loss : 0.7332
+
+Test Loss : 0.0202       Accuracy : 78 %
+
+Epochs : 5
+
+Epochs : 5 [0 / 50000 (0)%] Train Loss : 0.5817
+Epochs : 5 [6400 / 50000 (13)%] Train Loss : 0.7292
+Epochs : 5 [12800 / 50000 (26)%] Train Loss : 0.5879
+Epochs : 5 [19200 / 50000 (38)%] Train Loss : 0.8105
+Epochs : 5 [25600 / 50000 (51)%] Train Loss : 0.4637
+Epochs : 5 [32000 / 50000 (64)%] Train Loss : 0.7399
+Epochs : 5 [38400 / 50000 (77)%] Train Loss : 0.5057
+Epochs : 5 [44800 / 50000 (90)%] Train Loss : 0.4980
+
+Test Loss : 0.0187       Accuracy : 79 %
+
+Epochs : 6
+
+Epochs : 6 [0 / 50000 (0)%] Train Loss : 0.3295
+Epochs : 6 [6400 / 50000 (13)%] Train Loss : 0.7313
+Epochs : 6 [12800 / 50000 (26)%] Train Loss : 0.6337
+Epochs : 6 [19200 / 50000 (38)%] Train Loss : 0.9170
+Epochs : 6 [25600 / 50000 (51)%] Train Loss : 0.4792
+Epochs : 6 [32000 / 50000 (64)%] Train Loss : 0.5321
+Epochs : 6 [38400 / 50000 (77)%] Train Loss : 0.5650
+Epochs : 6 [44800 / 50000 (90)%] Train Loss : 0.6258
+
+Test Loss : 0.0189       Accuracy : 79 %
+
+Epochs : 7
+
+Epochs : 7 [0 / 50000 (0)%] Train Loss : 0.3723
+Epochs : 7 [6400 / 50000 (13)%] Train Loss : 0.5159
+Epochs : 7 [12800 / 50000 (26)%] Train Loss : 0.6056
+Epochs : 7 [19200 / 50000 (38)%] Train Loss : 0.8649
+Epochs : 7 [25600 / 50000 (51)%] Train Loss : 0.4130
+Epochs : 7 [32000 / 50000 (64)%] Train Loss : 0.6550
+Epochs : 7 [38400 / 50000 (77)%] Train Loss : 0.4170
+Epochs : 7 [44800 / 50000 (90)%] Train Loss : 0.6139
+
+Test Loss : 0.0192       Accuracy : 79 %
+
+Epochs : 8
+
+Epochs : 8 [0 / 50000 (0)%] Train Loss : 0.4282
+Epochs : 8 [6400 / 50000 (13)%] Train Loss : 0.5367
+Epochs : 8 [12800 / 50000 (26)%] Train Loss : 0.6968
+Epochs : 8 [19200 / 50000 (38)%] Train Loss : 0.8312
+Epochs : 8 [25600 / 50000 (51)%] Train Loss : 0.4196
+Epochs : 8 [32000 / 50000 (64)%] Train Loss : 0.4555
+Epochs : 8 [38400 / 50000 (77)%] Train Loss : 0.4274
+Epochs : 8 [44800 / 50000 (90)%] Train Loss : 0.4789
+
+Test Loss : 0.0185       Accuracy : 80 %
+
+Epochs : 9
+
+Epochs : 9 [0 / 50000 (0)%] Train Loss : 0.3264
+Epochs : 9 [6400 / 50000 (13)%] Train Loss : 0.5329
+Epochs : 9 [12800 / 50000 (26)%] Train Loss : 0.5666
+Epochs : 9 [19200 / 50000 (38)%] Train Loss : 0.8463
+Epochs : 9 [25600 / 50000 (51)%] Train Loss : 0.2132
+Epochs : 9 [32000 / 50000 (64)%] Train Loss : 0.5313
+Epochs : 9 [38400 / 50000 (77)%] Train Loss : 0.3972
+Epochs : 9 [44800 / 50000 (90)%] Train Loss : 0.5149
+
+Test Loss : 0.0176       Accuracy : 81 %
+
+Epochs : 10
+
+Epochs : 10 [0 / 50000 (0)%] Train Loss : 0.2416
+Epochs : 10 [6400 / 50000 (13)%] Train Loss : 0.5691
+Epochs : 10 [12800 / 50000 (26)%] Train Loss : 0.5116
+Epochs : 10 [19200 / 50000 (38)%] Train Loss : 0.6677
+Epochs : 10 [25600 / 50000 (51)%] Train Loss : 0.3731
+Epochs : 10 [32000 / 50000 (64)%] Train Loss : 0.4219
+Epochs : 10 [38400 / 50000 (77)%] Train Loss : 0.2611
+Epochs : 10 [44800 / 50000 (90)%] Train Loss : 0.3597
+
+Test Loss : 0.0172       Accuracy : 81 %
+
+0:04:23.307136
+"""
