@@ -18,7 +18,7 @@ left_eye = list(range(42, 48))
 nose = list(range(27, 36))
 mouth_outline = list(range(48, 61))
 mouth_inner = list(range(61, 68))
-jawline = list(range(0, 17))
+jawline = list(range(0, 17)) 
 
 index = All
 
