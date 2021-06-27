@@ -64,4 +64,4 @@ while True:
     elif key == ord('6'):
         index == jawline
 
-cap.release()
+cap.release() 
