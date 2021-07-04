@@ -50,7 +50,7 @@ while True:
 
     if key == 27:
         break
-
+ 
     elif key == ord('1'):
         index == All
     elif key == ord('2'):
