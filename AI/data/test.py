@@ -1,4 +1,5 @@
 import pandas as pd
+import seaborne
 
 data = {
     'A' : ['1', '2', '3', '4'],
