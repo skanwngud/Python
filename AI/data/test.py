@@ -1,5 +1,4 @@
 import pandas as pd
-import seaborne
 
 data = {
     'A' : ['1', '2', '3', '4'],
@@ -9,3 +8,10 @@ data = {
 df = pd.DataFrame(data)
 
 print(df)
+
+import numpy as np
+
+x = np.array([1., 2., 3.])
+y = np.array([1., 2., 3.])
+
+print(x, y)
