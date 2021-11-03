@@ -15,3 +15,7 @@ x = np.array([1., 2., 3.])
 y = np.array([1., 2., 3.])
 
 print(x, y)
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
