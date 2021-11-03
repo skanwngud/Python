@@ -19,3 +19,22 @@ print(x, y)
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
+model = Sequential()
+
+model.add(Dense(5, input_shape=(1,), activation='relu'))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(4, activation='relu'))
+model.add(Dense(6, activation='relu'))
+model.add(Dense(10, activation='relu'))
+model.add(Dense(7, activation='relu'))
+model.add(Dense(2, activation='relu'))
+model.add(Dense(1))
+
+# compile, fit
+model.compile(loss='mse',metrics=['mse'])
+model.fit(x, y, epochs=1000, batch_size=1)
+
+# eval, pred
+print(model.evaluate(np.array([5]), np.array([5])))
+print(model.predict(np.array([10])))
+
