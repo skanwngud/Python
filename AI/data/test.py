@@ -38,4 +38,5 @@ model.fit(x, y, epochs=1000, batch_size=1)
 print(model.evaluate(np.array([5]), np.array([5])))
 print(model.predict(np.array([10])))
 
-from
+from tensorflow.keras.utils import to_categorical
+
