@@ -16,9 +16,11 @@ y = np.array([1., 2., 3.])
 
 print(x, y)
 
+from tensorflow.keras.datasets import boston_housing
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
+X = boston_housing.load_data()
 model = Sequential()
 
 model.add(Dense(5, input_shape=(1,), activation='relu'))
