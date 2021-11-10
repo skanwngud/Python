@@ -1,17 +1,44 @@
+import os
 import cv2 as cv
-import numpy as np
 
-# 기본 이미지 저장 path
-path = 'C:/Users/yjh/Downloads/'
+vid_path = "D:/super_shot/"
+path = "D:/super_shot/cap_frame/"
 
-img = cv.imread(path + '4692.jpg') # 이미지 로드
-img2 = cv.cvtColor(img, cv.COLOR_BGR2GRAY) # 이미지 흑백 변환
-ret, dst = cv.threshold(img2, 200, 255, cv.THRESH_BINARY) # 이진화
+file_list = os.listdir(vid_path)
 
+print(file_list)
+print(len(file_list))
 
+for file in file_list:
+    # if file.split(sep=".") != "mp4":
+    if file[-3:] != "mp4":
+        file_list.remove(file)
+        print(f"no {file}")
+    else:
+        print(f"yes {file}")
 
-# image show
-cv.imshow("img", img)
-cv.imshow("img2", img2)
-cv.imshow("img3", dst)
-cv.waitKey(0)
+print(file_list)
+print(len(file_list))
+
+for file in file_list:
+    count = 1
+    result = True
+    try:
+        os.makedirs(path + f"{file}")
+    except:
+        pass
+    vidcap = cv.VideoCapture(vid_path + file)
+    print(vidcap.isOpened())
+    while result:
+        try:
+            _, frame = vidcap.read()
+            cv.imwrite(path + f"{file}/{count}.jpg", frame)
+            print(f"{file} - {count}.jpg save completed")
+
+            if cv.waitKey(10) == 27:
+                print("stop")
+                break
+        except:
+            print("save done!")
+            break
+        count += 1
