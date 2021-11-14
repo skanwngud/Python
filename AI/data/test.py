@@ -7,9 +7,11 @@ path = "D:/super_shot/cap_frame/"
 file_list = os.listdir(vid_path)
 
 for file in file_list:
-    # if file.split(sep=".") != "mp4":
-    if file[-3:] != "mp4":
-        file_list.remove(file)
+    try:
+        if file.split(sep=".")[1] != "mp4":
+                file_list.remove(file)
+    except:
+        print("no file")
 
 for file in file_list:
     count = 1
