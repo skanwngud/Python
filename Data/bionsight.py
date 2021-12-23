@@ -18,10 +18,11 @@ print(df.describe())
 train_set = pd.DataFrame(columns=['inchikey', 'smiles', 'activity'])
 test_set = pd.DataFrame(columns=['inchikey', 'smiles', 'activity'])
 
-
 for idx in range(len(df)):
     if df.iloc[idx, 2] == 'train':
-        print(df.iloc[idx, [0, 1, 3]].values)
-        train_set.loc[idx] == df.iloc[idx, [0, 1, 3]].values
+        train_set.loc[idx] = df.iloc[idx, [0, 1, 3]].values
     else:
-        test_set.loc[idx] == df.iloc[idx, [0, 1, 3]].values
+        test_set.loc[idx] = df.iloc[idx, [0, 1, 3]].values
+
+print(train_set)
+print(test_set)
