@@ -75,6 +75,8 @@ print(f"log_loss : {log_loss}")
 print(f"auc1  : {auc1}")
 print(f"auc2 : {auc2}")
 
+
+
 # with inchikey_1, 2
 # score : 0.8164842240824212
 # log_loss : 0.4389295898857633
