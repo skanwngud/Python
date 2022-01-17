@@ -16,3 +16,4 @@ print(int('0b11', 2)) # 3
 print(int('0b100', 2)) # 4
 
 
+print(b(192))
