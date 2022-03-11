@@ -6,3 +6,5 @@ app = Flask(__name__)
 app.secret_key = "mysecret"
 
 socket_io = SocketIO(app)
+
+print("hello change world!")
