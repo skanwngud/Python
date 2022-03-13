@@ -17,3 +17,5 @@ c_patt = Chem.MolFromSmiles('C')
 print("c_patt type : ", type(c_patt), c_patt)
 c_patt_sub = mol.GetSubstructMatches(c_patt)
 print("c_patt_sub type : ", type(c_patt_sub), c_patt_sub)
+
+print("hello change")
