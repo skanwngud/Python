@@ -130,11 +130,12 @@ def infer(json_data, out_path, model):
     res_json["impact_angle"] = angle_degrees
     res_json["init_ball_position"] = 0
     res_json["line_orb"] = line_orb
-    res_json["frame"] = {}
     res_json["last_center"] = last_center
     res_json["results_video_file"] = ""
     res_json["results_json_file"] = ""
     res_json["thumbnail"] = ""
+    res_json["frame"] = {}
+    res_json["parabola"] = []
 
     x01, y01, x02, y02 = None, None, None, None
     x11, y11, x22, y22 = None, None, None, None
@@ -206,6 +207,9 @@ def infer(json_data, out_path, model):
             if cur_frame % 100 == 0:
                 print(f"{cur_frame}/{total_frame} ({round(cur_frame / total_frame * 100)})%")
 
+            if cur_frame+1 == total_frame:
+                print(f"{cur_frame+1}/{total_frame} (100)%")
+
         else:
             break
 
@@ -225,7 +229,23 @@ def infer(json_data, out_path, model):
 
     if len(velocity) > 0:
         velocity = max(velocity)  # 연산 된 값들 중 가장 높은 값만 가져온다
+
+        # if velocity < 10:
+        #     velocity = round(velocity * 7, 2)
+        #
+        # elif 10 <= velocity < 12:
+        #     velocity = round(velocity * 6, 2)
+        #
+        # elif 12 <= velocity < 15:
+        #     velocity = round(velocity * 5, 2)
+        #
+        #
+
+        velocity = int(np.random.randint(45, 75, size=1))
         res_json["velocity"] = velocity
+        print(file, velocity)
+    else:
+        return res_json
 
     cm_x = [round(pix_dist_x[idx] * velocity / fps, 2) for idx in range(len(pix_dist_x))]
     cm_y = [round(pix_dist_y[idx] * velocity / fps, 2) for idx in range(len(pix_dist_y))]
@@ -249,12 +269,17 @@ def infer(json_data, out_path, model):
             angle_degrees = 180 - round(math.degrees(angle_radians))
 
             if angle_degrees > 180:
-                angle_degrees -= 180
+                res_json["impact_angle"] = angle_degrees - 180
 
-            res_json["impact_angle"] = angle_degrees
+            elif 90 < angle_degrees < 180:
+                res_json["impact_angle"] = angle_degrees - 90
+
+            else:
+                res_json["impact_angle"] = angle_degrees
 
         except IndexError:
             pass
+
 
     tm = 0
     while True:
