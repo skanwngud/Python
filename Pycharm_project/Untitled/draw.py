@@ -3,6 +3,7 @@ import os
 import cv2
 
 from proc import *
+from proc_2 import *
 
 
 def draw_polylines(frame, coords_list, RGB):
@@ -151,7 +152,8 @@ for file in file_list:
     try:
         jj = {"data": {"creatorId": "ffasfdfs", "fileName": f"{file}", "flag": "Insert", "shot": "Tee Shot"}}
 
-        enc_json = infer(json_data=jj, out_path="D:/test_out/", model=model)
+        # enc_json = infer(json_data=jj, out_path="D:/test_out/", model=model)
+        enc_json = main(json_data=jj, model=model)
         drawing(enc_json, out_path="D:/test_out/")
 
     except:
