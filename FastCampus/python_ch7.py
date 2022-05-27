@@ -30,4 +30,3 @@ class Abstract(metaclass=ABCMeta):
     class test(Abstract):  # 상위의 Abstract 라는 클래스를 상속 받았다
         def method(self):  # 데코레이터 함수인 method 라는 추상 메소드를 강제로 넣어야한다
             pass
-
