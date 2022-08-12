@@ -6,17 +6,18 @@ import collections
 Card = collections.namedtuple("Card", ["rank", "suit"])
 
 class FrenchDeck:
-    ranks = [str(n) for n in range(2, 11)] + list("JQKA")
-    suits = "spades diamonds, clubs, hearts".split()
+    ranks = [str(n) for n in range(2, 11)] + list("JQKA")  # 2 ~ 10 + J Q K A
+    suits = "spades diamonds clubs hearts".split()  # 카드 모양
 
     def __init__(self):
         self._cards = [Card(rank, suit) for suit in self.suits
                                         for rank in self.ranks]
+        # 위에서 정의한 namedtuple 에 rank 와 모양을 넣는다
 
-    def __len__(self):
+    def __len__(self):  # 사용자 지정 함수에서 len() 처럼 사용 할 특별 메소드. 사실 len() 이 __len__ 을 호출한다.
         return len(self._cards)
 
-    def __getitem__(self, position):
+    def __getitem__(self, position):  # 사용자 지정 함수에서 해당 pos 의 객체를 반환하는 함수.
         return self._cards[position]
 
 # 지정 카드 뽑기
@@ -42,3 +43,5 @@ def spades_high(card):
     rank_value = FrenchDeck.ranks.index(card.rank)
     return rank_value * len(suit_values) + suit_values[card.suit]
 
+for card in sorted(deck, key=spades_high):
+    continue
