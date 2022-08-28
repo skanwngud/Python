@@ -1,16 +1,13 @@
 # 파일 압축
 
 import zipfile
+import shutil
 import os
 
-path = ""
+path = "path/to/dir"
 file_list = os.listdir(path)
 
 for file in file_list:
-    print(path + file)
-    img_list = os.listdir(path + file)
-    for img in img_list:
-        print(path + file + img)
-        zfile = zipfile.ZipFile(path + file + img, "w")
-        zfile.write(img)
-zfile.close()
+    print(file)
+    shutil.make_archive(path + file, "zip", path + file)
+
